@@ -170,7 +170,7 @@ body{
 }
 #book-content{
   padding-top: 24px;
-  height: 100%;
+  height: 1935px;
 }
 #book-content ul{
   background: #f0f6fc;
@@ -244,5 +244,8 @@ body{
 #info-price b{
   font-size: 28px;
   font-weight: 20px;
+}
+#quick-add:hover{
+  cursor: pointer;
 }
 

@@ -51,23 +51,73 @@
               <span class="shortcut">热门书籍</span>
               <span class="shortcut">新书上架</span>
             </div>
-            <div id="book-content">
+            <div id="book-detail">
               <div id="detail-container">
                 <div id="book-info">
                   <img src="../book-img/beiouzhongshen.jpg" height="300px" width="240px">
-                  <section>
-                    <h3>北欧神话</h3>
-                    <span>¥<b>150.6</b></span>
+                  <div id="info-container">
+                    <h1>北欧众神</h1>
+                    <span id="price">¥<b>150.6</b></span>
                     <ul>
-                      <li>作者:<span>赵胜龙</span></li>
-                      <li>ISBN:<span>iso199654654</span></li>
-                      <li>简介:<p>单位坏蛋hi挖的</p></li>
+                      <li><label>作 者:</label><p>赵胜龙</p></li>
+                      <li><label>ISBN:</label><p>iso199654654</p></li>
+                      <li><label>库 存:</label><p>78</p></li>
                     </ul>
-                    <span>添加购物车</span>
-                  </section>
+                    <div id="shop-container">
+                      <button id="minus">-</button>
+                      <label id="quantity">0</label>
+                      <button id="plus">+</button>
+                      <button id="buy">添加购物车</button>
+                    </div>
+                  </div>
+                  <div class="clear"></div>
+                  <div id="book-menu">
+                    <h3>目录</h3><br/><br/>
+                    <p>
+                        第一章 北欧是啥<br/>
+                        &nbsp&nbsp&nbsp&nbsp第一节 我也不知道<br/>
+                        &nbsp&nbsp&nbsp&nbsp第二节<br/>
+                      第二章 众神是啥<br/>
+                      &nbsp&nbsp&nbsp&nbsp第一节 我也不知道<br/>
+                        &nbsp&nbsp&nbsp&nbsp第二节<br/>
+                      第三章 那你知道啥<br/>
+                      &nbsp&nbsp&nbsp&nbsp第一节 我也不知道<br/>
+                      &nbsp&nbsp&nbsp&nbsp第二节<br/>
+                    </p>
+                  </div>
                   <div id="remark-container">
-                    <ul>
-                      <li>还可以</li>
+                    <h1>买家秀</h1>
+                    <ul id="remark-list">
+                      <li>
+                        <div id="remarker-info">
+                          <div id="avatar"><img src="../../img/avatar1.jpg" height="100px" width="100px"></div>
+                          <div id="username">我是闹餐</div>
+                        </div>
+                        <div id="remark-content">
+                          <div id="remark">书不错，就是擦得屁股疼</div>
+                          <div id="remark-time">01:21 07/03/2019</div>
+                        </div>
+                      </li>
+                      <li>
+                        <div id="remarker-info">
+                          <div id="avatar"><img src="../../img/avatar2.jpg" height="100px" width="100px"></div>
+                          <div id="username">我是莎比</div>
+                        </div>
+                        <div id="remark-content">
+                          <div id="remark">试了一下楼上说的，现在还在医院躺着，不说了，我要去做手术了</div>
+                          <div id="remark-time">01:21 08/03/2019</div>
+                        </div>
+                      </li>
+                      <li>
+                        <div id="remarker-info">
+                          <div id="avatar"><img src="../../img/avatar3.jpg" height="100px" width="100px"></div>
+                          <div id="username">我是医生</div>
+                        </div>
+                        <div id="remark-content">
+                          <div id="remark">这怎么能擦屁股呢，唉</div>
+                          <div id="remark-time">09:21 08/03/2019</div>
+                        </div>
+                      </li>
                     </ul>
                   </div>
                 </div>
