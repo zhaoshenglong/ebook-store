@@ -1,0 +1,248 @@
+body{
+  height:100%;
+  width:100%;
+  font-family: Arial, Helvetica, sans-serif;
+}
+#banner{
+  width: 1017px;
+  height: 66px;
+  margin: 0 auto;
+  margin-top:24px;
+}
+#banner img{
+  width:1017px;
+  margin: 0 auto;
+}
+#user-bar{
+  height: 32px;
+  border-top: 1px solid #d8eaf6;
+  color: #ff719f;
+  width: 1017px;
+  margin: 0 auto;
+  background: #faffef;
+}
+.user-item{
+  float: left;
+  height: 32px;
+  line-height: 32px;
+  font-size: 14px;
+  margin: 0 auto;
+}
+#user-bar #login{
+  margin-left: 160px; 
+}
+#user-bar #register{
+  margin-left: 24px;
+}
+#user-bar #order{
+  margin-left: 440px;
+}
+#user-bar #cart{
+  margin-left: 16px;
+}
+#user-bar #want{
+  margin-left: 16px;
+}
+#user-bar #set{
+  margin-left: 32px;
+}
+.clear{
+  clear:both;
+}
+.user-item a{
+  color: #ff719f;
+}
+.user-item a:hover{
+  color: #3397ff;
+}
+#search-bar{
+  width: 1017px;
+  height: 86px;
+  margin:  0 auto;
+  display: flex;
+}
+#search-bar img{
+  width: 148px;
+  margin: 2px 16px;
+  margin-left: 98px; 
+}
+#search-bar #search-container{
+  margin: 17px 170px 17px 32px;
+  flex: 1;
+  display: flex;
+  width:600px;
+  height: 50px;
+  border: 1px solid #d8eaf6;
+  border-radius: 24px;
+}
+#search-bar #search-container:hover{
+  box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28);
+}
+#search-container div{
+  flex: 1;
+  display: flex;
+  padding: 0 16px;
+}
+#search-container input{
+  flex:1;
+  height:34px;
+  padding: 8px 3px;
+  margin: 0 4px;
+  border: 0;
+  font-size: 16px;
+}
+#search-container button{
+  background: transparent;
+  border: 0;
+  border-radius: 24px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 1px solid #d8eaf6;
+  height: 80%;
+  margin: auto;
+  color: #1B9AF7;
+  width: 80px;
+  text-align: center;
+}
+#search-container button:hover{
+  cursor: pointer;
+}
+#main-back{
+  width:100%;
+  height:100%;
+  background: linear-gradient(to top, #3397ff , white);
+}
+#main{
+  position: relative;
+  z-index: 10;
+  width: 980px;
+  height:2000px;
+  margin: 24px auto 0;
+  background: #faffef;
+  border-bottom: 1px solid #3397ff;
+}
+#left-dir{
+  padding-top: 64px;
+  height: 100%;
+  width: 170px;
+  float: left;
+  font-size: 16px;
+}
+#left-dir ul{
+  padding-left: 20px;
+}
+.directory{
+  height:28px;
+  line-height: 28px;
+}
+.directory a{
+  color:#3397ff;
+}
+.directory a:hover{
+  color: red;
+}
+#book-container{
+  float: left;
+  height: 100%;
+  width: 740px;
+}
+#quick-start{
+  margin-top: 8px;
+  width:100%;
+  height:32px;
+  line-height: 32px;
+  font-weight: 10;
+  font-size: 22px;
+  border-bottom: 1px solid #2d8bec;
+}
+#quick-start .shortcut{
+  display:inline-block;
+  margin:auto 6px;
+  width: 100px;
+  height:32px;
+  text-align: center;
+  color:#3397ff;
+}
+#quick-start .shortcut:hover{
+  background: #f1f1f1;
+  color:red;
+  cursor: pointer;
+}
+#book-content{
+  padding-top: 24px;
+  height: 100%;
+}
+#book-content ul{
+  background: #f0f6fc;
+  height:100%;
+}
+.book-item{
+  width: 50%;
+  height: 220px;
+  float: left;
+  margin-top: 12px; 
+  margin-bottom: 36px;
+  color: #646464;
+}
+#book-pic{
+  width: 160px;
+  height:180px;
+  float: left;
+}
+#book-pic a{
+  display: block;
+  height:100%;
+  width: 100%;
+}
+#book-pic #des{
+  display: block;
+  width:80%;
+  height: 30px;
+  line-height: 28px;
+  margin: 12px auto;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #646464;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#book-pic #des:hover{
+  text-decoration: underline;
+  color: red;
+}
+#book-info{
+  float: left;
+  width: 140px;
+  height:100%;
+  padding-top: 16px;
+}
+#book-info span{
+  display: block;
+  height: 30px;
+}
+#book-info .info-item{
+  font-size: 16px;
+  display: flex;
+  width: 156px;
+  height: 30px;
+  color: #646464;
+  line-height:30px;
+  margin-bottom: 20px;
+}
+#book-info .info-item span{
+  color: #000;
+  margin-left: 6px;
+  flex: 1;
+}
+#book-info #info-price{
+  color: red;
+  display: inline-block;
+  text-align: center;
+  font-size: 14px;
+}
+#info-price b{
+  font-size: 28px;
+  font-weight: 20px;
+}
+
