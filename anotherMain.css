@@ -57,7 +57,7 @@ body{
   color: #ff719f;
 }
 .user-item a:hover{
-  color: #3397ff;
+  color: #00a4ff;
 }
 #search-bar{
   width: 1017px;
@@ -130,9 +130,10 @@ body{
   position: relative;
   z-index: 10;
   width: 980px;
-  height:1000px;
+  height:100%;
+  display: flex;
   margin: 24px auto 0;
-  border-bottom: 1px solid #3397ff;
+  border-bottom: 1px solid #00a4ff;
 }
 #left-dir{
   padding-top: 100px;
@@ -150,7 +151,7 @@ body{
   line-height: 28px;
 }
 .directory a{
-  color:#3397ff;
+  color:#00a4ff;
 }
 .directory a:hover{
   color: red;
@@ -162,7 +163,6 @@ body{
 }
 #quick-start{
   margin-top: 8px;
-  padding-left: 200px;
   width:100%;
   height:32px;
   line-height: 32px;
@@ -170,18 +170,22 @@ body{
   font-size: 22px;
   border-bottom: 1px solid #2d8bec;
 }
-#quick-start .shortcut{
-  display:inline-block;
-  margin:auto 6px;
+.shortcut{
+  display:block;
   width: 100px;
   height:32px;
   text-align: center;
-  color:#3397ff;
+  color:#00a4ff;
+  margin-right: 16px;
+  float: left;
 }
 #quick-start .shortcut:hover{
   background: #f1f1f1;
   color:red;
   cursor: pointer;
+}
+#first-shortcut{
+  margin-left: 200px;
 }
 #book-content{
   padding-top: 24px;
