@@ -54,7 +54,7 @@
   border: 1px dashed transparent;
   border-radius: 10px;
   background: transparent;
-  font-size: 24px;
+  font-size: 20px;
   line-height:24px;
 }
 #login-container span{
@@ -66,9 +66,10 @@
   margin-top: 80px; 
   margin-bottom: 20px;
 }
-#info label{
+#login-container label{
+  display: block;
   height: 34px;
-  line-height: 34px;
+  line-height: 32px;
 }
 .input-container{
   flex:1;
@@ -85,6 +86,7 @@
   height: 32px;
   flex: 1;
   border:0;
+  margin-left: 12px;
   border-radius:10px; 
   padding-left: 12px;
 }
