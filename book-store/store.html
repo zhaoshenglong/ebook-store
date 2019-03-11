@@ -62,6 +62,7 @@
                     </a>
                   </div>
                   <div id="book-info">
+                    <span style = " font-size: 20px; display: block; height: 30px" onclick="changeColor(this)" class = "book-name" class="info-item">《北欧众神》</span>
                     <span class="info-item">作者:<span>赵胜龙</span></span>
                     <span class="info-item">ISBN:<span>465451656</span></span>
                     <span class="info-item">剩余:<span>78</span></span>
@@ -79,6 +80,7 @@
                     </a>
                   </div>
                   <div id="book-info">
+                      <span style = "font-size: 20px; display: block; height: 30px" onclick="changeColor(this)" class = "book-name" class="info-item">《北欧众神》</span>
                     <span class="info-item">作者:<span>赵胜龙</span></span>
                     <span class="info-item">ISBN:<span>465451656</span></span>
                     <span class="info-item">剩余:<span>78</span></span>
@@ -96,6 +98,7 @@
                     </a>
                   </div>
                   <div id="book-info">
+                      <span style = "font-size: 20px; display: block; height: 30px" onclick="changeColor(this)" class="book-name" class="info-item">《北欧众神》</span>
                     <span class="info-item">作者:<span>赵胜龙</span></span>
                     <span class="info-item">ISBN:<span>465451656</span></span>
                     <span class="info-item">剩余:<span>78</span></span>
@@ -113,6 +116,7 @@
                     </a>
                   </div>
                   <div id="book-info">
+                      <span style = "font-size: 20px; display: block; height: 30px" onclick="changeColor(this)" class = "book-name" class="info-item">《北欧众神》</span>
                     <span class="info-item">作者:<span>赵胜龙</span></span>
                     <span class="info-item">ISBN:<span>465451656</span></span>
                     <span class="info-item">剩余:<span>78</span></span>
@@ -130,4 +134,11 @@
     <div></div>
   </div>
 </body>
+<script>
+    var color = "red";
+    function changeColor(className){
+      color = (color == "red") ? "black" : "red";
+      className.style.color = color;
+    }
+  </script>
 </html>
