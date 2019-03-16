@@ -37,11 +37,18 @@ export default {
 </script>
 <style scoped>
 #sign-in-form{
-    width: 300px;
+    width: 350px;
     position: absolute;
     left: 15%;
     top: 40%;
     font-size: 14px;
+}
+.sign-inup-container{
+	width: 300px;
+	padding: 20px 25px;
+	text-align: left;
+	position: relative;
+	background: rgba(255, 255, 255, 0.7);
 }
 #sign-in-form label{
     font-weight: 600;
@@ -50,7 +57,6 @@ export default {
 }
 .sign-in-up{
     position: relative;
-    margin: 6px auto 16px;
 }
 .sign-in-up label{
     margin-bottom: 7px;
@@ -65,5 +71,15 @@ export default {
     margin-top: 5px;
     margin-bottom: 15px;   
 }
-
+.clear-input {
+    position: absolute;
+    right: 8px;
+    top: 24px;
+    width: 2em;
+    height: 2em;
+    opacity: 0.4;
+}
+.clear-input:hover {
+    opacity: 1;
+}
 </style>
