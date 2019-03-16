@@ -1,10 +1,14 @@
 <template>
   <div id="home">
     <div id="back-cover">
-        <div id="logo-container">
-            <img src="../../../static/logo/logo3.png" @click="goBack" alt="Turn back">
+        <div id="banner">
+            <img id='logo' src="../../../static/logo/logo3.png"
+                @click="goBack" alt="Turn back">
+            <a id = "sign-in" class="sign-link"
+                @click="signIn">sign in</a>
+            <a id = "sign-up" class="sign-link"
+                @click="signUp">sign up</a>
         </div>
-        <a id = "alter-link" @click="alterSignInUp">{{linkLabel}}</a>
         <router-view/>
     </div>
   </div>
@@ -22,14 +26,11 @@ export default {
     goBack () {
       this.$router.push('/')
     },
-    alterSignInUp () {
-        if (this.linkLabel === 'sign in') {
-            this.linkLabel = 'sign up'
-            this.$router.push('/home/signIn')
-        } else {
-            this.linkLabel = 'sign in'
-            this.$router.push('/home/signUp')
-        }
+    signIn () {
+        this.$router.push('/home/signIn')
+    },
+    signUp() {
+        this.$router.push('/home/signUp')
     }
   }
 }
@@ -49,27 +50,36 @@ export default {
 #back-cover{
     min-height: 100%;
     height: 100%;
-    background: linear-gradient(to right, rgba(255,255,255,1), rgba(255,255,255,0))
+    background: linear-gradient(
+        to right, rgba(255,255,255,1), rgba(255,255,255,0))
 }
-#logo-container{
-    position: absolute;
+#banner{
+    width:100%;
+    height: 100px;
+    background: linear-gradient(
+        to right, rgba(255,255,255,1),rgba(255,255,255,0.4));
+}
+#logo{
+    position: relative;
+    width:160px;
     height: 74px;
     top: 16px;
-    left: 200px;
+    left: 10%;
     cursor: pointer;
     border-radius: 10px;
+    float: left;
 }
-#logo-container:hover{
+#logo:hover{
     box-shadow: 0 1px 6px 0 rgba(32,33,36,0.28); 
 }
-#logo-container img{
-    border-radius: 10px;
-}
-#alter-link{
+
+.sign-link{
     position: relative;
     top : 35px;
-    left: 400px;;
     display: block;
+    margin: 0 16px 0 8px;
+    float: left;
+    left:200px;
     font-size: 24px;
     width: 100px;
     height:34px;
@@ -81,7 +91,7 @@ export default {
     color: white;
     z-index: 1;
 }
-#alter-link:after{
+.sign-link:after{
     content: '';
     width: 102%;
     height: 102%;
@@ -94,8 +104,12 @@ export default {
     z-index: -1;
     border-radius: 10px;
 }
-#alter-link:hover{
+.sign-link:hover{
     border: 1px solid #fff;
     cursor: pointer;
+}
+#sign-up{
+    background: #67ff80;
+    border: 1px solid #67ff80;
 }
 </style>

@@ -119,3 +119,28 @@ a {
 	border-color: #3dd8ec;
 	box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
 }
+.icon{
+	width: 1.5em;
+	height: 1.5em;
+	vertical-align: -0.15em;
+	fill: currentColor;
+	overflow: hidden;
+}
+.sign-inup-container{
+	width: 100%;
+	background: rgba(255, 255, 255, 0.7);
+	padding: 20px 25px;
+	text-align: left;
+	position: relative;
+}
+.clear-input {
+    position: absolute;
+    right: 8px;
+    top: 30px;
+    width: 2em;
+    height: 2em;
+    opacity: 0.4;
+}
+.clear-input:hover {
+    opacity: 1;
+}

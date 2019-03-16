@@ -5,6 +5,7 @@ import Home from '@/components/home/Home'
 import SignIn from '@/components/home/signInUp/SignIn'
 import SignUp from '@/components/home/signInUp/SignUp'
 import BookStore from '@/components/books/BookStore'
+import HomeSwiper from '@/components/home/HomeSwiper'
 
 Vue.use(Router)
 
@@ -14,16 +15,20 @@ export default new Router({
     name: 'Home',
     component: Home,
     children: [{
-        path: '/home/signIn',
-        name: 'SignIn',
-        component: SignIn
-      },
-      {
-        path: '/home/signUp',
-        name: 'SignUp',
-        component: SignUp
-      }
-    ]
+      path: '/home',
+      name: 'HomeSwiper',
+      component: HomeSwiper
+    },
+    {
+      path: '/home/signIn',
+      name: 'SignIn',
+      component: SignIn
+    },
+    {
+      path: '/home/signUp',
+      name: 'SignUp',
+      component: SignUp
+    }]
   },
   {
     path: '/',
