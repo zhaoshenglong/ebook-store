@@ -1,5 +1,5 @@
 <template>
-    <div>Footer</div>    
+    <div>Sidebar</div>
 </template>
 <script>
 export default {

@@ -1,5 +1,5 @@
 <template>
-    <div>Footer</div>    
+    <div>StoreMain</div>
 </template>
 <script>
 export default {
