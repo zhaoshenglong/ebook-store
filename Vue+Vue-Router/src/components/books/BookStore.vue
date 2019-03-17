@@ -77,7 +77,7 @@ export default {
       this.$router.push("/home/signUp");
     },
     toOrder() {
-      this.$$router.push("/order");
+      this.$router.push("/order");
     },
     toCart() {
       this.$router.push("/cart");
@@ -219,10 +219,12 @@ export default {
   height: 0.6em;
 }
 #main-cover {
+  display: flex;
   background: rgba(229, 252, 251, 0.7);
   min-width: 1024px;
   width: 60%;
   min-height: 1000px;
   margin: 36px auto;
+  position: relative;
 }
 </style>
