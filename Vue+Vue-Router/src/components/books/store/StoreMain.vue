@@ -1,11 +1,11 @@
 <template>
-    <div>StoreMain</div>
+  <div id="store-main">StoreMain</div>
 </template>
 <script>
-export default {
-    
-}
+export default {};
 </script>
 <style scoped>
-
+#store-main {
+  height: 100%;
+}
 </style>

@@ -18,71 +18,71 @@ import OrderSide from '@/components/books/usr/order/OrderSide'
 Vue.use(Router)
 
 export default new Router({
-  routes: [{
-    path: '/home',
-    name: 'Home',
-    component: Home,
-    children: [{
-      path: '/home',
-      name: 'HomeSwiper',
-      component: HomeSwiper
-    },
-    {
-      path: '/home/signIn',
-      name: 'SignIn',
-      component: SignIn
-    },
-    {
-      path: '/home/signUp',
-      name: 'SignUp',
-      component: SignUp
-    }]
-  },
-  {
-    path: '/',
-    name: 'BookStore',
-    component: BookStore,
-    children: [
-      {
-        path: '/',
-        name: 'StorePage',
-        components: {
-          sidebar: Sidebar,
-          main: StoreMain
+    routes: [{
+            path: '/home',
+            name: 'Home',
+            component: Home,
+            children: [{
+                    path: '/home',
+                    name: 'HomeSwiper',
+                    component: HomeSwiper
+                },
+                {
+                    path: '/home/signIn',
+                    name: 'SignIn',
+                    component: SignIn
+                },
+                {
+                    path: '/home/signUp',
+                    name: 'SignUp',
+                    component: SignUp
+                }
+            ]
+        },
+        {
+            path: '/',
+            component: BookStore,
+            children: [{
+                    path: '/',
+                    name: 'StorePage',
+                    components: {
+                        sidebar: Sidebar,
+                        main: StoreMain
+                    }
+                },
+                {
+                    path: '/detail',
+                    name: 'BookDetail',
+                    components: {
+                        sidebar: Sidebar,
+                        main: BookDetail
+                    }
+                },
+                {
+                    path: '/setting',
+                    name: 'Setting',
+                    components: {
+                        sidebar: SettingSide,
+                        main: Setting
+                    }
+                },
+                {
+                    path: '/order',
+                    name: 'Order',
+                    components: {
+                        sidebar: OrderSide,
+                        main: Order
+                    }
+                },
+                {
+                    path: '/cart',
+                    name: 'Cart',
+                    components: {
+                        sidebar: Sidebar,
+                        main: Cart
+                    }
+                }
+            ]
         }
-      },
-      {
-        path: '/detail',
-        name: 'BookDetail',
-        components: {
-            sidebar: Sidebar,
-            main: BookDetail
-        }
-      },
-      {
-        path: '/setting',
-        name: 'Setting',
-        components: {
-            sidebar: SettingSide,
-            main: Setting
-        }
-      },
-      {
-        path: '/order',
-        name: 'Order',
-        components: {
-            sidebar: OrderSide,
-            main: Order
-        }
-      },
-      {
-        path: '/cart',
-        name: 'Cart',
-        components: {
-            sidebar: Sidebar,
-            main: Cart
-        }
-      }
     ]
-  }]
 })

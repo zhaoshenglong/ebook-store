@@ -1,71 +1,137 @@
 /* http://meyerweb.com/eric/tools/css/reset/ */
 /* v1.0 | 20080212 */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	outline: 0;
-	font-size: 100%;
-	vertical-align: baseline;
-	background: transparent;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
 }
+
 html {
-  font-size: 50px;
+    font-size: 50px;
 }
+
 body {
-	line-height: 1;
+    line-height: 1;
 }
-html, body{
-	height: 100%;
+
+html,
+body {
+    min-height: 100%;
 }
-ol, ul {
-	list-style: none;
+
+ol,
+ul {
+    list-style: none;
 }
-blockquote, q {
-	quotes: none;
+
+blockquote,
+q {
+    quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
 }
 
 /* remember to define focus styles! */
 :focus {
-	outline: 0;
+    outline: 0;
 }
 
 /* remember to highlight inserts somehow! */
 ins {
-	text-decoration: none;
+    text-decoration: none;
 }
+
 del {
-	text-decoration: line-through;
+    text-decoration: line-through;
 }
 
 /* tables still need 'cellspacing="0"' in the markup */
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 }
 
 a {
-	text-decoration: none;
+    text-decoration: none;
 }
-.btn{
-	background-color: #eff3f6;
-    background-image: linear-gradient(-180deg,#fafbfc,#eff3f6 90%);
-	color: #24292e;
-	-moz-appearance: none;
+
+.btn {
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+    color: #24292e;
+    -moz-appearance: none;
     -moz-user-select: none;
     -ms-user-select: none;
     -webkit-appearance: none;
@@ -74,7 +140,7 @@ a {
     background-position: -1px -1px;
     background-repeat: repeat-x;
     background-size: 110% 110%;
-    border: 1px solid rgba(27,31,35,.2);
+    border: 1px solid rgba(27, 31, 35, .2);
     border-radius: .25em;
     cursor: pointer;
     display: inline-block;
@@ -87,42 +153,82 @@ a {
     vertical-align: middle;
     white-space: nowrap;
 }
-.btn-block{
-	display: block;
-	text-align: center;
-	width: 100%;
+
+.btn-block {
+    display: block;
+    text-align: center;
+    width: 100%;
 }
-.btn-submit{
-	background-color: #28a745;
-    background-image: linear-gradient(-180deg,#34d058,#28a745 90%);
+
+.btn-submit {
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
     color: #fff;
 }
-.input-control{
-	background-color: #fff;
+
+.input-control {
+    background-color: #fff;
     background-position: right 8px center;
     background-repeat: no-repeat;
     border: 1px solid #d1d5da;
     border-radius: 3px;
-    box-shadow: inset 0 1px 2px rgba(27,31,35,.075);
+    box-shadow: inset 0 1px 2px rgba(27, 31, 35, .075);
     color: #24292e;
     font-size: 16px;
-	line-height: 20px;
-	min-height: 20px;
+    line-height: 20px;
+    min-height: 20px;
     outline: none;
-	padding: 6px 8px;
+    padding: 6px 8px;
 }
-.input-block{
-	display: block;
+
+.input-block {
+    display: block;
     width: 100%;
 }
-.input-block:focus{
-	border-color: #3dd8ec;
-	box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+
+.input-block:focus {
+    border-color: #3dd8ec;
+    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
 }
-.icon{
-	width: 1.5em;
-	height: 1.5em;
-	vertical-align: -0.15em;
-	fill: currentColor;
-	overflow: hidden;
+
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: -0.15em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.easing-variables {
+    --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+    --ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    --ease-in-quart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+    --ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+    --ease-in-circ: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+    --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out-circ: cubic-bezier(0.075, 0.82, 0.165, 1);
+    --ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+    --ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
+    --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    color: white;
+    line-height: 50px;
+    text-align: center;
+    background: #35a3c4;
+    transition: transform 1s var(--ease-out-quart);
+}
+
+.easing-variables:hover {
+    transform: rotate(-20deg);
 }
