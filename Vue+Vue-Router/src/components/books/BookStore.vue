@@ -36,15 +36,15 @@
       <div id="search-bar">
         <img class="easing-variables" src="../../../static/logo/logo1.png">
         <div id="search-container">
-          <input type="text">
+          <input type="text" v-model="searchMsg">
           <svg id="search" class="icon" aria-hidden="true">
             <use xlink:href="#iconsearch"></use>
           </svg>
         </div>
       </div>
       <div id="main-cover">
-        <router-view name="sidebar"></router-view>
-        <router-view name="main"></router-view>
+        <router-view @changeDisplay="changeDisplayId" name="sidebar"></router-view>
+        <router-view :searchMsg="searchMsg" :bookList="bookList" name="main"></router-view>
       </div>
       <BookFooter/>
     </div>
@@ -57,13 +57,10 @@ export default {
   name: "BookStore",
   data() {
     return {
-      bookList: []
+      bookList: [],
+      displayId: "0",
+      searchMsg: ""
     };
-  },
-  computed: {
-    searchList() {
-      return this.bookList;
-    }
   },
   components: {
     BookHeader,
@@ -84,6 +81,10 @@ export default {
     },
     toSetting() {
       this.$router.push("/setting");
+    },
+    changeDisplayId(id) {
+      this.displayId = id;
+      alert("display changed, id" + id);
     }
   }
 };
@@ -226,5 +227,7 @@ export default {
   min-height: 1000px;
   margin: 36px auto;
   position: relative;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
 }
 </style>

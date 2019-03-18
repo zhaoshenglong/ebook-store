@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    &copy;{{year}} Dragon
+    Copyright&copy;{{year}} Dragon
     <a
       href="https://github.com/zhaoshenglong"
       target="_blank"
@@ -12,38 +12,39 @@
     </a>
     <span class="QR-container">
       <svg
-      id="weixin"
-      class="icon icon-contact"
-      aria-hidden="true"
-      @mouseenter="weixin=true"
-      @mouseleave="weixin=false"
-    >
-      <use xlink:href="#iconweixin"></use>
-    </svg>
-    <img
-      width="200px"
-      height="200px"
-      v-show="weixin"
-      id="weixin-img"
-      src="../../../../static/QRcode/weixin.png"
-    >
+        id="weixin"
+        class="icon icon-contact"
+        aria-hidden="true"
+        @mouseenter="weixin=true"
+        @mouseleave="weixin=false"
+      >
+        <use xlink:href="#iconweixin"></use>
+      </svg>
+      <img
+        width="200px"
+        height="200px"
+        v-show="weixin"
+        id="weixin-img"
+        src="../../../../static/QRcode/weixin.png"
+      >
     </span>
     <span class="QR-container">
       <svg
-      id="qq"
-      class="icon icon-contact"
-      aria-hidden="true"
-      @mouseenter="qq=true"
-      @mouseleave="qq=false"
-    >
-      <use xlink:href="#iconqq-copy-copy"></use>
-    </svg>
-    <img 
-      width="200px"
-      height="200px"
-      v-show="qq"
-      id="qq-img"
-      src="../../../../static/QRcode/qq.jpg">
+        id="qq"
+        class="icon icon-contact"
+        aria-hidden="true"
+        @mouseenter="qq=true"
+        @mouseleave="qq=false"
+      >
+        <use xlink:href="#iconqq-copy-copy"></use>
+      </svg>
+      <img
+        width="200px"
+        height="200px"
+        v-show="qq"
+        id="qq-img"
+        src="../../../../static/QRcode/qq.jpg"
+      >
     </span>
   </div>
 </template>
@@ -55,7 +56,7 @@ export default {
       year: 2019,
       weixin: false,
       qq: false
-    }
+    };
   }
 };
 </script>
@@ -77,7 +78,7 @@ export default {
   color: #7a7c7c;
   position: relative;
 }
-.QR-container{
+.QR-container {
   position: relative;
 }
 #github:hover {
