@@ -12,7 +12,7 @@
           </span>
           <span class="info-item" id="register" @click="toSignUp">sign up</span>
           <span class="info-item" id="order" @click="toOrder">
-            order menu
+            Your order
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#iconorder"></use>
             </svg>
@@ -189,8 +189,8 @@ export default {
   margin-left: 24px;
 }
 #order {
-  margin-left: 340px;
-  width: 77px;
+  margin-left: 320px;
+  width: 110px;
 }
 #cart {
   margin-left: 16px;
