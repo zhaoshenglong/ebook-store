@@ -233,6 +233,14 @@ a {
     transform: rotate(-20deg);
 }
 
+.gradient-text {
+    background: -webkit-linear-gradient(white, #444444);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    font-size: 24px;
+}
+
 .link-normal {
     color: #35a3c4;
 }
@@ -240,4 +248,52 @@ a {
 .link-normal:hover {
     color: #eeab30;
     cursor: pointer;
+}
+
+.underline:hover {
+    cursor: pointer;
+    background: #444444;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.underline:before {
+    content: "";
+    border-bottom: 2px solid #35a3c4;
+    width: 0;
+    transition: all 0.25s;
+    height: 100%;
+    position: absolute;
+    left: -10px;
+    bottom: 5px;
+}
+
+.underline:hover::before {
+    width: 100%;
+}
+
+.side-bar {
+    height: 100%;
+    min-height: 1000px;
+    width: 20%;
+    float: left;
+    padding-top: 80px;
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    background: -webkit-linear-gradient(to right,
+        rgba(229, 252, 251, 0.7),
+        rgba(0, 255, 255, 1));
+    background: linear-gradient(to right,
+        rgba(229, 252, 251, 0.7),
+        rgba(255, 255, 255, 0.7));
+}
+
+.side-menu {
+    font-weight: 600;
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    position: relative;
 }
