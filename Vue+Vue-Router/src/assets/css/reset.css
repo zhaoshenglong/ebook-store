@@ -232,3 +232,12 @@ a {
 .easing-variables:hover {
     transform: rotate(-20deg);
 }
+
+.link-normal {
+    color: #35a3c4;
+}
+
+.link-normal:hover {
+    color: #eeab30;
+    cursor: pointer;
+}

@@ -57,7 +57,36 @@ export default {
   name: "BookStore",
   data() {
     return {
-      bookList: [],
+      bookList: [
+        {
+          imgUrl:
+            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
+          name: "The Journey to the West, Revised Edition, Volume 3",
+          autho: "Anthony C. Yu",
+          price: "31.00"
+        },
+        {
+          imgUrl:
+            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
+          name: "The Journey to the West, Revised Edition, Volume 3",
+          autho: "Anthony C. Yu",
+          price: "31.00"
+        },
+        {
+          imgUrl:
+            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
+          name: "The Journey to the West, Revised Edition, Volume 3",
+          autho: "Anthony C. Yu",
+          price: "31.00"
+        },
+        {
+          imgUrl:
+            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
+          name: "The Journey to the West, Revised Edition, Volume 3",
+          autho: "Anthony C. Yu",
+          price: "31.00"
+        }
+      ],
       displayId: "0",
       searchMsg: ""
     };
@@ -224,10 +253,12 @@ export default {
   background: rgba(229, 252, 251, 0.7);
   min-width: 1024px;
   width: 60%;
+  height: 100%;
   min-height: 1000px;
   margin: 36px auto;
   position: relative;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+  border-left: 20px solid #35a3c4;
 }
 </style>

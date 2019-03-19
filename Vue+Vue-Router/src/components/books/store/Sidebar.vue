@@ -65,10 +65,20 @@ export default {
   width: 25%;
   float: left;
   padding-top: 50px;
-  border-left: 20px solid #35a3c4;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
+  background: -webkit-linear-gradient(
+    to right,
+    rgba(229, 252, 251, 0.7),
+    rgba(0, 255, 255, 1)
+  );
+  background: linear-gradient(
+    to right,
+    rgba(229, 252, 251, 0.7),
+    rgba(255, 255, 255, 0.7)
+  );
 }
+
 .menu {
   font-weight: 600;
   font-size: 40px;
