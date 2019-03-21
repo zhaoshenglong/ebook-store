@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div></div>
+    <div>
+      <svg class="icon minus-pink" aria-hidden="true">
+        <use xlink:href="#iconminus"></use>
+      </svg>
+      <span class="quantity">3</span>
+      <svg class="icon plus-blue" aria-hidden="true">
+        <use xlink:href="#iconplus"></use>
+      </svg>
+    </div>
     <book-remark></book-remark>
   </div>
 </template>
@@ -21,4 +29,10 @@ export default {
 };
 </script>
 <style scoped>
+.quantity {
+  font-size: 32px;
+}
+.plus-blue {
+  color: #35a3c4;
+}
 </style>

@@ -7,6 +7,7 @@
           class="book-img-normal"
           :src="book.imgUrl"
           title="The Journey to the West, Revised Edition, Volume 3"
+          @click="toDetail(book.name)"
         >
         <div class="book-des">
           <div class="book-info-normal">
@@ -16,20 +17,11 @@
               {{book.autho}}
             </div>
           </div>
-          <div>
+          <div class="shop-bar">
             <span class="book-price">
               <b>¥</b>
               {{book.price}}
             </span>
-          </div>
-          <div class="shop-bar">
-            <svg class="icon minus-pink" aria-hidden="true">
-              <use xlink:href="#iconminus"></use>
-            </svg>
-            <span class="quantity">3</span>
-            <svg class="icon plus-blue" aria-hidden="true">
-              <use xlink:href="#iconplus"></use>
-            </svg>
             <svg class="icon cart-large" aria-hidden="true">
               <use xlink:href="#iconiconfontcart-copy"></use>
             </svg>
@@ -50,6 +42,15 @@ export default {
     searchMsg: {
       type: String,
       required: true
+    }
+  },
+  methods: {
+    toDetail(bookName) {
+      alert(bookName);
+      this.$router.push({
+        name: "BookDetail",
+        params: { bookName }
+      });
     }
   },
   computed: {
@@ -123,19 +124,12 @@ export default {
   position: absolute;
   bottom: 50px;
 }
-
-.quantity {
-  font-size: 32px;
+.minus-pink {
+  color: rgb(111, 120, 124);
 }
 .cart-large {
   width: 2em;
   height: 2em;
   color: red;
-}
-.plus-blue {
-  color: #35a3c4;
-}
-.minus-pink {
-  color: rgb(111, 120, 124);
 }
 </style>

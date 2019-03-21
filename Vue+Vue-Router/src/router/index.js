@@ -51,7 +51,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/detail',
+                    path: '/detail/:bookName',
                     name: 'BookDetail',
                     components: {
                         sidebar: Sidebar,
