@@ -21,13 +21,13 @@ export default {
   },
   methods: {
     goBack() {
-      this.$router.push("/");
+      this.$router.push("/books");
     },
     signIn() {
-      this.$router.push("/home/signIn");
+      this.$router.push("/signIn");
     },
     signUp() {
-      this.$router.push("/home/signUp");
+      this.$router.push("/signUp");
     }
   }
 };

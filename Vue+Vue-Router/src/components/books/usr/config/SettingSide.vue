@@ -1,19 +1,25 @@
 <template>
   <div class="side-bar">
     <ul>
-      <li class="side-menu underline gradient-text">Profile</li>
-      <li class="side-menu underline gradient-text">Address</li>
-      <li class="side-menu underline gradient-text">Account</li>
+      <li @click="toProfile" class="side-menu underline gradient-text">Profile</li>
+      <li @click="toAddress" class="side-menu underline gradient-text">Address</li>
+      <li @click="toAccount" class="side-menu underline gradient-text">Account</li>
     </ul>
   </div>
 </template>
 <script>
-export default {};
+export default {
+  name: "SettingSide",
+  methods: {
+    toProfile() {
+      this.$router.push({ name: "SettingProfile", params: { userid: "123" } });
+    },
+    toAccount() {
+      this.$router.push({ name: "SettingAccount", params: { userid: "123" } });
+    },
+    toAddress() {
+      this.$router.push({ name: "SettingAddress", params: { userid: "123" } });
+    }
+  }
+};
 </script>
-<style scoped>
-.setting-menu {
-  padding: 10px 8px;
-  border: 1px solid #bdbdbd;
-  position: relative;
-}
-</style>

@@ -9,9 +9,11 @@ import HomeSwiper from '@/components/home/HomeSwiper'
 import Sidebar from '@/components/books/store/Sidebar'
 import StoreMain from '@/components/books/store/StoreMain'
 import BookDetail from '@/components/books/store/detail/BookDetail'
-import Setting from '@/components/books/usr/config/Setting'
+import SettingProfile from '@/components/books/usr/config/SettingProfile'
+import SettingAccount from '@/components/books/usr/config/SettingAccount'
+import SettingAddress from '@/components/books/usr/config/SettingAddress'
 import SettingSide from '@/components/books/usr/config/SettingSide'
-import Cart from '@/components/books/usr/Cart'
+import Cart from '@/components/books/usr/cart/Cart'
 import Order from '@/components/books/usr/order/Order'
 import OrderSide from '@/components/books/usr/order/OrderSide'
 
@@ -19,32 +21,39 @@ Vue.use(Router)
 
 export default new Router({
     routes: [{
-            path: '/home',
-            name: 'Home',
+            path: '/',
             component: Home,
             children: [{
-                    path: '/home',
-                    name: 'HomeSwiper',
+                    path: '/',
+                    name: 'Home',
                     component: HomeSwiper
                 },
                 {
-                    path: '/home/signIn',
+                    path: '/signIn',
                     name: 'SignIn',
                     component: SignIn
                 },
                 {
-                    path: '/home/signUp',
+                    path: '/signUp',
                     name: 'SignUp',
                     component: SignUp
                 }
             ]
         },
         {
-            path: '/',
+            path: '/books',
             component: BookStore,
             children: [{
-                    path: '/',
+                    path: '/books',
                     name: 'StorePage',
+                    components: {
+                        sidebar: Sidebar,
+                        main: StoreMain
+                    }
+                },
+                {
+                    path: '/books/:userid',
+                    name: 'StorePageSigned',
                     components: {
                         sidebar: Sidebar,
                         main: StoreMain
@@ -59,15 +68,31 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/setting',
-                    name: 'Setting',
+                    path: '/home/:userid/setting/Profile',
+                    name: 'SettingProfile',
                     components: {
                         sidebar: SettingSide,
-                        main: Setting
+                        main: SettingProfile
                     }
                 },
                 {
-                    path: '/order',
+                    path: '/home/:userid/setting/Address',
+                    name: 'SettingAddress',
+                    components: {
+                        sidebar: SettingSide,
+                        main: SettingAddress
+                    }
+                },
+                {
+                    path: '/home/:userid/setting/Account',
+                    name: 'SettingAccount',
+                    components: {
+                        sidebar: SettingSide,
+                        main: SettingAccount
+                    }
+                },
+                {
+                    path: '/home/:userid/order',
                     name: 'Order',
                     components: {
                         sidebar: OrderSide,
@@ -75,7 +100,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/cart',
+                    path: '/home/:userid/cart',
                     name: 'Cart',
                     components: {
                         sidebar: Sidebar,

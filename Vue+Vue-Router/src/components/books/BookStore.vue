@@ -97,19 +97,19 @@ export default {
   },
   methods: {
     toSignIn() {
-      this.$router.push("/home/signIn");
+      this.$router.push("/signIn");
     },
     toSignUp() {
-      this.$router.push("/home/signUp");
+      this.$router.push("/signUp");
     },
     toOrder() {
-      this.$router.push("/order");
+      this.$router.push({ name: "Order", params: { userid: "123" } });
     },
     toCart() {
-      this.$router.push("/cart");
+      this.$router.push({ name: "Cart", params: { userid: "123" } });
     },
     toSetting() {
-      this.$router.push("/setting");
+      this.$router.push({ name: "SettingProfile", params: { userid: "123" } });
     },
     changeDisplayId(id) {
       this.displayId = id;
@@ -251,7 +251,7 @@ export default {
 #main-cover {
   display: flex;
   background: rgba(229, 252, 251, 0.7);
-  min-width: 1024px;
+  min-width: 1004px;
   width: 60%;
   height: 100%;
   min-height: 1000px;
