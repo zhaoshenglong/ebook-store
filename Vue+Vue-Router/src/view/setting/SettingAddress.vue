@@ -217,7 +217,6 @@ export default {
       )
         this.showRegion = false;
       else this.showRegion = true;
-      console.log(e);
     },
     changeShowRegion() {
       this.showRegion = true;

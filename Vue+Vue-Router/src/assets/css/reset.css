@@ -294,7 +294,6 @@ a {
 
 .view-main {
     flex: 1;
-    display: flex;
     background: rgba(231, 255, 255, 0.4)
 }
 
