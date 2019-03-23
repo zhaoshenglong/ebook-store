@@ -4,17 +4,18 @@
       <div class="col1">Avatar</div>
       <div class="col2 icon-container">
         ID
-        <svg class="icon" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div class="col3 icon-container">
         Name
-        <svg class="icon" aria-hidden="true" @click="sortUser('name')">
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('name')">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div class="col4">Authentication</div>
+      <div class="col5">Management</div>
     </div>
     <user-modify v-for="user in filterUserList" :key="user.id" :user="user"></user-modify>
   </div>
@@ -87,19 +88,25 @@ export default {
 }
 
 .col1 {
-  width: 25%;
+  width: 20%;
 }
 .col2 {
-  width: 20%;
+  width: 15%;
 }
 .col3 {
   flex: 1;
 }
 .col4 {
-  width: 25%;
+  width: 15%;
+}
+.col5 {
+  width: 20%;
 }
 .icon-container {
   display: flex;
   justify-content: center;
+}
+.icon-sort {
+  cursor: pointer;
 }
 </style>

@@ -12,8 +12,8 @@
     </div>
     <div id="admin-main">
       <div id="main-top">
-        <span>Books</span>
-        <span>Users</span>
+        <span @click="toBooks">Books</span>
+        <span @click="toUsers">Users</span>
       </div>
       <div id="view-container">
         <router-view></router-view>
@@ -30,6 +30,14 @@ export default {
   components: {
     BookHeader,
     BookFooter
+  },
+  methods: {
+    toBooks() {
+      this.$router.push({ name: "ManageBooks" });
+    },
+    toUsers() {
+      this.$router.push({ name: "ManageUsers" });
+    }
   }
 };
 </script>
@@ -88,6 +96,7 @@ export default {
   line-height: 36px;
   color: #181818;
   font-weight: 600;
+  cursor: pointer;
 }
 #view-container {
   border-top: 1px solid #b9b9b9;
