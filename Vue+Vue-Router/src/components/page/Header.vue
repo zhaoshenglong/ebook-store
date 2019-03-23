@@ -10,7 +10,7 @@ export default {
   name: "Header",
   data() {
     return {
-      imgUrl: "../../../../static/logo/headPic.png"
+      imgUrl: "../../../static/logo/headPic.png"
     };
   }
 };

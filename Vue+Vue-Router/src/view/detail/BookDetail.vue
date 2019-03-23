@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import BookRemark from "./Remark";
+import BookRemark from "../../components/remark/Remark";
 export default {
   name: "BookDetail",
   props: {

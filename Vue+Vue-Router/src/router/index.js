@@ -1,21 +1,18 @@
 /* eslint-disable indent */
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from '@/components/home/Home'
-import SignIn from '@/components/home/signInUp/SignIn'
-import SignUp from '@/components/home/signInUp/SignUp'
-import BookStore from '@/components/books/BookStore'
+import SignIn from '@/components/home/SignIn'
+import SignUp from '@/components/home/SignUp'
 import HomeSwiper from '@/components/home/HomeSwiper'
-import Sidebar from '@/components/books/store/Sidebar'
-import StoreMain from '@/components/books/store/StoreMain'
-import BookDetail from '@/components/books/store/detail/BookDetail'
-import SettingProfile from '@/components/books/usr/config/SettingProfile'
-import SettingAccount from '@/components/books/usr/config/SettingAccount'
-import SettingAddress from '@/components/books/usr/config/SettingAddress'
-import SettingSide from '@/components/books/usr/config/SettingSide'
-import Cart from '@/components/books/usr/cart/Cart'
-import Order from '@/components/books/usr/order/Order'
-import OrderSide from '@/components/books/usr/order/OrderSide'
+import StoreMain from '@/view/main/StoreMain'
+import Home from '@/view/home/Home'
+import BookStore from '@/view/BookStore'
+import BookDetail from '@/view/detail/BookDetail'
+import SettingProfile from '@/view/setting/SettingProfile'
+import SettingAccount from '@/view/setting/SettingAccount'
+import SettingAddress from '@/view/setting/SettingAddress'
+import Cart from '@/view/cart/Cart'
+import Order from '@/view/order/Order'
 
 Vue.use(Router)
 
@@ -47,7 +44,6 @@ export default new Router({
                     path: '/books',
                     name: 'StorePage',
                     components: {
-                        sidebar: Sidebar,
                         main: StoreMain
                     }
                 },
@@ -55,7 +51,6 @@ export default new Router({
                     path: '/books/:userid',
                     name: 'StorePageSigned',
                     components: {
-                        sidebar: Sidebar,
                         main: StoreMain
                     }
                 },
@@ -63,7 +58,6 @@ export default new Router({
                     path: '/detail/:bookName',
                     name: 'BookDetail',
                     components: {
-                        sidebar: Sidebar,
                         main: BookDetail
                     }
                 },
@@ -71,7 +65,6 @@ export default new Router({
                     path: '/home/:userid/setting/Profile',
                     name: 'SettingProfile',
                     components: {
-                        sidebar: SettingSide,
                         main: SettingProfile
                     }
                 },
@@ -79,7 +72,6 @@ export default new Router({
                     path: '/home/:userid/setting/Address',
                     name: 'SettingAddress',
                     components: {
-                        sidebar: SettingSide,
                         main: SettingAddress
                     }
                 },
@@ -87,7 +79,6 @@ export default new Router({
                     path: '/home/:userid/setting/Account',
                     name: 'SettingAccount',
                     components: {
-                        sidebar: SettingSide,
                         main: SettingAccount
                     }
                 },
@@ -95,7 +86,6 @@ export default new Router({
                     path: '/home/:userid/order',
                     name: 'Order',
                     components: {
-                        sidebar: OrderSide,
                         main: Order
                     }
                 },
@@ -103,7 +93,6 @@ export default new Router({
                     path: '/home/:userid/cart',
                     name: 'Cart',
                     components: {
-                        sidebar: Sidebar,
                         main: Cart
                     }
                 }

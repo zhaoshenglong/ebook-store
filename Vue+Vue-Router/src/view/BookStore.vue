@@ -34,7 +34,12 @@
         </div>
       </div>
       <div id="search-bar">
-        <img class="easing-variables" src="../../../static/logo/logo1.png">
+        <img
+          class="easing-variables"
+          src="../../static/logo/logo1.png"
+          @click="toBookStore"
+          title="Back to store"
+        >
         <div id="search-container">
           <input type="text" v-model="searchMsg">
           <svg id="search" class="icon" aria-hidden="true">
@@ -43,7 +48,6 @@
         </div>
       </div>
       <div id="main-cover">
-        <router-view @changeDisplay="changeDisplayId" name="sidebar"></router-view>
         <router-view :searchMsg="searchMsg" :bookList="bookList" name="main"></router-view>
       </div>
       <BookFooter/>
@@ -51,8 +55,8 @@
   </div>
 </template>
 <script>
-import BookHeader from "./store/Header";
-import BookFooter from "./store/Footer";
+import BookHeader from "../components/page/Header";
+import BookFooter from "../components/page/Footer";
 export default {
   name: "BookStore",
   data() {
@@ -111,6 +115,9 @@ export default {
     toSetting() {
       this.$router.push({ name: "SettingProfile", params: { userid: "123" } });
     },
+    toBookStore() {
+      this.$router.push({ path: "/books" });
+    },
     changeDisplayId(id) {
       this.displayId = id;
       alert("display changed, id" + id);
@@ -126,7 +133,7 @@ export default {
   min-width: 1024px;
   min-height: 100%;
   height: 100%;
-  background-image: url("../../../static/background/sunshine.jpg");
+  background-image: url("../../static/background/sunshine.jpg");
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: center;
@@ -215,6 +222,9 @@ export default {
   margin: 2px 16px;
   margin-left: 98px;
   border-radius: 10px;
+}
+#search-bar img:hover {
+  cursor: pointer;
 }
 #search-bar #search-container {
   margin: 17px 170px 17px 32px;

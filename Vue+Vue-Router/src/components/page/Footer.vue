@@ -25,7 +25,7 @@
         height="200px"
         v-show="weixin"
         id="weixin-img"
-        src="../../../../static/QRcode/weixin.png"
+        src="../../../static/QRcode/weixin.png"
       >
     </span>
     <span class="QR-container">
@@ -38,13 +38,7 @@
       >
         <use xlink:href="#iconqq-copy-copy"></use>
       </svg>
-      <img
-        width="200px"
-        height="200px"
-        v-show="qq"
-        id="qq-img"
-        src="../../../../static/QRcode/qq.jpg"
-      >
+      <img width="200px" height="200px" v-show="qq" id="qq-img" src="../../../static/QRcode/qq.jpg">
     </span>
   </div>
 </template>

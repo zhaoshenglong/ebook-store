@@ -1,15 +1,13 @@
 <template>
-  <div class="side-bar">
-    <ul>
-      <li @click="fetchHistory" class="side-menu underline gradient-text">History</li>
-      <li class="side-menu underline text-normal">Filter by time:</li>
-      <li class="time"></li>
-    </ul>
+  <div class="view-container">
+    <cart-side></cart-side>
+    <div class="view-main">Cart</div>
   </div>
 </template>
 <script>
+import CartSide from "../../components/cart/CartSide";
 export default {
-  name: "SettingSide",
+  name: "Cart",
   data() {
     return {
       order: [
@@ -24,8 +22,10 @@ export default {
       ]
     };
   },
-  methods: {
-    fetchHistory() {}
+  components: {
+    CartSide
   }
 };
 </script>
+<style scoped>
+</style>

@@ -1,39 +1,48 @@
 <template>
-  <div id="store-main">
-    <ul id="book-list">
-      <li class="book-item" v-for="book in filterBooks" :key="book.name">
-        <img
-          height="267"
-          class="book-img-normal"
-          :src="book.imgUrl"
-          title="The Journey to the West, Revised Edition, Volume 3"
-          @click="toDetail(book.name)"
-        >
-        <div class="book-des">
-          <div class="book-info-normal">
-            <div class="book-name link-normal">{{book.name}}</div>
-            <div class="book-autho">
-              <b>by</b>
-              {{book.autho}}
+  <div class="view-container">
+    <side-bar></side-bar>
+    <div class="view-main">
+      <div id="store-main">
+        <ul id="book-list">
+          <li class="book-item" v-for="book in filterBooks" :key="book.name">
+            <img
+              height="267"
+              class="book-img-normal"
+              :src="book.imgUrl"
+              title="The Journey to the West, Revised Edition, Volume 3"
+              @click="toDetail(book.name)"
+            >
+            <div class="book-des">
+              <div class="book-info-normal">
+                <div class="book-name link-normal">{{book.name}}</div>
+                <div class="book-autho">
+                  <b>by</b>
+                  {{book.autho}}
+                </div>
+              </div>
+              <div class="shop-bar">
+                <span class="book-price">
+                  <b>¥</b>
+                  {{book.price}}
+                </span>
+                <svg class="icon cart-large" aria-hidden="true">
+                  <use xlink:href="#iconiconfontcart-copy"></use>
+                </svg>
+              </div>
             </div>
-          </div>
-          <div class="shop-bar">
-            <span class="book-price">
-              <b>¥</b>
-              {{book.price}}
-            </span>
-            <svg class="icon cart-large" aria-hidden="true">
-              <use xlink:href="#iconiconfontcart-copy"></use>
-            </svg>
-          </div>
-        </div>
-      </li>
-    </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import SideBar from "../../components/page/Sidebar";
 export default {
   name: "StoreMain",
+  components: {
+    SideBar
+  },
   props: {
     bookList: {
       type: Array,
@@ -72,12 +81,6 @@ export default {
 #store-main {
   flex: 1;
   min-height: 1000px;
-  float: left;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.7),
-    rgba(229, 252, 251, 0.7)
-  );
 }
 #book-list {
   padding: 25px 20px;
