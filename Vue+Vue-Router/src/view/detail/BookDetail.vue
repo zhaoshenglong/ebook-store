@@ -32,7 +32,7 @@ export default {
       bookRemark: [
         {
           id: "12",
-          userId: "+QQ1546784",
+          userName: "+QQ1546784",
           userImg:
             "https://b-ssl.duitang.com/uploads/item/201410/16/20141016202155_5ycRZ.thumb.1900_0.jpeg",
           date: "13/03/2019",
@@ -41,7 +41,7 @@ export default {
         },
         {
           id: "123",
-          userId: "Monkey.D.Luffy",
+          userName: "Monkey.D.Luffy",
           userImg:
             "http://img4.imgtn.bdimg.com/it/u=3630436912,4127152828&fm=26&gp=0.jpg",
           date: "16/03/2019",

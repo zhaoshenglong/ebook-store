@@ -13,7 +13,9 @@ import SettingAccount from '@/view/setting/SettingAccount'
 import SettingAddress from '@/view/setting/SettingAddress'
 import Cart from '@/view/cart/Cart'
 import Order from '@/view/order/Order'
-
+import AdminBooks from '@/view/admin/ManageBooks'
+import AdminUsers from '@/view/admin/ManageUsers'
+import Admin from '@/view/admin/Admin'
 Vue.use(Router)
 
 export default new Router({
@@ -95,6 +97,22 @@ export default new Router({
                     components: {
                         main: Cart
                     }
+                }
+            ]
+        },
+        {
+            path: '/home/admin/',
+            name: 'Admin',
+            component: Admin,
+            children: [{
+                    path: 'books',
+                    name: 'ManageBooks',
+                    component: AdminBooks
+                },
+                {
+                    path: 'users',
+                    name: 'ManageUsers',
+                    component: AdminUsers
                 }
             ]
         }

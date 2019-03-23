@@ -3,7 +3,7 @@
     <div id="remark-container">
       <div id="left-user">
         <img :src="remark.userImg" alt>
-        <div>{{remark.userId}}</div>
+        <div>{{remark.userName}}</div>
       </div>
       <div id="right-remark">
         <div id="date-heading">
