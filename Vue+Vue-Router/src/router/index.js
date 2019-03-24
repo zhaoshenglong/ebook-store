@@ -102,7 +102,6 @@ export default new Router({
         },
         {
             path: '/home/admin/',
-            name: 'Admin',
             component: Admin,
             children: [{
                     path: 'books',

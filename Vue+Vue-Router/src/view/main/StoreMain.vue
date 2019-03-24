@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <side-bar></side-bar>
+    <side-bar @changeDisplayTag="changeDisplayTag"></side-bar>
     <div class="view-main">
       <div id="store-main">
         <ul id="book-list">
@@ -43,11 +43,46 @@ export default {
   components: {
     SideBar
   },
+  data() {
+    return {
+      bookList: [
+        {
+          imgUrl:
+            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
+          name: "The Journey to the West, Revised Edition, Volume 3",
+          autho: "Anthony C. Yu",
+          price: "31.00",
+          tags: ["All", "Literature"]
+        },
+        {
+          imgUrl:
+            "https://img1.doubanio.com/view/subject/l/public/s29799269.jpg",
+          name: "失踪的孩子",
+          autho: "埃莱娜·费兰特",
+          price: "62.00",
+          tags: ["All", "Latest"]
+        },
+        {
+          imgUrl:
+            "https://img3.doubanio.com/view/subject/l/public/s29651121.jpg",
+          name: "房思琪的初恋乐园",
+          autho: "林奕含",
+          price: "45.00",
+          tags: ["All", "Hottest"]
+        },
+        {
+          imgUrl:
+            "https://img3.doubanio.com/view/subject/l/public/s1103152.jpg",
+          name: "小王子",
+          autho: "[法] 圣埃克苏佩里",
+          price: "22.00",
+          tags: ["All", "Novel"]
+        }
+      ],
+      dispalyTag: "All"
+    };
+  },
   props: {
-    bookList: {
-      type: Array,
-      required: true
-    },
     searchMsg: {
       type: String,
       required: true
@@ -55,11 +90,13 @@ export default {
   },
   methods: {
     toDetail(bookName) {
-      alert(bookName);
       this.$router.push({
         name: "BookDetail",
         params: { bookName }
       });
+    },
+    changeDisplayTag(tag) {
+      this.dispalyTag = tag;
     }
   },
   computed: {
@@ -71,7 +108,12 @@ export default {
             books.push(ele);
           }
         });
-      } else books = this.bookList;
+      } else {
+        this.bookList.forEach(ele => {
+          var tag = this.dispalyTag;
+          if (ele.tags.indexOf(tag) >= 0) books.push(ele);
+        });
+      }
       return books;
     }
   }

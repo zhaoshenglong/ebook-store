@@ -48,7 +48,7 @@
         </div>
       </div>
       <div id="main-cover">
-        <router-view :searchMsg="searchMsg" :bookList="bookList" name="main"></router-view>
+        <router-view :searchMsg="searchMsg" name="main"></router-view>
       </div>
       <BookFooter/>
     </div>
@@ -61,37 +61,6 @@ export default {
   name: "BookStore",
   data() {
     return {
-      bookList: [
-        {
-          imgUrl:
-            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-          name: "The Journey to the West, Revised Edition, Volume 3",
-          autho: "Anthony C. Yu",
-          price: "31.00"
-        },
-        {
-          imgUrl:
-            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-          name: "The Journey to the West, Revised Edition, Volume 3",
-          autho: "Anthony C. Yu",
-          price: "31.00"
-        },
-        {
-          imgUrl:
-            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-          name: "The Journey to the West, Revised Edition, Volume 3",
-          autho: "Anthony C. Yu",
-          price: "31.00"
-        },
-        {
-          imgUrl:
-            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-          name: "The Journey to the West, Revised Edition, Volume 3",
-          autho: "Anthony C. Yu",
-          price: "31.00"
-        }
-      ],
-      displayId: "0",
       searchMsg: ""
     };
   },
@@ -117,10 +86,6 @@ export default {
     },
     toBookStore() {
       this.$router.push({ path: "/books" });
-    },
-    changeDisplayId(id) {
-      this.displayId = id;
-      alert("display changed, id" + id);
     }
   }
 };

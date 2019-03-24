@@ -5,7 +5,7 @@
         class="side-menu gradient-text underline"
         v-for="item in menuList"
         :key="item.id"
-        @click="display(item.id)"
+        @click="display(item.name)"
       >{{item.name}}</li>
     </ul>
   </div>
@@ -16,6 +16,10 @@ export default {
   data() {
     return {
       menuList: [
+        {
+          id: "0",
+          name: "All"
+        },
         {
           id: "1",
           name: "Latest"
@@ -52,8 +56,8 @@ export default {
     };
   },
   methods: {
-    display(id) {
-      this.$emit("changeDisplay", id);
+    display(tag) {
+      this.$emit("changeDisplayTag", tag);
     }
   }
 };

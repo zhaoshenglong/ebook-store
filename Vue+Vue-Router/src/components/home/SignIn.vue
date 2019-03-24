@@ -26,7 +26,7 @@
           v-model="usrPasswd"
         >
       </div>
-      <input class="btn btn-block btn-submit" type="submit" value="sign in">
+      <input class="btn btn-block btn-submit" type="submit" value="sign in" @click="toStore">
     </div>
   </form>
 </template>
@@ -42,6 +42,14 @@ export default {
   methods: {
     clearInput() {
       this.usrName = "";
+    },
+    toStore() {
+      if (this.usrName === "admin") this.$router.push({ name: "ManageBooks" });
+      else
+        this.$router.push({
+          name: "StorePageSigned",
+          params: { userid: usrName }
+        });
     }
   }
 };

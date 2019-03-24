@@ -1,5 +1,5 @@
 <template>
-  <div id="user-modify-container">
+  <div>
     <div id="heading">
       <div class="col1">Avatar</div>
       <div class="col2 icon-container">
@@ -29,8 +29,6 @@ export default {
   },
   data() {
     return {
-      sortID: 1,
-      sortName: 0,
       userList: [
         {
           id: "165456",
@@ -75,7 +73,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #heading {
   margin: 25px 20px;
   background: #e7e7e7;

@@ -58,7 +58,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 #user-container {
   height: 100px;
   margin: 25px 20px;
