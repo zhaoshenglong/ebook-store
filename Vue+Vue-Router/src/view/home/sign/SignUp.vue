@@ -13,7 +13,6 @@
           id="signup-field"
           placeholder="username"
           v-model="usrName"
-          @blur="verifyUsrName"
         >
         <svg
           class="icon clear-input"
@@ -23,10 +22,14 @@
         >
           <use xlink:href="#icondelete"></use>
         </svg>
-        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="nameVerified">
+        <svg
+          class="icon icon-verify icon-error"
+          aria-hidden="true"
+          v-show="!nameVerified && usrName != ''"
+        >
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="nameVerified==-1">
+        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="nameVerified">
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
@@ -42,7 +45,6 @@
           id="email-field"
           placeholder="username"
           v-model="usrEmail"
-          @input="verifyEmail"
         >
         <svg
           class="icon clear-input"
@@ -52,10 +54,14 @@
         >
           <use xlink:href="#icondelete"></use>
         </svg>
-        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="emailVerified==1">
+        <svg
+          class="icon icon-verify icon-error"
+          aria-hidden="true"
+          v-show="!emailVerified && usrEmail != ''"
+        >
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="emailVerified==-1">
+        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="emailVerified">
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
@@ -85,17 +91,20 @@
           id="passwd-confirm"
           placeholder="input password again"
           v-model="usrPasswdAgain"
-          @forminput="verifyPasswd"
         >
-        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="passwdVerified==1">
+        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="!passwdVerified">
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="passwdVerified==-1">
+        <svg
+          class="icon icon-verify icon-success"
+          aria-hidden="true"
+          v-show="passwdVerified && usrPasswd != '' && usrPasswdAgain != ''"
+        >
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
 
-      <input id="commit" class="btn btn-block btn-submit" type="submit" value="Create an count">
+      <input id="commit" class="btn btn-block btn-submit" type="submit" value="Create an account">
     </div>
   </form>
 </template>
@@ -107,10 +116,7 @@ export default {
       usrName: "",
       usrEmail: "",
       usrPasswd: "",
-      usrPasswdAgain: "",
-      nameVerified: 0,
-      emailVerified: 0,
-      passwdVerified: 0
+      usrPasswdAgain: ""
     };
   },
   methods: {
@@ -120,21 +126,21 @@ export default {
       } else if (sign == 2) {
         this.usrEmail = "";
       }
+    }
+  },
+  computed: {
+    nameVerified() {
+      if (this.usrName != "") return true;
+      else return false;
     },
-    verifyUsrName() {
-      if (this.usrName != "") return 1;
-      return -1;
+    emailVerified() {
+      if (this.usrEmail != "") return true;
+      else return false;
     },
-    verifyEmail() {
-      if (this.usrEmail != "") return 1;
-      return -1;
-    },
-    verifyPasswd() {
-      if (this.usrPasswdAgain != "" && this.usrPasswd != "") {
-        if (this.usrPasswd != this.usrPasswdAgain) return -1;
-        return 1;
-      }
-      return 0;
+    passwdVerified() {
+      if (this.usrPasswd != this.usrPasswdAgain && this.usrPasswdAgain != "")
+        return false;
+      else return true;
     }
   }
 };

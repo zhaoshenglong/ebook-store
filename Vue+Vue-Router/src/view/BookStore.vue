@@ -57,6 +57,7 @@
 <script>
 import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
+import { mapGetters } from "vuex";
 export default {
   name: "BookStore",
   data() {

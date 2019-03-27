@@ -9,12 +9,15 @@
               height="267"
               class="book-img-normal"
               :src="book.imgUrl"
-              title="The Journey to the West, Revised Edition, Volume 3"
+              :title="book.name"
               @click="toDetail(book.name)"
+              alt="book picture"
             >
             <div class="book-des">
               <div class="book-info-normal">
-                <div class="book-name link-normal">{{book.name}}</div>
+                <div class="book-name">
+                  <span class="link-normal">{{book.name}}</span>
+                </div>
                 <div class="book-autho">
                   <b>by</b>
                   {{book.autho}}

@@ -1,22 +1,22 @@
 <template>
-  <div id="book-container">
+  <div id="book-container" @click="disableInput">
     <div class="col1" id="img-block">
       <img :src="book.img" alt="Book picture">
     </div>
     <div class="col2">
-      <input type="text" :value="book.name" :disabled="disabledName" @click="activicate(1)">
+      <input type="text" :value="book.name" :readonly="disabledName" @dblclick="activicate(1)">
     </div>
     <div class="col3">
-      <input type="text" :value="book.author" :disabled="disabledAuthor" @dblclick="activicate(2)">
+      <input type="text" :value="book.author" :readonly="disabledAuthor" @dblclick="activicate(2)">
     </div>
     <div class="col4">
-      <input type="text" :value="book.isbn" :disabled="disabledIsbn" @dblclick="activicate(3)">
+      <input type="text" :value="book.isbn" :readonly="disabledIsbn" @dblclick="activicate(3)">
     </div>
     <div class="col5">
-      <input type="text" :value="book.price" :disabled="disabledPrice" @dblclick="activicate(4)">
+      <input type="text" :value="book.price" :readonly="disabledPrice" @dblclick="activicate(4)">
     </div>
     <div class="col6">
-      <input type="text" :value="book.remain" :disabled="disabledRemain" @dblclick="activicate(5)">
+      <input type="text" :value="book.remain" :readonly="disabledRemain" @dblclick="activicate(5)">
     </div>
   </div>
 </template>
@@ -25,11 +25,11 @@
 export default {
   data() {
     return {
-      disabledName: "disabled",
-      disabledAuthor: "disabled",
-      disabledIsbn: "disabled",
-      disabledPrice: "disabled",
-      disabledRemain: "disabled"
+      disabledName: "readonly",
+      disabledAuthor: "readonly",
+      disabledIsbn: "readonly",
+      disabledPrice: "readonly",
+      disabledRemain: "readonly"
     };
   },
   props: {
@@ -39,8 +39,47 @@ export default {
     }
   },
   methods: {
-    activicate(sign) {
-      console.log(sign);
+    activicate(s) {
+      var sign = parseInt(s);
+      var e = window.event;
+      console.log(s);
+      e.target.className = "input-block input-control";
+      switch (sign) {
+        case 1:
+          this.disabledName = null;
+          break;
+        case 2:
+          this.disabledAuthor = null;
+          break;
+        case 3:
+          this.disabledIsbn = null;
+          break;
+        case 4:
+          this.disabledPrice = null;
+          break;
+        case 5:
+          this.disabledRemain = null;
+          break;
+        default:
+          break;
+      }
+    },
+    disableInput() {
+      var e = window.event;
+      if (e.target.tagName != "INPUT") {
+        this.disabledName = "readonly";
+        this.disabledAuthor = "readonly";
+        this.disabledIsbn = "readonly";
+        this.disabledPrice = "readonly";
+        this.disabledRemain = "readonly";
+        var list = document.getElementsByTagName("INPUT");
+        var len = list.length;
+        for (var i = 0; i < len; i++) {
+          if (list[i].className != "") {
+            list[i].className = "";
+          }
+        }
+      }
     }
   }
 };
@@ -74,10 +113,11 @@ export default {
 }
 input {
   display: block;
-  padding-top: 25px;
+  margin-top: 25px;
   width: 100%;
-  background: transparent;
   border: 0;
+  padding: 6px 0;
+  background: transparent;
   height: 48px;
   white-space: normal;
   word-wrap: break-word;

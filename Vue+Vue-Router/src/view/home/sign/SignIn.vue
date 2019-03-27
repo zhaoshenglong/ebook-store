@@ -1,5 +1,5 @@
 <template>
-  <form action="/" method="post" id="sign-in-form">
+  <form id="sign-in-form">
     <div class="sign-inup-container">
       <div class="sign-in-up">
         <label for="signin-field">Username or Email</label>
@@ -26,11 +26,12 @@
           v-model="usrPasswd"
         >
       </div>
-      <input class="btn btn-block btn-submit" type="submit" value="sign in" @click="toStore">
+      <button class="btn btn-block btn-submit" @click="toStore">sign in</button>
     </div>
   </form>
 </template>
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "signIn",
   data() {
@@ -44,13 +45,26 @@ export default {
       this.usrName = "";
     },
     toStore() {
-      if (this.usrName === "admin") this.$router.push({ name: "ManageBooks" });
-      else
-        this.$router.push({
-          name: "StorePageSigned",
-          params: { userid: usrName }
-        });
-    }
+      var user = {
+        name: this.usrName,
+        passwd: this.usrPasswd
+      };
+      if (user.name == "admin") {
+        this.$router.push({ name: "ManageBooks" });
+      } else {
+        this.setUser(user);
+        user = this.getUser();
+        if (user.name != this.usrName) {
+        } else {
+          this.$router.push({
+            name: "StorePageSigned",
+            params: { userid: user.name }
+          });
+        }
+      }
+    },
+    ...mapGetters(["getUser"]),
+    ...mapMutations(["setUser"])
   }
 };
 </script>

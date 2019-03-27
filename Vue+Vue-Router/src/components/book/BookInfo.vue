@@ -1,7 +1,7 @@
 <template>
   <div class="bookinfo-container">
     <div class="margin-block">
-      <img :src="book.img" alt="Book picture" width="20%">
+      <img :src="book.img" alt="Book picture" width="200px" height="290px">
       <div class="info-block">
         <div style="display:flex">
           <span class="tag-mid" v-for="tag in book.tags" :key="tag">{{tag}}</span>
