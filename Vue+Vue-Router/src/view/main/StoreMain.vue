@@ -82,7 +82,7 @@ export default {
           tags: ["All", "Novel"]
         }
       ],
-      dispalyTag: "All"
+      dispalyTag: "All",
     };
   },
   props: {

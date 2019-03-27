@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import UserModify from "../../components/admin/userModify";
+import UserModify from '../../components/admin/userModify'
 export default {
   components: {
     UserModify

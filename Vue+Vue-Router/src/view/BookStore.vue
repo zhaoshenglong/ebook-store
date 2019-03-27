@@ -4,13 +4,24 @@
       <BookHeader/>
       <div id="info-bar">
         <div id="info-container">
-          <span class="info-item" id="login" @click="toSignIn">
+          <span
+            class="info-item"
+            id="user-label"
+            @mouseenter="showSignOut = true"
+            @mouseleave="showSignOut = false"
+            v-if="signed"
+          >
+            <img id="user-avatar" :src="user.avatar" alt="avatar">
+            <span>{{user.name}}</span>
+            <span v-show="showSignOut" id="signout-label" @click="signOut">Sign out</span>
+          </span>
+          <span class="info-item" id="login" @click="toSignIn" v-if="!signed">
             <svg class="icon" aria-hidden="true">
               <use xlink:href="#iconuser"></use>
             </svg>
             sign in
           </span>
-          <span class="info-item" id="register" @click="toSignUp">sign up</span>
+          <span class="info-item" id="register" @click="toSignUp" v-if="!signed">sign up</span>
           <span class="info-item" id="order" @click="toOrder">
             Your order
             <svg class="icon" aria-hidden="true">
@@ -23,7 +34,12 @@
               <use xlink:href="#iconiconfontcart-copy"></use>
             </svg>
           </span>
-          <span class="info-item" id="want">favicon</span>
+          <span class="info-item" id="want">
+            Favorite
+            <svg class="icon" aria-hidden="true">
+              <use xlink:href="#iconfavorite"></use>
+            </svg>
+          </span>
           <span class="info-item" id="set" @click="toSetting">
             setting
             <svg class="icon" aria-hidden="true">
@@ -57,12 +73,13 @@
 <script>
 import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
-import { mapGetters } from "vuex";
+import { mapState, mapMutations } from "vuex";
 export default {
   name: "BookStore",
   data() {
     return {
-      searchMsg: ""
+      searchMsg: "",
+      showSignOut: false
     };
   },
   components: {
@@ -77,17 +94,24 @@ export default {
       this.$router.push("/signUp");
     },
     toOrder() {
-      this.$router.push({ name: "Order", params: { userid: "123" } });
+      this.$router.push({ name: "Order", params: { userid: this.user.name } });
     },
     toCart() {
-      this.$router.push({ name: "Cart", params: { userid: "123" } });
+      this.$router.push({ name: "Cart", params: { userid: this.user.name } });
     },
     toSetting() {
-      this.$router.push({ name: "SettingProfile", params: { userid: "123" } });
+      this.$router.push({
+        name: "SettingProfile",
+        params: { userid: this.user.name }
+      });
     },
     toBookStore() {
       this.$router.push({ path: "/books" });
-    }
+    },
+    ...mapMutations(["signOut"])
+  },
+  computed: {
+    ...mapState(["user", "signed"])
   }
 };
 </script>
@@ -144,12 +168,34 @@ export default {
   border-top: 1px solid #35a3c4;
   border-bottom: 1px solid #35a3c4;
 }
+#user-label {
+  margin-left: 50px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+#user-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 100px;
+  margin-right: 8px;
+}
+#signout-label {
+  position: absolute;
+  bottom: -31px;
+  height: 30px;
+  width: 100%;
+  color: rgb(15, 15, 15);
+  background: rgba(229, 252, 251, 1);
+  font-weight: 500;
+}
 .icon {
   position: relative;
   top: 4px;
 }
 #login {
-  margin-left: 160px;
+  margin-left: 110px;
   position: relative;
 }
 #login:after {
@@ -162,7 +208,7 @@ export default {
   margin-left: 24px;
 }
 #order {
-  margin-left: 320px;
+  margin-left: 280px;
   width: 110px;
 }
 #cart {

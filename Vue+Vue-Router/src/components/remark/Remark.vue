@@ -25,7 +25,7 @@
 </template>
 <script>
 export default {
-  name: "BookRemark",
+  name: 'BookRemark',
   props: {
     remark: {
       type: Object,
@@ -88,8 +88,7 @@ export default {
 }
 #remark-main {
   flex: 1;
-  padding: 12px 0;
-  padding-left: 12px;
+  padding: 12px 0 12px 12px;
   line-height: 18px;
   font-size: 16px;
   text-align: left;
@@ -104,5 +103,9 @@ export default {
 #remark-footer section {
   position: absolute;
   right: 40px;
+}
+#remark-container section > .icon{
+    position: relative;
+    top: 5px;
 }
 </style>

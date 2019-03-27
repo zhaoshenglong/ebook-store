@@ -40,7 +40,7 @@
 </template>
 <script>
 export default {
-  name: "BookInfo",
+  name: 'BookInfo',
   data() {
     return {
       selectQuantity: 1
@@ -152,6 +152,7 @@ export default {
 .quantity-manage input {
   padding: 0 8px;
   flex: 1;
+    text-align: center;
   width: 50px;
   border: 0;
 }

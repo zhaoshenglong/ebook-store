@@ -52,9 +52,10 @@ export default {
       if (user.name == "admin") {
         this.$router.push({ name: "ManageBooks" });
       } else {
-        this.setUser(user);
+        this.signIn(user);
         user = this.getUser();
         if (user.name != this.usrName) {
+          this.$router.push({ name: "SignIn" });
         } else {
           this.$router.push({
             name: "StorePageSigned",
@@ -64,7 +65,7 @@ export default {
       }
     },
     ...mapGetters(["getUser"]),
-    ...mapMutations(["setUser"])
+    ...mapMutations(["signIn"])
   }
 };
 </script>

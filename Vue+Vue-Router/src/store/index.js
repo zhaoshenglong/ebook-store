@@ -31,10 +31,14 @@ export default new Vuex.Store({
         }
     },
     mutations: {
-        setUser: (state, user) => {
+        signIn: (state, user) => {
             state.user.name = user.name
             state.user.passwd = user.passwd
             state.user.avatar = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1460921328,2825444385&fm=27&gp=0.jpg'
+            state.signed = true
+        },
+        signOut: state => {
+            state.signed = false
         },
         addCart: (state, good) => {
             var book = {}
@@ -45,15 +49,17 @@ export default new Vuex.Store({
             book.price = good.price
             state.cart.push(book)
         },
+        deleteCart: (state, good) => {
+            var count = 0
+            state.cart.forEach(book => {
+                if (book.isbn === good.isbn) {
+                    state.cart.splice(count, 1)
+                }
+                count++
+            })
+        },
         clearCart: state => {
             state.cart = []
-        },
-        setSigned: (state, sign) => {
-            if (sign) {
-                state.signed = true
-            } else {
-                state.signed = false
-            }
         }
     }
 })

@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "BookContent"
-};
+  name: 'BookContent'
+}
 </script>
 
 <style>
