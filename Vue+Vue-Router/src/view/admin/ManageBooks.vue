@@ -4,20 +4,35 @@
       <div id="col1">
         <div>Picture</div>
       </div>
-      <div id="col2">
+      <div id="col2" class="icon-container">
         <div>Name</div>
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
       </div>
-      <div id="col3">
+      <div id="col3" class="icon-container">
         <div>Author</div>
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
       </div>
-      <div id="col4">
+      <div id="col4" class="icon-container">
         <div>ISBN</div>
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
       </div>
-      <div id="col5">
+      <div id="col5" class="icon-container">
         <div>Price</div>
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
       </div>
-      <div id="col6">
+      <div id="col6" class="icon-container">
         <div>Remain</div>
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
       </div>
       <div id="col7"></div>
     </div>
@@ -119,5 +134,16 @@ export default {
 }
 #col7 {
   flex: 1;
+}
+.icon-container {
+  display: flex;
+  justify-content: center;
+}
+.icon-sort {
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  margin-left: 5px;
+  top: 5px;
 }
 </style>

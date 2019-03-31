@@ -12,8 +12,9 @@
     </div>
     <div id="admin-main">
       <div id="main-top">
-        <span @click="toBooks">Books</span>
+        <span @click="toBooks" :class="show=='books'?focus:''">Books</span>
         <span @click="toUsers">Users</span>
+        <span @click="toOrders">Orders</span>
       </div>
       <div id="view-container">
         <router-view></router-view>
@@ -31,12 +32,20 @@ export default {
     BookHeader,
     BookFooter
   },
+  data() {
+    return {
+      show: "user"
+    };
+  },
   methods: {
     toBooks() {
       this.$router.push({ name: "ManageBooks" });
     },
     toUsers() {
       this.$router.push({ name: "ManageUsers" });
+    },
+    toOrders() {
+      this.$router.push({ name: "ManageOrders" });
     }
   }
 };
@@ -103,5 +112,8 @@ export default {
   background: rgba(255, 255, 255, 0.7);
   min-height: 1024px;
   width: 100%;
+}
+.focus {
+  background: red;
 }
 </style>

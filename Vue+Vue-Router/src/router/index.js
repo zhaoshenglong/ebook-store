@@ -15,6 +15,7 @@ import Cart from '@/view/cart/Cart'
 import Order from '@/view/order/Order'
 import AdminBooks from '@/view/admin/ManageBooks'
 import AdminUsers from '@/view/admin/ManageUsers'
+import AdminOrders from '@/view/admin/ManageOrders'
 import Admin from '@/view/admin/Admin'
 Vue.use(Router)
 
@@ -112,6 +113,11 @@ export default new Router({
                     path: 'users',
                     name: 'ManageUsers',
                     component: AdminUsers
+                },
+                {
+                    path: 'orders',
+                    name: 'ManageOrders',
+                    component: AdminOrders
                 }
             ]
         }

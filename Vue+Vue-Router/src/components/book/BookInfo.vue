@@ -31,7 +31,7 @@
             </svg>
           </div>
           <div class="btn-manage">
-            <button class="btn btn-block btn-submit">Buy now</button>
+            <button class="btn btn-block btn-submit">Add to cart</button>
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@
 </template>
 
 <script>
-import UserModify from '../../components/admin/userModify'
+import UserModify from "../../components/admin/userModify";
 export default {
   components: {
     UserModify
@@ -106,5 +106,9 @@ export default {
 }
 .icon-sort {
   cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  margin-left: 5px;
+  top: 5px;
 }
 </style>
