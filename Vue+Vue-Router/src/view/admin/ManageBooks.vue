@@ -37,7 +37,7 @@
       <div id="col7"></div>
     </div>
     <div>
-      <book-modify v-for="book in filterBookList" :key="book.id" :book="book"></book-modify>
+      <book-modify v-for="book in filterBookList" :key="book.isbn" :book="book"></book-modify>
     </div>
   </div>
 </template>
@@ -52,7 +52,6 @@ export default {
     return {
       bookList: [
         {
-          id: "135",
           name: "小王子",
           isbn: "9787020042494",
           author: " [法] 圣埃克苏佩里",
@@ -62,7 +61,6 @@ export default {
           remain: "55"
         },
         {
-          id: "125",
           name: "天才在左 疯子在右",
           isbn: "9787307075429",
           author: " 高铭",
@@ -72,7 +70,6 @@ export default {
           remain: "56"
         },
         {
-          id: "155",
           name: "房思琪的初恋乐园",
           isbn: "9787559614636",
           author: " 林奕含 ",
@@ -82,9 +79,8 @@ export default {
           remain: "56"
         },
         {
-          id: "1655",
           name: "失踪的孩子",
-          isbn: "9787559614636",
+          isbn: "9787559614236",
           author: "埃莱娜·费兰特",
           price: "62.00",
           tags: ["Novel", "Hottest"],
@@ -108,6 +104,9 @@ export default {
 </script>
 
 <style scoped>
+div {
+  font-size: 24px;
+}
 #heading {
   margin: 20px 25px;
   background: #e7e7e7;

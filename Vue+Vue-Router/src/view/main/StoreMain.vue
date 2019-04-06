@@ -4,11 +4,11 @@
     <div class="view-main">
       <div id="store-main">
         <ul id="book-list">
-          <li class="book-item" v-for="book in filterBooks" :key="book.name">
+          <li class="book-item" v-for="book in filterBooks" :key="book.isbn">
             <img
               height="267"
               class="book-img-normal"
-              :src="book.imgUrl"
+              :src="book.src"
               :title="book.name"
               @click="toDetail(book.name)"
               alt="book picture"
@@ -20,8 +20,11 @@
                 </div>
                 <div class="book-autho">
                   <b>by</b>
-                  {{book.autho}}
+                  {{book.author}}
                 </div>
+              </div>
+              <div>
+                <a href="http://localhost:8088/servlet_war_exploded/bookRequest">link</a>
               </div>
               <div class="shop-bar">
                 <span class="book-price">
@@ -41,6 +44,7 @@
 </template>
 <script>
 import SideBar from "../../components/page/Sidebar";
+import axios from "axios";
 export default {
   name: "StoreMain",
   components: {
@@ -48,41 +52,8 @@ export default {
   },
   data() {
     return {
-      bookList: [
-        {
-          imgUrl:
-            "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-          name: "The Journey to the West, Revised Edition, Volume 3",
-          autho: "Anthony C. Yu",
-          price: "31.00",
-          tags: ["All", "Literature"]
-        },
-        {
-          imgUrl:
-            "https://img1.doubanio.com/view/subject/l/public/s29799269.jpg",
-          name: "失踪的孩子",
-          autho: "埃莱娜·费兰特",
-          price: "62.00",
-          tags: ["All", "Latest"]
-        },
-        {
-          imgUrl:
-            "https://img3.doubanio.com/view/subject/l/public/s29651121.jpg",
-          name: "房思琪的初恋乐园",
-          autho: "林奕含",
-          price: "45.00",
-          tags: ["All", "Hottest"]
-        },
-        {
-          imgUrl:
-            "https://img3.doubanio.com/view/subject/l/public/s1103152.jpg",
-          name: "小王子",
-          autho: "[法] 圣埃克苏佩里",
-          price: "22.00",
-          tags: ["All", "Novel"]
-        }
-      ],
-      dispalyTag: "All",
+      bookList: [],
+      dispalyTag: "All"
     };
   },
   props: {
@@ -100,6 +71,17 @@ export default {
     },
     changeDisplayTag(tag) {
       this.dispalyTag = tag;
+    },
+    fetchBooks() {
+      axios
+        .get("/bookRequest")
+        .then(response => {
+          const data = response.data;
+          this.bookList = data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   },
   computed: {
@@ -112,13 +94,23 @@ export default {
           }
         });
       } else {
-        this.bookList.forEach(ele => {
-          var tag = this.dispalyTag;
-          if (ele.tags.indexOf(tag) >= 0) books.push(ele);
-        });
+        console.log(this.bookList);
+        if (this.dispalyTag === "All") {
+          this.bookList.forEach(ele => {
+            books.push(ele);
+          });
+        } else {
+          this.bookList.forEach(ele => {
+            var tag = this.dispalyTag;
+            if (ele.tags.indexOf(tag) >= 0) books.push(ele);
+          });
+        }
       }
       return books;
     }
+  },
+  mounted() {
+    this.fetchBooks();
   }
 };
 </script>
