@@ -9,6 +9,7 @@ public class Book {
     private String src;
     private double  price;
     private ArrayList<String> tags;
+
     Book(String name, String author, String isbn, String src, double price) {
         this.name = name;
         this.author = author;
@@ -17,7 +18,6 @@ public class Book {
         this.price = price;
         this.tags = new ArrayList<String>();
     }
-    Book(){this.tags = new ArrayList<String>();}
     public String getName() {
         return name;
     }

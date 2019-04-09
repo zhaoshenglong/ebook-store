@@ -19,12 +19,15 @@ public class BookRequest extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
         Gson g = new Gson();
-        Database db = new Database();
         try {
             String js;
-            db.open();
-            ArrayList<Book> books = db.fetchAllBooks();
-            js = g.toJson(books);
+            ArrayList<Book> bookList = new ArrayList<Book>();
+            for (int i = 0; i < 4; i++) {
+                Book book= new Book("小王子"," [法] 圣埃克苏佩里","9787020042494",
+                        "https://img3.doubanio.com/view/subject/l/public/s1103152.jpg",22.00);
+                bookList.add(book);
+            }
+            js = g.toJson(bookList);
             out.print(js);
         } catch(Exception e) {
             e.printStackTrace();

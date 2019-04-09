@@ -24,20 +24,32 @@ DROP TABLE IF EXISTS likes;
  */ 
 DROP TABLE IF EXISTS remarks;
 
+DROP TABLE IF EXISTS description;
+DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS remark;
 
 CREATE TABLE books(
-	book_isbn 	VARCHAR(12),
+	book_isbn 	VARCHAR(20),
 	book_name 	VARCHAR(100) NOT NULL,
     author 	VARCHAR(100) DEFAULT "Unknown",
-    img		VARCHAR(100) DEFAULT "_blank",
     price	DECIMAL(6,2) NOT NULL DEFAULT 10.00,
 	PRIMARY KEY (book_isbn),
 	CHECK (price > 0)
 );
-
+CREATE TABLE tags(
+	book_isbn 	VARCHAR(20),
+    tag			VARCHAR(20),
+    PRIMARY KEY(book_isbn, tag),
+    FOREIGN KEY (book_isbn) REFERENCES books(book_isbn)
+);
+CREATE TABLE description(
+	book_isbn 	VARCHAR(20),
+    content 	TEXT,
+    author		TEXT,
+	FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
+);
 CREATE TABLE users(
 	u_name 	VARCHAR(100) NOT NULL,
     email 	VARCHAR(50)  NOT NULL,
@@ -51,7 +63,7 @@ CREATE TABLE users(
 
 CREATE TABLE orders(
 	order_id VARCHAR(20),
-    book_isbn  VARCHAR(12),
+    book_isbn  VARCHAR(20),
     book_num INT DEFAULT 1,
 	o_date	 DATE,
     PRIMARY KEY (order_id),
@@ -71,7 +83,7 @@ CREATE TABLE buys(
 
 CREATE TABLE carts(
 	u_name VARCHAR(100),
-    book_isbn VARCHAR(12),
+    book_isbn VARCHAR(20),
     book_num INT DEFAULT 1,
     FOREIGN KEY (u_name) REFERENCES users(u_name)
     ON UPDATE CASCADE ON DELETE CASCADE,
@@ -81,7 +93,7 @@ CREATE TABLE carts(
 
 CREATE TABLE likes(
 	u_name VARCHAR(100),
-    book_isbn VARCHAR(12),
+    book_isbn VARCHAR(20),
     FOREIGN KEY(u_name) REFERENCES users(u_name)
     ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
@@ -96,7 +108,7 @@ CREATE TABLE remark(
 );
 
 CREATE TABLE remarks(
-	book_isbn VARCHAR(12),
+	book_isbn VARCHAR(20),
     u_name VARCHAR(100),
     re_id VARCHAR(10),
     FOREIGN KEY(u_name) REFERENCES users(u_name)

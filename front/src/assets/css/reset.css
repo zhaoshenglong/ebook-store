@@ -1,0 +1,338 @@
+/* http://meyerweb.com/eric/tools/css/reset/ */
+/* v1.0 | 20080212 */
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+font,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+    background: transparent;
+}
+
+html {
+    font-size: 50px;
+}
+
+body {
+    line-height: 1;
+}
+
+html,
+body {
+    min-height: 100%;
+    min-width: 1280px;
+}
+
+ol,
+ul {
+    list-style: none;
+}
+
+blockquote,
+q {
+    quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+    content: '';
+    content: none;
+}
+
+/* remember to define focus styles! */
+:focus {
+    outline: 0;
+}
+
+/* remember to highlight inserts somehow! */
+ins {
+    text-decoration: none;
+}
+
+del {
+    text-decoration: line-through;
+}
+
+/* tables still need 'cellspacing="0"' in the markup */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.btn {
+    background-color: #eff3f6;
+    background-image: linear-gradient(-180deg, #fafbfc, #eff3f6 90%);
+    color: #24292e;
+    -moz-appearance: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-appearance: none;
+    -webkit-user-select: none;
+    appearance: none;
+    background-position: -1px -1px;
+    background-repeat: repeat-x;
+    background-size: 110% 110%;
+    border: 1px solid rgba(27, 31, 35, .2);
+    border-radius: .25em;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 20px;
+    padding: 6px 12px;
+    position: relative;
+    user-select: none;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.btn-block {
+    display: block;
+    text-align: center;
+    width: 100%;
+}
+
+.btn-submit {
+    background-color: #28a745;
+    background-image: linear-gradient(-180deg, #34d058, #28a745 90%);
+    color: #fff;
+}
+
+.input-control {
+    background-color: #fff;
+    background-position: right 8px center;
+    background-repeat: no-repeat;
+    border: 1px solid #d1d5da;
+    border-radius: 3px;
+    box-shadow: inset 0 1px 2px rgba(27, 31, 35, .075);
+    color: #24292e;
+    font-size: 16px;
+    line-height: 20px;
+    min-height: 20px;
+    outline: none;
+    padding: 6px 8px;
+}
+
+.input-block {
+    display: block;
+    width: 100%;
+}
+
+.input-block:focus {
+    border-color: #3dd8ec;
+    box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+}
+
+.icon {
+    width: 1.5em;
+    height: 1.5em;
+    fill: currentColor;
+    overflow: hidden;
+}
+
+.easing-variables {
+    --ease-in-quad: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+    --ease-in-cubic: cubic-bezier(0.55, 0.055, 0.675, 0.19);
+    --ease-in-quart: cubic-bezier(0.895, 0.03, 0.685, 0.22);
+    --ease-in-quint: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    --ease-in-expo: cubic-bezier(0.95, 0.05, 0.795, 0.035);
+    --ease-in-circ: cubic-bezier(0.6, 0.04, 0.98, 0.335);
+    --ease-out-quad: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+    --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+    --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+    --ease-out-circ: cubic-bezier(0.075, 0.82, 0.165, 1);
+    --ease-in-out-quad: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+    --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+    --ease-in-out-quart: cubic-bezier(0.77, 0, 0.175, 1);
+    --ease-in-out-quint: cubic-bezier(0.86, 0, 0.07, 1);
+    --ease-in-out-expo: cubic-bezier(1, 0, 0, 1);
+    --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    padding: 5px;
+    color: white;
+    line-height: 50px;
+    text-align: center;
+    background: #35a3c4;
+    transition: transform 1s var(--ease-out-quart);
+}
+
+.easing-variables:hover {
+    transform: rotate(-20deg);
+}
+
+.gradient-text {
+    background: -webkit-linear-gradient(white, #444444);
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+    font-size: 24px;
+}
+
+.link-normal {
+    color: #35a3c4;
+}
+
+.link-normal:hover {
+    color: #eeab30;
+    cursor: pointer;
+}
+
+.underline:hover {
+    cursor: pointer;
+    background: #444444;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.underline:before {
+    content: "";
+    border-bottom: 2px solid #35a3c4;
+    width: 0;
+    transition: all 0.25s;
+    height: 100%;
+    position: absolute;
+    left: -10px;
+    bottom: 5px;
+}
+
+.underline:hover::before {
+    width: 100%;
+}
+
+.side-bar {
+    min-height: 1000px;
+    width: 20%;
+    float: left;
+    padding-top: 80px;
+    background: linear-gradient(to right,
+        rgba(173, 255, 254, 0.7),
+        rgba(231, 255, 255, 0.7));
+}
+
+.side-menu {
+    font-weight: 600;
+    text-align: left;
+    margin-top: 15px;
+    margin-bottom: 25px;
+    padding: 10px 20px;
+    position: relative;
+}
+
+.view-main {
+    flex: 1;
+    background: rgba(231, 255, 255, 0.4)
+}
+
+.view-container {
+    display: flex;
+    flex: 1;
+}
+
+.text-normal {
+    font-size: 20px;
+    color: #444444;
+}
+
+.setting-container {
+    margin-top: 35px;
+    padding-left: 26px;
+    font-weight: normal;
+    font-size: 16px;
+    width: 71.8%;
+    clear: both;
+}
+
+.h2-heading {
+    font-size: 26px;
+    font-weight: 100;
+    height: 36px;
+    line-height: 36px;
+    border-bottom: 1px solid #bbbbbb;
+    padding-bottom: 8px;
+    width: 100%;
+    text-align: left;
+}
+
+.h3-heading {
+    text-align: left;
+    height: 30px;
+    line-height: 30px;
+}
+
+.main-background {
+    background-color: rgba(249, 255, 255, 0.7);
+}
