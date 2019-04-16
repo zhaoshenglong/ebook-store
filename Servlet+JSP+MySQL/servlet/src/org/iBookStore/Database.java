@@ -1,5 +1,7 @@
 package org.iBookStore;
 
+import org.iBookStore.entity.Book;
+
 import java.sql.Connection;
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,7 +13,7 @@ public class Database {
     static Connection conn = null;
     static PreparedStatement fetchAllBook = null;
     static String fetchAllBookStat = "select * from books natural join tags";
-    void open() {
+    public void open() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conn = DriverManager.getConnection(dbUrl, user, password);
@@ -22,7 +24,7 @@ public class Database {
             this.close();
         }
     }
-    ArrayList<Book> fetchAllBooks() {
+    public ArrayList<Book> fetchAllBooks() {
         ArrayList<Book> books = new ArrayList<Book>();
         try {
             fetchAllBook = conn.prepareStatement(fetchAllBookStat);
@@ -33,8 +35,8 @@ public class Database {
                 book.setName(rs.getString(2));
                 book.setAuthor(rs.getString(3));
                 book.setPrice(rs.getDouble(4));
-                book.addTag(rs.getString(5));
-                book.setSrc("http://localhost:8088/servlet_war_exploded/img?name=" + book.getIsbn());
+                book.setTag(rs.getString(5));
+                book.setSrc("http://localhost:8088/img?name=" + book.getIsbn());
                 books.add(book);
             }
         } catch (SQLException e) {
@@ -42,7 +44,7 @@ public class Database {
         }
         return books;
     }
-    void close() {
+    public void close() {
         try{
 
             if (conn != null) {

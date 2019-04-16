@@ -1,4 +1,4 @@
-package org.iBookStore;
+package org.iBookStore.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -12,18 +12,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @WebServlet(urlPatterns = "/img")
-public class imgRequest extends HttpServlet {
+public class imgServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("image/png");
         OutputStream out = response.getOutputStream();
-        String imgName = request.getQueryString();
-        imgName = imgName.split("=")[1];
+        String queryString = request.getQueryString();
+        String imgName = queryString.split("&")[1].split("=")[1];
+        String imgKind = queryString.split("&")[0].split("=")[1];
         imgName = new String(imgName.getBytes(), "utf-8");
         try {
-            Path imgPath = Paths.get("/home/zhaoshenglong/bookstore/books/" + imgName + ".jpg");
+            Path imgPath = null;
+            if (imgKind.equals("book")){
+                Paths.get("/home/zhaoshenglong/bookstore/books/" + imgName + ".jpg");
+            }
+            else if (imgKind.equals("user"))
+                Paths.get("/home/zhaoshenglong/bookstore/users/" + imgName + ".jpg");
             InputStream in = new BufferedInputStream(Files.newInputStream(imgPath));
             byte[] buf = new byte[1024];
             int len;

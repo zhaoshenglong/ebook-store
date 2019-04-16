@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="org.iBookStore.entity">
+
+    <class name="User" table="users">
+        <id name="name" column="user_name">
+            <generator class="assigned"/>
+        </id>
+        <property name="email" column="email"/>
+        <property name="password" column="passwd"/>
+        <property name="avatar" column="avatar"/>
+        <property name="briefAddr" column="brief_addr"/>
+        <property name="detailAddr" column="detail_addr"/>
+        <property name="state" column="state" />
+    </class>
+
+</hibernate-mapping>

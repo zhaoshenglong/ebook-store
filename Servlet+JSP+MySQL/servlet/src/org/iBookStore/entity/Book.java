@@ -1,4 +1,4 @@
-package org.iBookStore;
+package org.iBookStore.entity;
 
 import java.util.ArrayList;
 
@@ -8,16 +8,10 @@ public class Book {
     private String isbn;
     private String src;
     private double  price;
-    private ArrayList<String> tags;
-    Book(String name, String author, String isbn, String src, double price) {
-        this.name = name;
-        this.author = author;
-        this.src = src;
-        this.isbn = isbn;
-        this.price = price;
-        this.tags = new ArrayList<String>();
-    }
-    Book(){this.tags = new ArrayList<String>();}
+    private String tag;
+    private String authorInfo;
+    private String content;
+    public Book(){}
     public String getName() {
         return name;
     }
@@ -33,9 +27,22 @@ public class Book {
     public double getPrice() {
         return price;
     }
-    public ArrayList<String> getTags() {
-        return this.tags;
+    public String  getTag() {
+        return this.tag;
     }
+    public String getAuthorInfo() {return authorInfo;}
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setAuthorInfo(String authorInfo) {
+        this.authorInfo = authorInfo;
+    }
+
     public void setAuthor(String author) {
         this.author = author;
     }
@@ -55,10 +62,7 @@ public class Book {
     public void setName(String name) {
         this.name = name;
     }
-    public void addTag(String t) {
-        this.tags.add(t);
-    }
-    public void delTag(String t) {
-        this.tags.remove(this.tags.indexOf(t));
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
