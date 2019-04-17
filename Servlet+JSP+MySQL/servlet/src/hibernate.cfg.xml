@@ -24,5 +24,6 @@
         <mapping resource="org/iBookStore/entity/User.hbm.xml"/>
         <mapping resource="org/iBookStore/entity/Book.hbm.xml"/>
         <mapping resource="org/iBookStore/entity/Order.hbm.xml"/>
+        <mapping resource="org/iBookStore/entity/OrderItem.hbm.xml"/>
     </session-factory>
 </hibernate-configuration>

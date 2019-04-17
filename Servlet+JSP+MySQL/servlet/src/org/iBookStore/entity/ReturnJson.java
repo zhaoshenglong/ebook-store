@@ -1,9 +1,9 @@
 package org.iBookStore.entity;
 
-public class ErrorJson {
+public class ReturnJson {
     private String status;
     private String msg;
-    public ErrorJson() {}
+    public ReturnJson() {}
     public String getMsg() {
         return msg;
     }

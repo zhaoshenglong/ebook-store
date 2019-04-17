@@ -26,10 +26,10 @@ public class imgServlet extends HttpServlet {
         try {
             Path imgPath = null;
             if (imgKind.equals("book")){
-                Paths.get("/home/zhaoshenglong/bookstore/books/" + imgName + ".jpg");
+                imgPath = Paths.get("/home/zhaoshenglong/bookstore/books/" + imgName + ".jpg");
             }
             else if (imgKind.equals("user"))
-                Paths.get("/home/zhaoshenglong/bookstore/users/" + imgName + ".jpg");
+                imgPath =  Paths.get("/home/zhaoshenglong/bookstore/users/" + imgName + ".jpg");
             InputStream in = new BufferedInputStream(Files.newInputStream(imgPath));
             byte[] buf = new byte[1024];
             int len;

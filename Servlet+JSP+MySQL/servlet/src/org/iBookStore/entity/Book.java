@@ -3,6 +3,7 @@ package org.iBookStore.entity;
 import java.util.ArrayList;
 
 public class Book {
+    private String id;
     private String name;
     private String author;
     private String isbn;
@@ -11,7 +12,13 @@ public class Book {
     private String tag;
     private String authorInfo;
     private String content;
+    public String img;
     public Book(){}
+
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -33,6 +40,10 @@ public class Book {
     public String getAuthorInfo() {return authorInfo;}
     public String getContent() {
         return content;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setContent(String content) {
