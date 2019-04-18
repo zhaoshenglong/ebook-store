@@ -36,7 +36,7 @@ public class Database {
                 book.setAuthor(rs.getString(3));
                 book.setPrice(rs.getDouble(4));
                 book.setTag(rs.getString(5));
-                book.setSrc("http://localhost:8088/img?name=" + book.getIsbn());
+                book.setImg("http://localhost:8088/img?kind=book&name=" + book.getIsbn());
                 books.add(book);
             }
         } catch (SQLException e) {

@@ -10,14 +10,14 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
+import static org.iBookStore.servlet.utility.CORS.*;
 @WebServlet(urlPatterns = "/img")
 public class imgServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setContentType("image/png");
+        response.setContentType("image/jpg");
         OutputStream out = response.getOutputStream();
         String queryString = request.getQueryString();
         String imgName = queryString.split("&")[1].split("=")[1];
@@ -45,6 +45,7 @@ public class imgServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        setCORS(response);
         doGet(request, response);
     }
 }

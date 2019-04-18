@@ -7,16 +7,24 @@ public class Book {
     private String name;
     private String author;
     private String isbn;
-    private String src;
     private double  price;
     private String tag;
     private String authorInfo;
-    private String content;
-    public String img;
+    private String contentInfo;
+    private String img;
+    private int stock;
     public Book(){}
 
     public String getId() {
         return id;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public String getImg() {
+        return img;
     }
 
     public String getName() {
@@ -28,9 +36,6 @@ public class Book {
     public String getIsbn() {
         return isbn;
     }
-    public String getSrc() {
-        return src;
-    }
     public double getPrice() {
         return price;
     }
@@ -38,16 +43,24 @@ public class Book {
         return this.tag;
     }
     public String getAuthorInfo() {return authorInfo;}
-    public String getContent() {
-        return content;
+    public String getContentInfo() {
+        return contentInfo;
     }
 
     public void setId(String id) {
         this.id = id;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setImg(String img) {
+        this.img = img;
+    }
+
+    public void setStock(int stock) {
+        this.stock = stock;
+    }
+
+    public void setContentInfo(String contentInfo) {
+        this.contentInfo = contentInfo;
     }
 
     public void setAuthorInfo(String authorInfo) {
@@ -66,9 +79,6 @@ public class Book {
         this.price = price;
     }
 
-    public void setSrc(String src) {
-        this.src = src;
-    }
 
     public void setName(String name) {
         this.name = name;

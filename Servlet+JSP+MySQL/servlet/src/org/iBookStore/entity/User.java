@@ -1,5 +1,6 @@
 package org.iBookStore.entity;
 
+import java.util.Set;
 public class User
 {
     private String name;
@@ -10,7 +11,13 @@ public class User
     private String detailAddr;
     private String state;
 
+    private Set<Order> orderSet;
     public User() {}
+
+    public Set<Order> getOrderSet() {
+        return orderSet;
+    }
+
     public String getAvatar() {
         return avatar;
     }
@@ -65,5 +72,9 @@ public class User
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public void setOrderSet(Set<Order> orderSet) {
+        this.orderSet = orderSet;
     }
 }

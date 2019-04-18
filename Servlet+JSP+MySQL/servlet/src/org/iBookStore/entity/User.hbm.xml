@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.iBookStore.entity">
 
-    <class name="User" table="users">
+    <class name="User" table="users" dynamic-update="true">
         <id name="name" column="user_name">
             <generator class="assigned"/>
         </id>
@@ -15,6 +15,10 @@
         <property name="briefAddr" column="brief_addr"/>
         <property name="detailAddr" column="detail_addr"/>
         <property name="state" column="state" />
+        <set name="orderSet" cascade="save-update">
+            <key column="user_name"></key>
+            <one-to-many class="Order" />
+        </set>
     </class>
 
 </hibernate-mapping>

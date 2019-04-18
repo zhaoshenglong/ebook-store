@@ -1,19 +1,28 @@
 package org.iBookStore.entity;
 
-import java.sql.Date;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Set;
 
 public class Order {
     private String id;
     private String userName;
-    private Date createDate;
+    private Timestamp createDate;
     private String state;
+    private Set<OrderItem> orderItemList;
     public Order() {}
+
+    public Set<OrderItem> getOrderItemList() {
+        return orderItemList;
+    }
 
     public String getState() {
         return state;
     }
 
-    public Date getCreateDate() {
+
+    public Timestamp getCreateDate() {
         return createDate;
     }
 
@@ -25,7 +34,7 @@ public class Order {
         return userName;
     }
 
-    public void setCreateDate(Date createDate) {
+    public void setCreateDate(Timestamp createDate) {
         this.createDate = createDate;
     }
 
@@ -34,6 +43,10 @@ public class Order {
     }
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public void setOrderItemList(Set<OrderItem> orderItemList) {
+        this.orderItemList = orderItemList;
     }
 
     public void setState(String state) {

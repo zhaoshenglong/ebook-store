@@ -5,7 +5,7 @@
 
 <hibernate-mapping package="org.iBookStore.entity">
 
-    <class name="Book" table="books">
+    <class name="Book" table="books" dynamic-update="true">
         <id name="id" column="id">
             <generator class="uuid"/>
         </id>
@@ -15,7 +15,7 @@
         <property name="author" column="author"/>
         <property name="price" column="price"/>
         <property name="tag" column="tag" />
-        <property name="content" column="content"/>
+        <property name="contentInfo" column="content"/>
         <property name="authorInfo" column="authorInfo"/>
         <property name="stock" column="stock" />
     </class>

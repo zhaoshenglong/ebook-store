@@ -5,13 +5,17 @@
 
 <hibernate-mapping package="org.iBookStore.entity">
 
-    <class name="Order" table="buys">
+    <class name="Order" table="orders">
         <id name="id" column="order_id">
-            <generator class="native"/>
+            <generator class="uuid"/>
         </id>
-        <property name="userName" column="user_name"/>
-        <property name="createDate" column="order_date" />
+        <property name="createDate" column="create_date" />
         <property name="state" column="state" />
+        <property name="userName"  column="user_name"/>
+        <set name="orderItemList" cascade="all">
+            <key column="order_id"></key>
+            <one-to-many class="OrderItem"/>
+        </set>
     </class>
 
 </hibernate-mapping>

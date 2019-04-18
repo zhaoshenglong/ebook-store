@@ -18,7 +18,9 @@ import org.hibernate.query.Query;
 import org.iBookStore.HibernateUtil;
 import org.iBookStore.entity.ReturnJson;
 import org.iBookStore.entity.User;
-
+import static org.iBookStore.servlet.utility.CORS.*;
+import static org.iBookStore.servlet.utility.StringUtility.*;
+import org.iBookStore.servlet.utility.*;
 import javax.servlet.annotation.WebServlet;
 
 @WebServlet("/userServlet")
@@ -26,164 +28,143 @@ public class UserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
+        setCORS(response);
         response.setContentType("application/json");
 
         /* Hibernate transaction initialize */
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        Transaction transaction = session.getTransaction();
 
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
+        ReturnJson errorJson = new ReturnJson();
+        errorJson.setStatus("404");
+        ReturnJson successJson = new ReturnJson();
+        successJson.setStatus("200");
         try {
-            ReturnJson rs = new ReturnJson();
-            String queryString = request.getQueryString();
-            String action = queryString.split("=")[0];
-            if (action.equals("all")) {
-                List<User> users = findAll();
-                out.print( gson.toJson(users));
-            } else if (action.equals("name")) {
-                String name = queryString.split("=")[1];
-                if (existUser(name)) {
-                    rs.setStatus("404");
-                    rs.setMsg("User exists");
-                } else {
-                    rs.setStatus("200");
-                    rs.setMsg("User not exists");
-                }
-                out.print(gson.toJson(rs));
-            } else if (action.equals("email")) {
-                String email = queryString.split("=")[1];
-                if (existEmail(email)) {
-                    rs.setStatus("404");
-                    rs.setMsg("Email exists");
-                } else {
-                    rs.setStatus("200");
-                    rs.setMsg("Email not exists");
-                }
-                out.print(gson.toJson(rs));
-            } else {
-                String[] args = queryString.split("&");
-                if (args.length >= 2) {
-                    String passwd = "", name = "";
-                    if (args[0].split("=").length >= 2){
-                        passwd = queryString.split("&")[0].split("=")[1];
-                    }
-                    if (args[1].split("=").length >= 2){
-                        name = queryString.split("&")[1].split("=")[1];
-                    }
-                    User user = findUser(name);
-                    if (user == null) {
-                        rs.setStatus("404");
-                        rs.setMsg("User not exists");
-                        out.print(gson.toJson(rs));
-                    }
-                    else if (user.getPassword() != passwd) {
-                        rs.setStatus("404");
-                        rs.setMsg("Password invalid");
-                        out.print(gson.toJson(rs));
+            /* @Action -- verify, get */
+            String action = request.getParameter("action");
+            if (action.equals("verify")) {
+                /* Verify email */
+                if (request.getParameter("email") != null) {
+                    String email = request.getParameter("email");
+                    System.out.println(email);
+                    if (existEmail(email)) {
+                        errorJson.setMsg("Email exists");
+                        out.print(gson.toJson(errorJson));
                     } else {
-                        out.print(new Gson().toJson(user));
+                        successJson.setMsg("Email can be registered");
+                        out.print(gson.toJson(successJson));
                     }
+                } else if (request.getParameter("name") != null) {
+                    String name = request.getParameter("name");
+                    if (existUser(name)) {
+                        errorJson.setMsg("Name exists");
+                        out.print(gson.toJson(errorJson));
+                    } else {
+                        successJson.setMsg("Name can be registered");
+                        out.print(gson.toJson(successJson));
+                    }
+                } else {
+                    errorJson.setMsg("Field-allowed:email, name");
+                    out.print(gson.toJson(errorJson));
                 }
+            } else if(action.equals("get")){
+                if (request.getParameter("all") != null) {
+                    List<User> users;
+                    users = findAll();
+                    out.print(gson.toJson(users));
+                } else if (request.getParameter("name") != null) {
+                    User user = findUser(request.getParameter("name"));
+                    out.print(gson.toJson(user));
+                }
+            } else {
+                errorJson.setMsg("Action-Allowed: verify, get");
+                out.print(gson.toJson(errorJson));
             }
+            transaction.commit();
         } catch(Exception e) {
+            transaction.rollback();
             e.printStackTrace();
         } finally {
+            out.flush();
             out.close();
         }
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
+        setCORS(response);
         response.setContentType("application/json");
         /* Hibernate transaction initialize */
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
-        StringBuffer jb = new StringBuffer();
-        String line;
+        ReturnJson rs = new ReturnJson();
         try {
-            request.setCharacterEncoding("utf-8");
-            BufferedReader reader = request.getReader();
-            while((line = reader.readLine()) != null) {
-                jb.append(line);
+            String name = request.getParameter("name");
+            User user = HibernateUtil.getSessionFactory().getCurrentSession().get(User.class, name);
+            if (user != null) {
+                EntityUtility.setUser(user, request);
+                HibernateUtil.getSessionFactory().getCurrentSession().update(user);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                rs.setMsg("Update ok");
+                rs.setStatus("200");
+                out.print(gson.toJson(rs));
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String name, email, password;
-        System.out.println(jb.toString());
-        try {
-
-            JsonElement jsonElement = new JsonParser().parse(jb.toString());
-            JsonObject jsonObject = jsonElement.getAsJsonObject();
-            name = jsonObject.get("name").getAsString();
-            password = jsonObject.get("password").getAsString();
-            email = jsonObject.get("email").getAsString();
-            User user = new User();
-            user.setName(name);
-            user.setEmail(email);
-            user.setPassword(password);
-            user.setBriefAddr("");
-            user.setAvatar("default");
-            user.setDetailAddr("");
-            user.setState("Activated");
-            this.addUser(user);
-            ReturnJson rs = new ReturnJson();
-            rs.setMsg("Register ok");
-            rs.setStatus("200");
+            rs.setMsg("Update failed");
+            rs.setStatus("404");
             out.print(gson.toJson(rs));
-        } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            out.flush();
+            out.close();
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setHeader("Access-Control-Allow-Headers", "*");
+        setCORS(response);
         response.setContentType("application/json");
         /* Hibernate transaction initialize */
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         PrintWriter out = response.getWriter();
+        Gson gson = new Gson();
+        ReturnJson errorJson = new ReturnJson();
+        errorJson.setStatus("404");
+        ReturnJson successJson = new ReturnJson();
+        successJson.setStatus("200");
         try {
-            Gson gson = new Gson();
-            StringBuffer jb = new StringBuffer();
-            String line;
-            try {
-                request.setCharacterEncoding("utf-8");
-                BufferedReader reader = request.getReader();
-                while((line = reader.readLine()) != null) {
-                    jb.append(line);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            String name, email, password, action, state;
-            System.out.println(jb.toString());
-            try {
-                JsonElement jsonElement = new JsonParser().parse(jb.toString());
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                name = jsonObject.get("name").getAsString();
-                password = jsonObject.get("password").getAsString();
-                email = jsonObject.get("email").getAsString();
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            String data = getReaderContent(request);
+            User user = gson.fromJson(data, User.class);
+            if (user.getName() == null) {
+                errorJson.setMsg("Name is null");
+                out.print(gson.toJson(errorJson));
+                return;
+            } else {
+                user.setState("Activated");
+                user.setAvatar("default");
+                HibernateUtil.getSessionFactory().getCurrentSession().save(user);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                successJson.setMsg("Put success");
+                out.print(gson.toJson(successJson));
             }
         } catch (Exception e) {
+            errorJson.setMsg("Put failed");
+            out.print(gson.toJson(errorJson));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
         } finally {
             out.close();
         }
     }
-
-
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException{
+        setCORS(response);
+    }
     /* Utility functions */
     private void addUser(User user) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
@@ -218,11 +199,40 @@ public class UserServlet extends HttpServlet {
         Query query = session.createQuery("from User ");
         return query.list();
     }
-    private void updateUser(User user) {
+    private void updateUser(String name, String email, String password, String briefAddr, String detailAddr, String state) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Transaction transaction = session.getTransaction();
-        session.update(user);
+        Query query = session.createQuery("from User where name=?1");
+        query.setParameter(1, name);
+        List<User> foundUsers = query.list();
+        User foundUser = foundUsers.get(0);
+        if (email != null) {
+            foundUser.setEmail(email);
+        }
+        if (password != null) {
+            foundUser.setPassword(password);
+        }
+        if (briefAddr != null) {
+            foundUser.setBriefAddr(briefAddr);
+        }
+        if (detailAddr != null) {
+            foundUser.setDetailAddr(detailAddr);
+        }
+        if (state != null) {
+            foundUser.setDetailAddr(state);
+        }
+        session.update(foundUser);
         transaction.commit();
     }
-
+    private void deleteUser(String name) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        Transaction transaction = session.getTransaction();
+        transaction.begin();
+        Query query = session.createQuery("from User where name = ?1" );
+        query.setParameter(1, name);
+        List<User> users = query.list();
+        User user = users.get(0);
+        session.delete(user);
+        transaction.commit();
+    }
 }
