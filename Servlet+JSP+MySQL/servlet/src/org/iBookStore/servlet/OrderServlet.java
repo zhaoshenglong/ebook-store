@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,6 +23,7 @@ import org.hibernate.Transaction;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.query.Query;
 import org.iBookStore.HibernateUtil;
+import org.iBookStore.entity.Book;
 import org.iBookStore.entity.Order;
 import org.iBookStore.entity.ReturnJson;
 import org.iBookStore.entity.OrderItem;
@@ -44,16 +46,17 @@ public class OrderServlet extends HttpServlet {
             String action = request.getParameter("action");
             if (role.equals("admin")) {
                 if (action.equals("findAll")) {
-                    //orders = findAll();
-                    List<Order> dd= findAll();
-                    out.print(gson.toJson(dd));
+                    orders = findAll();
+                    out.print(gson.toJson(orders));
                 } else if (action.equals("findByUser")) {
                     String userName = request.getParameter("user");
                     orders = findByUser(userName, 0);
+                    out.print(gson.toJson(orders));
                 } else if (action.equals("findBetween")) {
                     Timestamp begin = Timestamp.valueOf(request.getParameter("begin"));
                     Timestamp end = Timestamp.valueOf(request.getParameter("end"));
                     orders = findBetweenDate(begin, end);
+                    out.print(gson.toJson(orders));
                 } else {
                     return;
                 }
@@ -61,9 +64,11 @@ public class OrderServlet extends HttpServlet {
                 if (action.equals("findByUser")) {
                     String userName = request.getParameter("user");
                     orders = findByUser(userName, 1);
+                    out.print(gson.toJson(orders));
                 } else if(action.equals("findCart")) {
                     String userName = request.getParameter("user");
-                    orders = findCartByUser(userName);
+                    Order c = findCart(userName);
+                    out.print(gson.toJson(c));
                 }
             } else {
                 ReturnJson errorJson = new ReturnJson();
@@ -71,7 +76,6 @@ public class OrderServlet extends HttpServlet {
                 errorJson.setMsg("Role not found");
                 return;
             }
-            out.print(gson.toJson(orders));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
         } catch (Exception e) {
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
@@ -98,42 +102,53 @@ public class OrderServlet extends HttpServlet {
         try{
             String userName = request.getParameter("user");
             String action = request.getParameter("action");
-            Order cartOrder = findCart(userName);
+            Order cart = findCart(userName);
             String cartId;
+            Set<OrderItem> orderItemList = gson.fromJson(request.getParameter("orderItemList"), new TypeToken<Set<OrderItem>>(){}.getType());
             /* Add to cart, create if not exists */
             if (action.equals("add")) {
                 /* Cart not exists, create first */
-                if (cartOrder == null) {
-                    Order cart = new Order();
+                if (cart == null) {
+                    cart = new Order();
                     cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
                     cart.setState("unpaid");
                     cart.setUserName(userName);
                     String timeString = new SimpleDateFormat("yyyyMMddHHmmss").format(cart.getCreateDate());
                     cart.setId(StringUtility.hash(userName) + timeString + (System.currentTimeMillis() & 0xff));
-                    HibernateUtil.getSessionFactory().getCurrentSession().save(cart);
                     cartId = cart.getId();
                     System.out.println(cartId);
                 }
-                else cartId = cartOrder.getId();
-                List<OrderItem> cartItem;
-                /* Get OrderItem data */
-                List<OrderItem> itemList;
-                String data = StringUtility.getReaderContent(request);
-                System.out.println(data);
-
-                /* Deserialize from json data */
-                itemList = gson.fromJson(data, new TypeToken<List<OrderItem>>(){}.getType());
-                for (OrderItem oi : itemList ) {
-                    //oi.setOrderId(cartId);
-                    HibernateUtil.getSessionFactory().getCurrentSession().save(oi);
-                }
+                /*
+                cartId = cart.getId();
+                Set<OrderItem> orderItemSet = ((Order)HibernateUtil.getSessionFactory().getCurrentSession().get(cartId, Order.class)).getOrderItemList();
+                HibernateUtil.getSessionFactory().getCurrentSession().delete(orderItemSet);
+                HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(orderItemList);
+                */
+                cart.setId(cart.getId());
+                cart.setOrderItemList(orderItemList);
+                //HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(cart);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                successJson.setMsg("Add ok");
+                out.print(gson.toJson(successJson));
             } else if (action.equals("clear")) {
-                List<OrderItem> itemList = new ArrayList<OrderItem>();
-                String data = StringUtility.getReaderContent(request);
+                /* Assert that cart exists */
+                cart.setState("paid");
+                cart.setId(cart.getId());
+                cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
+                for (OrderItem oi : orderItemList) {
+                    Book book = (Book)HibernateUtil.getSessionFactory().getCurrentSession().get(oi.getBookId(), Book.class);
+                    book.setStock(book.getStock() - oi.getQuantity());
+                }
+                HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(cart);
+                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+                successJson.setMsg("Success buy books");
+                out.print(gson.toJson(successJson));
             }
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
         } catch (Exception e) {
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+            errorJson.setMsg("Post failed");
+            out.print(gson.toJson(errorJson));
             e.printStackTrace();
         } finally {
             out.flush();
@@ -150,12 +165,6 @@ public class OrderServlet extends HttpServlet {
     private List<Order> findAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Transaction transaction = session.getTransaction();
-        /*Query query = session.createQuery(
-                "select o.userName, o.createDate, o.state, o.id, " +
-                "b.isbn,b.name,b.price,oi.quantity " +
-                "from  Order as o, OrderItem as oi, Book as b " +
-                //"where o.id=oi.orderId " +
-                        "where oi.bookId=b.id ");*/
         Query query = session.createQuery("from Order ");
         return query.list();
     }
@@ -164,20 +173,12 @@ public class OrderServlet extends HttpServlet {
         Transaction transaction = session.getTransaction();
         if (flag == 1) {
             /* Return paid order */
-            Query query = session.createQuery(
-                    "select o.userName, o.createDate, o.state, o.id, " +
-                            "b.isbn,b.name,b.price,oi.quantity " +
-                            "from  Order as o, OrderItem as oi, Book as b " +
-                            "where o.id=oi.orderId and oi.bookId=b.id and o.userName=?1 and o.state != 'unpaid'");
+            Query query = session.createQuery("from Order where userName=?1 and state = 'paid'");
             query.setParameter(1, userName);
             return query.list();
         } else {
-            /* Return all orders */
-            Query query = session.createQuery(
-                    "select o.userName, o.createDate, o.state, o.id, " +
-                            "b.isbn,b.name,b.price,oi.quantity " +
-                            "from  Order as o, OrderItem as oi, Book as b " +
-                            "where o.id=oi.orderId and oi.bookId=b.id and o.userName=?1 ");
+            /* Return all orders, including unpaid*/
+            Query query = session.createQuery("from Order where userName=?1");
             query.setParameter(1, userName);
             return query.list();
         }
@@ -185,31 +186,16 @@ public class OrderServlet extends HttpServlet {
     private List findBetweenDate(Timestamp begin, Timestamp end) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Transaction transaction = session.getTransaction();
-        Query query = session.createQuery(
-                "select o.userName, o.createDate, o.state, o.id, " +
-                        "b.isbn,b.name,b.price,oi.quantity " +
-                        "from  Order as o, OrderItem as oi, Book as b " +
-                        "where o.id=oi.orderId and oi.bookId=b.id and o.createDate between ?1 and ?2");
+        Query query = session.createQuery("from Order where createDate between ?1 and ?2");
         query.setParameter(1, begin);
         query.setParameter(2, end);
-        return query.list();
-    }
-    private List findCartByUser(String userName) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
-        Query query = session.createQuery(
-                "select o.userName, o.createDate, o.state, o.id, " +
-                        "b.isbn,b.name,b.price,b.stock, oi.quantity " +
-                        "from  Order as o, OrderItem as oi, Book as b " +
-                        "where o.id=oi.orderId and oi.bookId=b.id and o.userName = ?1 and o.state='unpaid'");
-        query.setParameter(1, userName);
         return query.list();
     }
     private Order findCart(String userName) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Transaction transaction = session.getTransaction();
         Query query = session.createQuery(
-                "from Order o where o.userName = ?1 and o.state='unpaid'");
+                "from Order where userName = ?1 and state='unpaid'");
         query.setParameter(1, userName);
         List<Order> orders = query.list();
         if (orders.size() == 0) {

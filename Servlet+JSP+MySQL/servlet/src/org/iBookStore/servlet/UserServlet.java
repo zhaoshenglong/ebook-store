@@ -8,10 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -37,7 +34,7 @@ public class UserServlet extends HttpServlet {
         Transaction transaction = session.getTransaction();
 
         PrintWriter out = response.getWriter();
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         ReturnJson errorJson = new ReturnJson();
         errorJson.setStatus("404");
         ReturnJson successJson = new ReturnJson();
@@ -76,8 +73,14 @@ public class UserServlet extends HttpServlet {
                     users = findAll();
                     out.print(gson.toJson(users));
                 } else if (request.getParameter("name") != null) {
-                    User user = findUser(request.getParameter("name"));
-                    out.print(gson.toJson(user));
+                    List<User> users = findUser(request.getParameter("name"));
+                    User user = users.get(0);
+                    if(!user.getPassword().equals(request.getParameter("password"))){
+                        errorJson.setMsg("Password incorrect");
+                        out.print(gson.toJson(errorJson));
+                    }
+
+                    else out.print(gson.toJson(user));
                 }
             } else {
                 errorJson.setMsg("Action-Allowed: verify, get");
@@ -146,7 +149,7 @@ public class UserServlet extends HttpServlet {
                 return;
             } else {
                 user.setState("Activated");
-                user.setAvatar("default");
+                user.setAvatar("http://localhost:8088/img?kind=user&name=" + "default");
                 HibernateUtil.getSessionFactory().getCurrentSession().save(user);
                 HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
                 successJson.setMsg("Put success");
@@ -165,12 +168,7 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException{
         setCORS(response);
     }
-    /* Utility functions */
-    private void addUser(User user) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        session.save(user);
-        session.getTransaction().commit();
-    }
+
     private boolean existUser(String name) {
         if (findUser(name) == null)
             return false;
@@ -180,59 +178,23 @@ public class UserServlet extends HttpServlet {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Query query = session.createQuery("from User where email = ?1");
         query.setParameter(1, email);
-        List<User> users = query.getResultList();
+        List<User> users = query.list();
         if (users.size() > 0)
             return true;
         else return false;
     }
-    private User findUser(String name) {
+    private List<User> findUser(String name) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Query query = session.createQuery("from User where name = ?1");
         query.setParameter(1, name);
-        List<User> users = query.getResultList();
+        List<User> users = query.list();
         if (users.size() > 0)
-            return users.get(0);
+            return users;
         else return null;
     }
     private List<User> findAll() {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Query query = session.createQuery("from User ");
         return query.list();
-    }
-    private void updateUser(String name, String email, String password, String briefAddr, String detailAddr, String state) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
-        Query query = session.createQuery("from User where name=?1");
-        query.setParameter(1, name);
-        List<User> foundUsers = query.list();
-        User foundUser = foundUsers.get(0);
-        if (email != null) {
-            foundUser.setEmail(email);
-        }
-        if (password != null) {
-            foundUser.setPassword(password);
-        }
-        if (briefAddr != null) {
-            foundUser.setBriefAddr(briefAddr);
-        }
-        if (detailAddr != null) {
-            foundUser.setDetailAddr(detailAddr);
-        }
-        if (state != null) {
-            foundUser.setDetailAddr(state);
-        }
-        session.update(foundUser);
-        transaction.commit();
-    }
-    private void deleteUser(String name) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
-        transaction.begin();
-        Query query = session.createQuery("from User where name = ?1" );
-        query.setParameter(1, name);
-        List<User> users = query.list();
-        User user = users.get(0);
-        session.delete(user);
-        transaction.commit();
     }
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -48,16 +49,20 @@ public class BookServlet extends HttpServlet {
         }).create();
         try {
             String action = request.getQueryString().split("=")[0];
-            if (action.equals("name")) {
-                String bookName = request.getQueryString().split("=")[1];
-                if (bookName.equals("all")){
+            if (action.equals("id")) {
+                String bookId = request.getQueryString().split("=")[1];
+                if (bookId.equals("all")){
                     List<Book> books;
                     books = fetchAll();
                     out.print(gson.toJson(books));
-                }
-                else {
+                } else if (bookId.equals("together")) {
+                    String data = StringUtility.getReaderContent(request);
+                    List<String> books = gson.fromJson(data, new TypeToken<List<String>>(){}.getType());
+                    List<Book> bookList = fetchTogether((String[])books.toArray());
+                    out.print(gson.toJson(bookList));
+                } else {
                     Gson detailGson = new Gson();
-                    Book book = fetchOne(bookName);
+                    Book book = fetchOne(bookId);
                     out.print(detailGson.toJson(book));
                 }
             } else if (action.equals("tag")) {
@@ -254,5 +259,16 @@ public class BookServlet extends HttpServlet {
     }
     private List<Book> fetchHottest() {
         return null;
+    }
+    private List<Book> fetchTogether(String[] bookIdList) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        Transaction transaction =  session.getTransaction();
+        List<Book> books = new ArrayList<>();
+        Query query = session.createQuery("from Book where id = ?1");
+        for (String id : bookIdList) {
+            query.setParameter(1, id);
+            books.addAll(query.list());
+        }
+        return books;
     }
 }

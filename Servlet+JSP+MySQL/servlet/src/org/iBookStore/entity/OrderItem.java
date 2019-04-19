@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class OrderItem implements Serializable {
     private transient String id;
-    //private String orderId;
     private String bookId;
     private int quantity;
-    private Order order;
+    /* Transient for serialization of Gson, or there may be dead loop */
+    private transient Order order;
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
@@ -19,14 +19,6 @@ public class OrderItem implements Serializable {
     public void setBookId(String bookName) {
         this.bookId = bookName;
     }
-    /*
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getOrderId() {
-        return orderId;
-    }*/
 
     public Order getOrder() {
         return order;
