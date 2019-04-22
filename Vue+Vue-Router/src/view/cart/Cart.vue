@@ -83,7 +83,7 @@
             </td>
             <td colspan="2">
               <div id="buy-btn">
-                <button class="btn btn-block btn-submit">Buy now</button>
+                <button class="btn btn-block btn-submit" @click="buyCart">Buy now</button>
               </div>
             </td>
           </tr>
@@ -93,6 +93,8 @@
   </div>
 </template>
 <script>
+import axios from "axios";
+import { mapState, mapMutations } from "vuex";
 import CartSide from "../../components/cart/CartSide";
 export default {
   name: "Cart",
@@ -177,7 +179,14 @@ export default {
           book.select = false;
         });
       }
-    }
+    },
+    ...mapMutations([
+      "deleteCartItem",
+      "buyCart",
+      "initialCart",
+      "addCart",
+      "clearCart"
+    ])
   }
 };
 </script>

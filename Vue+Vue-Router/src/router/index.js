@@ -58,7 +58,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/detail/:bookName',
+                    path: '/detail/:bookId',
                     name: 'BookDetail',
                     components: {
                         main: BookDetail

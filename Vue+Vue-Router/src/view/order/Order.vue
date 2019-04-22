@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <order-side></order-side>
+    <order-side @updateTime="updateTime"></order-side>
     <div class="view-main">
       <table id="order-table">
         <thead id="order-top">
@@ -45,7 +45,7 @@
                           <use xlink:href="#iconlike"></use>
                         </svg>
                       </span>
-                      <span title="feedback">
+                      <span title="feedback" @click="toRemark">
                         <svg class="icon" aria-hidden="true">
                           <use xlink:href="#iconyijianfankui"></use>
                         </svg>
@@ -71,6 +71,8 @@
 </template>
 <script>
 import OrderSide from "../../components/order/OrderSide";
+import axios from "axios";
+import { mapState } from "vuex";
 export default {
   name: "Order",
   components: {
@@ -78,74 +80,57 @@ export default {
   },
   data() {
     return {
-      orderList: []
+      orderList: [],
+      timeBegin: "",
+      timeEnd: ""
     };
-  },
-  mounted: function() {
-    this.orderList = [
-      {
-        id: "0126546",
-        orderTime: "13/03/2019 ",
-        desc: {
-          costumer: "zhaoshenglong",
-          paid: "123"
-        },
-        books: [
-          {
-            bookImg:
-              "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-            bookId: "1235das",
-            bookName: "The Journey to the West, Revised Edition, Volume 3",
-            bookAuth: "Anthony C. Yu",
-            unitPrice: "31.00",
-            quantity: "3"
-          },
-          {
-            bookImg:
-              "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-            bookId: "1234das",
-            bookName: "The Journey to the West, Revised Edition, Volume 3",
-            bookAuth: "Anthony C. Yu",
-            unitPrice: "31.00",
-            quantity: "3"
-          }
-        ]
-      },
-      {
-        id: "0146",
-        orderTime: "13/03/2019 ",
-        desc: {
-          costumer: "zhnglong",
-          paid: "13"
-        },
-        books: [
-          {
-            bookImg:
-              "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-            bookId: "1245",
-            bookName: "The Journey to the West, Revised Edition, Volume 3",
-            bookAuth: "Anthony C. Yu",
-            unitPrice: "31.00",
-            quantity: "3"
-          },
-          {
-            bookImg:
-              "https://images-na.ssl-images-amazon.com/images/I/51rA-Zqu2-L._SX331_BO1,204,203,200_.jpg",
-            bookId: "1345",
-            bookName: "The Journey to the West, Revised Edition, Volume 3",
-            bookAuth: "Anthony C. Yu",
-            unitPrice: "31.00",
-            quantity: "3"
-          }
-        ]
-      }
-    ];
   },
   computed: {
     filterOrder() {
       var orders = this.orderList;
       return orders;
+    },
+    ...mapState(["user"])
+  },
+  methods: {
+    fetchAllOrder() {
+      axios
+        .get("orderServlet", {
+          params: {
+            role: "user",
+            action: "findByUser"
+          }
+        })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchOrderBetween() {
+      axios.get("orderServlet", {
+        params: {
+          role: "user",
+          action: "findBetween",
+          begin: this.timeBegin,
+          end: this.timeEnd
+        }
+      });
+    },
+    postLike() {},
+    toRemark() {
+      this.$router.push({ name: "BookDetail", param: { isbn: "5455" } });
+    },
+    updateTime(begin, end) {
+      this.timeBegin = begin;
+      this.timeEnd = end;
+      console.log(this.timeBegin);
+      console.log(this.timeEnd);
     }
+  },
+  mounted() {
+    this.fetchAllOrder();
   }
 };
 </script>

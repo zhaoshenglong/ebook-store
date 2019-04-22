@@ -18,7 +18,9 @@ Vue.use(VueAwesomeSwiper)
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 
-axios.defaults.baseURL = 'http://localhost:8088/servlet_war_exploded'
+axios.defaults.baseURL = 'http://localhost:8088'
+axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
+axios.defaults.headers.put['Content-Type'] = 'application/json'
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

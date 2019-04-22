@@ -1,23 +1,24 @@
 /* eslint-disable indent */
 import Vue from 'vue'
 import Vuex from 'vuex'
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
         signed: false,
         user: {
-            name: 'zsl',
-            passwd: '123456789',
-            avatar: 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1460921328,2825444385&fm=27&gp=0.jpg'
+            name: '',
+            avatar: '',
+            password: '',
+            role: ''
         },
-        admin: {
-            name: 'admin',
-            passwd: '11111111',
-            avatar: 'https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=4208386305,57701306&fm=27&gp=0.jpg'
+        cart: {
+            id: '',
+            user: '',
+            createDate: '',
+            orderItemList: []
         },
-        cart: []
+        cartChanged: false
     },
     getters: {
         getSigned: state => {
@@ -28,38 +29,42 @@ export default new Vuex.Store({
         },
         getUser: state => {
             return state.user
+        },
+        getCartState: state => {
+            return state.cartChanged
         }
     },
     mutations: {
-        signIn: (state, user) => {
+        setUser: (state, user) => {
             state.user.name = user.name
-            state.user.passwd = user.passwd
-            state.user.avatar = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=1460921328,2825444385&fm=27&gp=0.jpg'
+            state.user.avatar = user.avatar
+            state.user.password = user.password
+            state.user.role = user.name === 'admin' ? 'admin' : 'user'
             state.signed = true
         },
         signOut: state => {
             state.signed = false
         },
-        addCart: (state, good) => {
+        setCart: (state, cart) => {
+            state.cart.id = cart.id
+            state.cart.user = cart.use
+            state.cart.createDate = cart.createDate
+            state.cart.orderItemList = cart.orderItemList
+        },
+        addCartItem: (state, good) => {
             var book = {}
-            book.name = good.name
-            book.isbn = good.isbn
-            book.img = good.img
-            book.author = good.author
-            book.price = good.price
-            state.cart.push(book)
+            book.id = good.id
+            book.quantity = good.quantity
+            state.cart.orderItemList.push(book)
         },
-        deleteCart: (state, good) => {
-            var count = 0
-            state.cart.forEach(book => {
-                if (book.isbn === good.isbn) {
-                    state.cart.splice(count, 1)
+        deleteCartItem: (state, good) => {
+            var index = 0
+            state.cart.orderItemList.forEach(book => {
+                if (book.id === good.id) {
+                    state.cart.splice(index, 1)
                 }
-                count++
+                index++
             })
-        },
-        clearCart: state => {
-            state.cart = []
         }
     }
 })

@@ -1,5 +1,5 @@
 <template>
-  <form id="sign-in-form">
+  <div id="sign-in-form">
     <div class="sign-inup-container">
       <div class="sign-in-up">
         <label for="signin-field">Username or Email</label>
@@ -26,11 +26,14 @@
           v-model="usrPasswd"
         >
       </div>
-      <button class="btn btn-block btn-submit" @click="toStore">sign in</button>
+      <button class="btn btn-block btn-submit" @click="verifyUser">sign in</button>
     </div>
-  </form>
+  </div>
 </template>
 <script>
+import cryptoJs from "crypto-js";
+import axios from "axios";
+import qs from "qs";
 import { mapGetters, mapMutations } from "vuex";
 export default {
   name: "signIn",
@@ -45,27 +48,48 @@ export default {
       this.usrName = "";
     },
     toStore() {
-      var user = {
-        name: this.usrName,
-        passwd: this.usrPasswd
-      };
-      if (user.name == "admin") {
+      var name = this.usrName;
+      if (name == "admin") {
         this.$router.push({ name: "ManageBooks" });
       } else {
-        this.signIn(user);
+        this.setUser({ name: name });
         user = this.getUser();
-        if (user.name != this.usrName) {
-          this.$router.push({ name: "SignIn" });
-        } else {
-          this.$router.push({
-            name: "StorePageSigned",
-            params: { userid: user.name }
-          });
-        }
+        this.$router.push({
+          name: "StorePageSigned",
+          params: { userid: user.name }
+        });
       }
     },
+    verifyUser() {
+      var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
+      axios
+        .get("/userServlet", {
+          params: {
+            action: "get",
+            name: this.usrName,
+            password: encrypt
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          console.log(data);
+          if (data.status != "404") {
+            this.setUser({
+              name: data.name,
+              avatar: data.avatar,
+              password: encrypt
+            });
+            if (data.name == "admin") {
+              this.$router.push({ name: "ManageBooks" });
+            } else this.$router.push({ name: "StorePage" });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
     ...mapGetters(["getUser"]),
-    ...mapMutations(["signIn"])
+    ...mapMutations(["setUser", "setCart"])
   }
 };
 </script>

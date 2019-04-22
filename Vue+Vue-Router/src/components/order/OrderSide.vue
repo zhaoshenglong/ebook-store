@@ -1,18 +1,19 @@
 <template>
   <div class="side-bar">
     <ul>
-      <li @click="fetchHistory" class="side-menu underline gradient-text">History</li>
-      <li></li>
       <li class="side-menu underline text-normal" @click="alterShow">Filter by time:</li>
       <div v-if="showFilter" id="time-input">
-        <li class="time">
+        <div class="time">
           <span>From</span>
           <input class="input-control input-block" type="text" v-model="fromTime">
-        </li>
-        <li class="time">
+        </div>
+        <div class="time">
           <span>To</span>
           <input class="input-control input-block" type="text" v-model="toTime">
-        </li>
+        </div>
+        <div id="filterBtn">
+          <button class="btn btn-block btn-submit" @click="updateTime">过滤</button>
+        </div>
       </div>
     </ul>
   </div>
@@ -27,13 +28,15 @@ export default {
       showFilter: false
     };
   },
-  mounted: function() {
-    this.fetchHistory();
-  },
   methods: {
-    fetchHistory() {},
     alterShow() {
       this.showFilter = true;
+    },
+    updateTime() {
+      var begin = this.fromTime;
+      var end = this.toTime;
+      console.log(this.fromTime + this.toTime);
+      this.$emit("updateTime", begin, end);
     }
   }
 };
@@ -60,6 +63,9 @@ export default {
 #time-input {
   position: relative;
   bottom: 20px;
+}
+#filterBtn {
+  margin: 15px 10px 5px 70px;
 }
 </style>
 

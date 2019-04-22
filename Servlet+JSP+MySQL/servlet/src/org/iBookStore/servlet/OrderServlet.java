@@ -69,6 +69,11 @@ public class OrderServlet extends HttpServlet {
                     String userName = request.getParameter("user");
                     Order c = findCart(userName);
                     out.print(gson.toJson(c));
+                } else if (action.equals("findBetween")) {
+                    Timestamp begin = Timestamp.valueOf(request.getParameter("begin"));
+                    Timestamp end = Timestamp.valueOf(request.getParameter("end"));
+                    orders = findBetweenDate(begin, end);
+                    out.print(gson.toJson(orders));
                 }
             } else {
                 ReturnJson errorJson = new ReturnJson();
@@ -131,7 +136,15 @@ public class OrderServlet extends HttpServlet {
                 successJson.setMsg("Add ok");
                 out.print(gson.toJson(successJson));
             } else if (action.equals("clear")) {
-                /* Assert that cart exists */
+                if (cart == null) {
+                    cart = new Order();
+                    cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
+                    cart.setUserName(userName);
+                    String timeString = new SimpleDateFormat("yyyyMMddHHmmss").format(cart.getCreateDate());
+                    cart.setId(StringUtility.hash(userName) + timeString + (System.currentTimeMillis() & 0xff));
+                    cartId = cart.getId();
+                    System.out.println(cartId);
+                }
                 cart.setState("paid");
                 cart.setId(cart.getId());
                 cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -170,7 +183,6 @@ public class OrderServlet extends HttpServlet {
     }
     private List findByUser(String userName, int flag) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
         if (flag == 1) {
             /* Return paid order */
             Query query = session.createQuery("from Order where userName=?1 and state = 'paid'");
@@ -186,7 +198,7 @@ public class OrderServlet extends HttpServlet {
     private List findBetweenDate(Timestamp begin, Timestamp end) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         Transaction transaction = session.getTransaction();
-        Query query = session.createQuery("from Order where createDate between ?1 and ?2");
+        Query query = session.createQuery("from Order where createDate between ?1 and ?2 and state = 'paid'");
         query.setParameter(1, begin);
         query.setParameter(2, end);
         return query.list();

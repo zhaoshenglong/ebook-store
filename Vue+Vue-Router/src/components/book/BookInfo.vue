@@ -4,7 +4,7 @@
       <img :src="book.img" alt="Book picture" width="200px" height="290px">
       <div class="info-block">
         <div style="display:flex">
-          <span class="tag-mid" v-for="tag in book.tags" :key="tag">{{tag}}</span>
+          <span class="tag-mid">{{book.tag}}</span>
         </div>
         <h3 class="h3-heading book-head">{{book.name}}</h3>
         <div class="author-block">
@@ -14,7 +14,7 @@
         <div class="info-row info-isbn">{{book.isbn}}</div>
         <div class="info-row info-remain">
           Remain:
-          <span>{{book.remain}}</span>
+          <span>{{book.stock}}</span>
         </div>
         <div class="info-row info-price">
           Unit price:
@@ -40,7 +40,7 @@
 </template>
 <script>
 export default {
-  name: 'BookInfo',
+  name: "BookInfo",
   data() {
     return {
       selectQuantity: 1
@@ -152,7 +152,7 @@ export default {
 .quantity-manage input {
   padding: 0 8px;
   flex: 1;
-    text-align: center;
+  text-align: center;
   width: 50px;
   border: 0;
 }

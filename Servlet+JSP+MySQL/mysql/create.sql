@@ -1,14 +1,9 @@
 use bookstore;
 
-
 /**
  * buys - relation between user and order_id
  */
-DROP TABLE IF EXISTS buys;
-/**
- * carts - relation between user and book
- */
-DROP TABLE IF EXISTS carts;
+DROP TABLE IF EXISTS order_item;
 /**
  * orders - relation between order_id and book 
  */
@@ -23,97 +18,84 @@ DROP TABLE IF EXISTS likes;
  * remarks - relation between book and remark
  */ 
 DROP TABLE IF EXISTS remarks;
-
-DROP TABLE IF EXISTS description;
-DROP TABLE IF EXISTS tags;
 DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS remark;
 
 CREATE TABLE books(
+	id VARCHAR(40),
 	book_isbn 	VARCHAR(20),
 	book_name 	VARCHAR(100) NOT NULL,
+    img		VARCHAR(100) DEFAULT "default",
     author 	VARCHAR(100) DEFAULT "Unknown",
     price	DECIMAL(6,2) NOT NULL DEFAULT 10.00,
-	PRIMARY KEY (book_isbn),
+    content 	TEXT,
+    authorInfo		TEXT,
+    stock INT DEFAULT 10,
+    tag VARCHAR(20),
+    create_date	 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (id),
 	CHECK (price > 0)
 );
-CREATE TABLE tags(
-	book_isbn 	VARCHAR(20),
-    tag			VARCHAR(20),
-    PRIMARY KEY(book_isbn, tag),
-    FOREIGN KEY (book_isbn) REFERENCES books(book_isbn)
-);
-CREATE TABLE description(
-	book_isbn 	VARCHAR(20),
-    content 	TEXT,
-    author		TEXT,
-	FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
-);
+
 CREATE TABLE users(
-	u_name 	VARCHAR(100) NOT NULL,
+	user_name 	VARCHAR(100) NOT NULL,
     email 	VARCHAR(50)  NOT NULL,
     passwd 	VARCHAR(100) NOT NULL,
-    avatar	VARCHAR(100) DEFAULT "_blank",
+    avatar	VARCHAR(100) DEFAULT "default",
     brief_addr 	VARCHAR(100) DEFAULT "",
     detail_addr 	VARCHAR(100) DEFAULT "",
-    PRIMARY KEY (u_name),
+    state varchar(20) DEFAULT "Activiate",
+    create_date	 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_name),
     UNIQUE (email)
 );
 
 CREATE TABLE orders(
-	order_id VARCHAR(20),
-    book_isbn  VARCHAR(20),
-    book_num INT DEFAULT 1,
-	o_date	 DATE,
-    PRIMARY KEY (order_id),
-    FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
+	user_name VARCHAR(100),
+    order_id VARCHAR(40),
+	create_date	 TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    state VARCHAR(20) DEFAULT "paid",
+    FOREIGN KEY (user_name) REFERENCES users(user_name)
     ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY(order_id)
+);
+CREATE TABLE order_item(
+	id VARCHAR(40),
+	order_id VARCHAR(40),
+    book_id  VARCHAR(40),
+	quantity INT DEFAULT 1,
+    FOREIGN KEY(book_id) REFERENCES books(id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+	FOREIGN KEY (order_id) REFERENCES orders(order_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+    PRIMARY KEY (id),
 	CHECK (book_num > 0)
 );
 
-CREATE TABLE buys(
-	u_name VARCHAR(100),
-    order_id VARCHAR(20),
-    FOREIGN KEY (u_name) REFERENCES users(u_name)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (order_id) REFERENCES orders(order_id)
-    ON UPDATE CASCADE ON DELETE CASCADE
-);
-
-CREATE TABLE carts(
-	u_name VARCHAR(100),
-    book_isbn VARCHAR(20),
-    book_num INT DEFAULT 1,
-    FOREIGN KEY (u_name) REFERENCES users(u_name)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
-    ON UPDATE CASCADE ON DELETE CASCADE
-);
-
 CREATE TABLE likes(
-	u_name VARCHAR(100),
-    book_isbn VARCHAR(20),
-    FOREIGN KEY(u_name) REFERENCES users(u_name)
+	user_name VARCHAR(100),
+    book_id VARCHAR(40),
+    FOREIGN KEY(user_name) REFERENCES users(user_name)
     ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
+    FOREIGN KEY(book_id) REFERENCES books(id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 CREATE TABLE remark(
-	re_id VARCHAR(10),
-    re_date DATE,
+	id VARCHAR(10),
+    remark_date DATE,
     agrees INT,
-    re_info VARCHAR(200)
+    remark_content VARCHAR(200)
 );
 
 CREATE TABLE remarks(
-	book_isbn VARCHAR(20),
-    u_name VARCHAR(100),
-    re_id VARCHAR(10),
-    FOREIGN KEY(u_name) REFERENCES users(u_name)
+	book_id VARCHAR(40),
+    user_name VARCHAR(100),
+    remark_id VARCHAR(10),
+    FOREIGN KEY(user_name) REFERENCES users(user_name)
     ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY(book_isbn) REFERENCES books(book_isbn)
+    FOREIGN KEY(book_id) REFERENCES books(id)
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 

@@ -1,16 +1,24 @@
 <template>
   <div class="view-container">
-    <side-bar @changeDisplayTag="changeDisplayTag"></side-bar>
+    <div id="search-bar">
+      <img class="easing-variables" src="../../../static/logo/logo1.png">
+      <div id="search-container">
+        <input type="text" v-model="searchMsg" placeholder="书名 / 作者 / ISBN">
+        <svg id="search" class="icon" aria-hidden="true">
+          <use xlink:href="#iconsearch"></use>
+        </svg>
+      </div>
+    </div>
+    <side-bar @changeDisplayTag="changeDisplayTag" :displayTag="dispalyTag"></side-bar>
     <div class="view-main">
       <div id="store-main">
         <ul id="book-list">
           <li class="book-item" v-for="book in filterBooks" :key="book.isbn">
             <img
-              height="267"
               class="book-img-normal"
-              :src="book.src"
+              :src="book.img"
               :title="book.name"
-              @click="toDetail(book.name)"
+              @click="toDetail(book.id)"
               alt="book picture"
             >
             <div class="book-des">
@@ -23,9 +31,7 @@
                   {{book.author}}
                 </div>
               </div>
-              <div>
-                <a href="http://localhost:8088/servlet_war_exploded/bookRequest">link</a>
-              </div>
+
               <div class="shop-bar">
                 <span class="book-price">
                   <b>¥</b>
@@ -53,35 +59,41 @@ export default {
   data() {
     return {
       bookList: [],
-      dispalyTag: "All"
+      dispalyTag: "All",
+      baseUrl: "http://localhost:8088/img?kind=book&name=",
+      searchMsg: ""
     };
   },
-  props: {
-    searchMsg: {
-      type: String,
-      required: true
-    }
-  },
   methods: {
-    toDetail(bookName) {
+    toDetail(bookId) {
       this.$router.push({
         name: "BookDetail",
-        params: { bookName }
+        params: { bookId: bookId }
       });
     },
     changeDisplayTag(tag) {
       this.dispalyTag = tag;
+      this.changeListByName();
     },
     fetchBooks() {
       axios
-        .get("/bookRequest")
+        .get("/bookServlet", {
+          params: {
+            id: "all"
+          }
+        })
         .then(response => {
           const data = response.data;
+          console.log(data);
           this.bookList = data;
         })
         .catch(err => {
           console.log(err);
         });
+    },
+    changeListByName() {
+      console.log(this.filterBooks.length);
+      console.log(this.filterBooks);
     }
   },
   computed: {
@@ -94,7 +106,6 @@ export default {
           }
         });
       } else {
-        console.log(this.bookList);
         if (this.dispalyTag === "All") {
           this.bookList.forEach(ele => {
             books.push(ele);
@@ -102,7 +113,7 @@ export default {
         } else {
           this.bookList.forEach(ele => {
             var tag = this.dispalyTag;
-            if (ele.tags.indexOf(tag) >= 0) books.push(ele);
+            if (ele.tag == this.dispalyTag) books.push(ele);
           });
         }
       }
@@ -133,7 +144,7 @@ export default {
   position: relative;
 }
 .book-img-normal {
-  max-width: 100%;
+  width: 140px;
   height: 200px;
   padding: 0 25px;
 }
@@ -171,5 +182,55 @@ export default {
   width: 2em;
   height: 2em;
   color: red;
+}
+#search-bar {
+  width: 1017px;
+  height: 86px;
+  margin: 0 auto;
+  display: flex;
+  position: absolute;
+  top: -108px;
+  left: 0;
+}
+#search-bar img {
+  width: 148px;
+  margin: 2px 16px;
+  margin-left: 98px;
+  border-radius: 10px;
+}
+#search-bar img:hover {
+  cursor: pointer;
+}
+#search-bar #search-container {
+  margin: 17px 170px 17px 32px;
+  flex: 1;
+  display: flex;
+  width: 600px;
+  height: 50px;
+  border-radius: 24px;
+  background: #fff;
+  position: relative;
+}
+#search-bar #search-container:hover {
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+}
+#search-container input {
+  flex: 1;
+  height: 34px;
+  padding: 7px 25px;
+  border: 0;
+  border-radius: 24px;
+  border: 1px solid #d8eaf6;
+  font-size: 16px;
+}
+#search-container input:focus {
+  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
+}
+#search {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  width: 0.6em;
+  height: 0.6em;
 }
 </style>

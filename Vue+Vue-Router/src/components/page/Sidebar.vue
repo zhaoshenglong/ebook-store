@@ -2,9 +2,9 @@
   <div class="side-bar">
     <ul>
       <li
-        class="side-menu gradient-text underline"
         v-for="item in menuList"
         :key="item.id"
+        :class="['side-menu', 'gradient-text', 'underline']"
         @click="display(item.name)"
       >{{item.name}}</li>
     </ul>
@@ -55,10 +55,28 @@ export default {
       ]
     };
   },
+  props: {
+    displayTag: {
+      type: String,
+      default: "All"
+    }
+  },
   methods: {
     display(tag) {
       this.$emit("changeDisplayTag", tag);
     }
+  },
+  computed: {
+    displayTagName() {
+      var name = this.displayTag;
+      return name;
+    }
   }
 };
 </script>
+<style scoped>
+.focus {
+  color: #2d2d2d;
+  background: red;
+}
+</style>

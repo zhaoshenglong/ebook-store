@@ -1,5 +1,5 @@
 <template>
-  <form action="/" method="post" id="sign-up-form">
+  <div id="sign-up-form">
     <div class="sign-inup-container">
       <div class="sign-in-up">
         <svg class="icon" aria-hidden="true">
@@ -25,11 +25,11 @@
         <svg
           class="icon icon-verify icon-error"
           aria-hidden="true"
-          v-show="!nameVerified && usrName != ''"
+          v-show="!nameOk && usrName != ''"
         >
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="nameVerified">
+        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="nameVerified||nameOk">
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
@@ -57,11 +57,15 @@
         <svg
           class="icon icon-verify icon-error"
           aria-hidden="true"
-          v-show="!emailVerified && usrEmail != ''"
+          v-show="!emailOk && usrEmail != ''"
         >
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="emailVerified">
+        <svg
+          class="icon icon-verify icon-success"
+          aria-hidden="true"
+          v-show="emailVerified || emailOk"
+        >
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
@@ -98,17 +102,19 @@
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="passwdVerified && usrPasswd != '' && usrPasswdAgain != ''"
+          v-show="passwdOk&& usrPasswd != '' && usrPasswdAgain != ''"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
       </div>
 
-      <input id="commit" class="btn btn-block btn-submit" type="submit" value="Create an account">
+      <button id="commit" class="btn btn-block btn-submit" @click="register">Create an account</button>
     </div>
-  </form>
+  </div>
 </template>
 <script>
+import axios from "axios";
+import cryptoJs from "crypto-js";
 export default {
   name: "signIn",
   data() {
@@ -116,7 +122,10 @@ export default {
       usrName: "",
       usrEmail: "",
       usrPasswd: "",
-      usrPasswdAgain: ""
+      usrPasswdAgain: "",
+      nameOk: false,
+      emailOk: false,
+      passwdOk: false
     };
   },
   methods: {
@@ -126,21 +135,83 @@ export default {
       } else if (sign == 2) {
         this.usrEmail = "";
       }
+    },
+    emailFormat() {
+      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+      if (!reg.test(this.usrEmail)) {
+        console.log("test failed");
+      } else return true;
+    },
+    register() {
+      if (this.nameOk && this.passwdOk && this.emailOk) {
+        var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
+        axios
+          .put("/userServlet", {
+            name: this.usrName,
+            password: encrypt,
+            email: this.usrEmail
+          })
+          .then(response => {
+            console.log(response.data);
+            var c = confirm("注册成功！ 现在就登录？");
+            if (c) {
+              this.$router.push({ name: "SignIn" });
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
     }
   },
   computed: {
     nameVerified() {
-      if (this.usrName != "") return true;
-      else return false;
+      if (this.usrName != "") {
+        axios
+          .get("/userServlet", {
+            params: {
+              action: "verify",
+              name: this.usrName
+            }
+          })
+          .then(response => {
+            const data = response.data;
+            if (data.status == "200") this.nameOk = true;
+            else this.nameOk = false;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else this.nameOk = false;
     },
     emailVerified() {
-      if (this.usrEmail != "") return true;
-      else return false;
+      if (this.emailFormat()) {
+        axios
+          .get("/userServlet", {
+            params: {
+              action: "verify",
+              email: this.usrEmail
+            }
+          })
+          .then(response => {
+            const data = response.data;
+            console.log(data);
+            if (data.status == "200") this.emailOk = true;
+            else this.emailOk = false;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      } else this.emailOk = false;
     },
     passwdVerified() {
-      if (this.usrPasswd != this.usrPasswdAgain && this.usrPasswdAgain != "")
+      if (this.usrPasswd != this.usrPasswdAgain && this.usrPasswdAgain != "") {
+        this.passwdOk = false;
         return false;
-      else return true;
+      } else {
+        this.passwdOk = true;
+        return true;
+      }
     }
   }
 };

@@ -9,8 +9,9 @@
           <input
             id="input-name"
             v-model="name"
-            class="main-background input-control input-block"
+            class="main-background input-control input-block disabled"
             type="text"
+            disabled="disabled"
           >
           <h3 class="h3-heading">Email</h3>
           <input
@@ -19,11 +20,14 @@
             class="main-background input-control input-block"
             type="text"
           >
-          <button class="btn btn-block btn-submit">Update profile</button>
+          <button class="btn btn-block btn-submit" @click="updateEmail">Update profile</button>
         </div>
         <div id="profile-right">
           <h3 class="h3-heading">Profile picture</h3>
-          <img src alt="upload avatar" title="upload avatar">
+          <img :src="imgUrl" alt="upload avatar" id="userAvatar">
+          <div>
+            <button class="btn btn-block btn-submit" style="width:100%">Upload avatar</button>
+          </div>
         </div>
       </div>
     </div>
@@ -31,6 +35,9 @@
 </template>
 <script>
 import SettingSide from "../../components/setting/SettingSide";
+import axios from "axios";
+import { mapState } from "vuex";
+
 export default {
   name: "SettingProfile",
   components: {
@@ -48,10 +55,31 @@ export default {
   },
   methods: {
     fetchProfile() {
-      this.name = "zhaoshenglong";
-      this.email = "G245078728@sjtu.edu.cn";
-      this.imgUrl = "";
-    }
+      var user = this.$route.params.userid;
+      console.log(this.user.password);
+      axios
+        .get("/userServlet", {
+          params: {
+            action: "get",
+            name: user,
+            password: this.user.password
+          }
+        })
+        .then(response => {
+          console.log(response);
+          const data = response.data;
+          this.name = data.name;
+          this.email = data.email;
+          this.imgUrl = data.avatar;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    updateEmail() {}
+  },
+  computed: {
+    ...mapState(["user"])
   }
 };
 </script>
@@ -66,6 +94,13 @@ export default {
   max-width: 440px;
   margin-bottom: 25px;
 }
+#input-id {
+  width: 40%;
+  max-width: 440px;
+  margin-bottom: 25px;
+  color: #666666;
+  cursor: not-allowed;
+}
 #input-email {
   width: 68%;
   max-width: 340px;
@@ -79,5 +114,14 @@ button {
   margin: 20px 0;
   width: 35%;
   max-width: 200px;
+}
+.disabled {
+  color: #666666;
+  cursor: not-allowed;
+}
+#userAvatar {
+  width: 100%;
+  height: 100%;
+  max-width: 150px;
 }
 </style>

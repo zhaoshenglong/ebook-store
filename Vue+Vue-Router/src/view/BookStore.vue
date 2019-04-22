@@ -49,22 +49,8 @@
           <span class="clear"></span>
         </div>
       </div>
-      <div id="search-bar">
-        <img
-          class="easing-variables"
-          src="../../static/logo/logo1.png"
-          @click="toBookStore"
-          title="Back to store"
-        >
-        <div id="search-container">
-          <input type="text" v-model="searchMsg">
-          <svg id="search" class="icon" aria-hidden="true">
-            <use xlink:href="#iconsearch"></use>
-          </svg>
-        </div>
-      </div>
       <div id="main-cover">
-        <router-view :searchMsg="searchMsg" name="main"></router-view>
+        <router-view name="main"></router-view>
       </div>
       <BookFooter/>
     </div>
@@ -78,7 +64,6 @@ export default {
   name: "BookStore",
   data() {
     return {
-      searchMsg: "",
       showSignOut: false
     };
   },
@@ -105,13 +90,14 @@ export default {
         params: { userid: this.user.name }
       });
     },
-    toBookStore() {
-      this.$router.push({ path: "/books" });
-    },
     ...mapMutations(["signOut"])
   },
   computed: {
-    ...mapState(["user", "signed"])
+    ...mapState(["user", "signed", "cart", "cartChanged"])
+  },
+  beforeDestroy() {
+    if (this.carChanged) {
+    }
   }
 };
 </script>
@@ -171,6 +157,7 @@ export default {
 #user-label {
   margin-left: 50px;
   position: relative;
+  z-index: 10;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -223,53 +210,7 @@ export default {
 .clear {
   clear: both;
 }
-#search-bar {
-  width: 1017px;
-  height: 86px;
-  margin: 0 auto;
-  display: flex;
-}
-#search-bar img {
-  width: 148px;
-  margin: 2px 16px;
-  margin-left: 98px;
-  border-radius: 10px;
-}
-#search-bar img:hover {
-  cursor: pointer;
-}
-#search-bar #search-container {
-  margin: 17px 170px 17px 32px;
-  flex: 1;
-  display: flex;
-  width: 600px;
-  height: 50px;
-  border-radius: 24px;
-  background: #fff;
-  position: relative;
-}
-#search-bar #search-container:hover {
-  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
-}
-#search-container input {
-  flex: 1;
-  height: 34px;
-  padding: 7px 25px;
-  border: 0;
-  border-radius: 24px;
-  border: 1px solid #d8eaf6;
-  font-size: 16px;
-}
-#search-container input:focus {
-  box-shadow: 0 1px 6px 0 rgba(32, 33, 36, 0.28);
-}
-#search {
-  position: absolute;
-  right: 15px;
-  top: 10px;
-  width: 0.6em;
-  height: 0.6em;
-}
+
 #main-cover {
   display: flex;
   background: rgba(229, 252, 251, 0.7);
@@ -277,7 +218,7 @@ export default {
   width: 60%;
   height: 100%;
   min-height: 1000px;
-  margin: 36px auto;
+  margin: 122px auto 36px;
   position: relative;
   border-top-left-radius: 20px;
   border-bottom-left-radius: 20px;
