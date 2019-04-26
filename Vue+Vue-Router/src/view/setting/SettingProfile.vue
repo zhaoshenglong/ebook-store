@@ -25,8 +25,15 @@
         <div id="profile-right">
           <h3 class="h3-heading">Profile picture</h3>
           <img :src="imgUrl" alt="upload avatar" id="userAvatar">
-          <div>
-            <button class="btn btn-block btn-submit" style="width:100%">Upload avatar</button>
+          <div id="update-ava-tool" class="btn btn-block btn-submit">
+            update avatar
+            <input
+              ref="fileInput"
+              type="file"
+              name="file"
+              accept="image/jpg, image/jpeg, image/png"
+              @change="updateAvatar"
+            >
           </div>
         </div>
       </div>
@@ -35,9 +42,10 @@
 </template>
 <script>
 import SettingSide from "../../components/setting/SettingSide";
+import MessageBox from "../../components/message/MessageBox";
+import Wait from "../../components/message/Wait";
 import axios from "axios";
 import { mapState } from "vuex";
-
 export default {
   name: "SettingProfile",
   components: {
@@ -47,7 +55,10 @@ export default {
     return {
       imgUrl: "",
       name: "",
-      email: ""
+      email: "",
+      imgError: false,
+      imgSuccess: false,
+      imgMsg: ""
     };
   },
   mounted: function() {
@@ -75,6 +86,19 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    updateAvatar() {
+      let file = this.$refs.fileInput.files[0];
+      if (file == undefined) {
+        this.imgError = true;
+        this.imgSuccess = false;
+        this.imgMsg = "文件上传失败";
+      }
+      if (file.size > 4 << 20) {
+        this.imgError = true;
+        this.imgSuccess = false;
+        this.imgMsg = "图片大小不能超过4MB";
+      }
     },
     updateEmail() {}
   },
@@ -123,5 +147,20 @@ button {
   width: 100%;
   height: 100%;
   max-width: 150px;
+}
+#update-ava-tool {
+  position: relative;
+  margin-top: 20px;
+  z-index: 10;
+}
+#update-ava-tool input {
+  display: inline-block;
+  background: red;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
 }
 </style>

@@ -114,14 +114,6 @@ public class OrderServlet extends HttpServlet {
             String userName = (String)httpSession.getAttribute("name");
             String readerContent = StringUtility.getReaderContent(request);
             Set<OrderItem> orderItemList = gson.fromJson(readerContent, new TypeToken<Set<OrderItem>>(){}.getType());
-            /*
-            System.out.println(gson.toJson(orderItemList));
-            System.out.println(orderItemList.size());
-            Iterator<OrderItem> itemIterator = orderItemList.iterator();
-            while (itemIterator.hasNext()) {
-                System.out.println(gson.toJson(itemIterator.next()));
-            }*/
-
             Order order = new Order();
             order.setState("paid");
             order.setCreateDate(new Timestamp(System.currentTimeMillis()));

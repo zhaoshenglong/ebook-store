@@ -45,7 +45,7 @@
                           <use xlink:href="#iconlike"></use>
                         </svg>
                       </span>
-                      <span title="feedback" @click="toRemark">
+                      <span title="feedback" @click="toRemark(book.id)">
                         <svg class="icon" aria-hidden="true">
                           <use xlink:href="#iconyijianfankui"></use>
                         </svg>
@@ -112,56 +112,66 @@ export default {
           console.log(response);
           let data = new Array();
           data = response.data;
-          let prevOrderId = new String();
-          let order;
-          prevOrderId = "";
-          let count = 0;
-          data.forEach(item => {
-            let orderId = item[2];
-            if (orderId !== prevOrderId) {
-              if (prevOrderId !== "") {
-                this.orderList.push(order);
-              }
-              order = new Object();
-              order.id = orderId;
-              order.createDate = item[1];
-              order.books = new Array();
-              order.costumer = item[0];
-            }
-            let book = new Object();
-            book.id = item[3];
-            book.img = item[4];
-            book.author = item[5];
-            book.isbn = item[6];
-            book.name = item[7];
-            book.price = item[8];
-            book.quantity = item[10];
-            order.books.push(book);
-            prevOrderId = orderId;
-            count++;
-            if (count === data.length) {
-              this.orderList.push(order);
-            }
-          });
-          console.log(this.orderList);
+          this.transferToData(data);
         })
         .catch(err => {
           console.log(err);
         });
     },
     fetchOrderBetween() {
-      axios.get("orderServlet", {
-        params: {
-          role: "user",
-          action: "findBetween",
-          begin: this.timeBegin,
-          end: this.timeEnd
+      axios
+        .get("orderServlet", {
+          params: {
+            role: "user",
+            action: "findBetween",
+            begin: this.timeBegin,
+            end: this.timeEnd
+          }
+        })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    transferToData(data) {
+      this.orderList = new Array();
+      let prevOrderId = new String();
+      let order;
+      prevOrderId = "";
+      let count = 0;
+      data.forEach(item => {
+        let orderId = item[2];
+        if (orderId !== prevOrderId) {
+          if (prevOrderId !== "") {
+            this.orderList.push(order);
+          }
+          order = new Object();
+          order.id = orderId;
+          order.createDate = item[1];
+          order.books = new Array();
+          order.costumer = item[0];
+        }
+        let book = new Object();
+        book.id = item[3];
+        book.img = item[4];
+        book.author = item[5];
+        book.isbn = item[6];
+        book.name = item[7];
+        book.price = item[8];
+        book.quantity = item[10];
+        order.books.push(book);
+        prevOrderId = orderId;
+        count++;
+        if (count === data.length) {
+          this.orderList.push(order);
         }
       });
     },
     postLike() {},
-    toRemark() {
-      this.$router.push({ name: "BookDetail", param: { id: "dd" } });
+    toRemark(id) {
+      this.$router.push({ name: "BookDetail", params: { bookId: id } });
     },
     updateTime(begin, end) {
       this.timeBegin = begin;

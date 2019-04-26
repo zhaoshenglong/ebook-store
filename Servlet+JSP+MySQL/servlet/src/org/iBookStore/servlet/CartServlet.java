@@ -29,21 +29,28 @@ public class CartServlet extends HttpServlet {
         setCORS(response);
         response.setContentType("application/json");
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        HttpSession httpSession = request.getSession(false);
-        Order cartOrder = (Order) httpSession.getAttribute("cart");
-        ReturnJson rs = new ReturnJson();
         PrintWriter out = response.getWriter();
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-        if (cartOrder == null) {
-            rs.setMsg("Need login first");
-            out.print(gson.toJson(rs));
-            return;
-        } else {
-            List res = findCartDetail(cartOrder.getId());
-            out.print(gson.toJson(res));
+        try{
+            HttpSession httpSession = request.getSession(false);
+            Order cartOrder = (Order) httpSession.getAttribute("cart");
+            ReturnJson rs = new ReturnJson();
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+            if (cartOrder == null) {
+                rs.setMsg("Need login first");
+                out.print(gson.toJson(rs));
+                return;
+            } else {
+                List res = findCartDetail(cartOrder.getId());
+                out.print(gson.toJson(res));
+            }
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
+        } finally {
+            out.flush();
+            out.close();
         }
-        out.flush();
-        out.close();
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)

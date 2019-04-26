@@ -65,7 +65,24 @@ public class UserServlet extends HttpServlet {
                         rs.setMsg("Name can be registered");
                         out.print(gson.toJson(rs));
                     }
-                } else {
+                } else if (request.getParameter("password") != null){
+                    String password = request.getParameter("password");
+                    HttpSession httpSession = request.getSession();
+                    String name = (String)httpSession.getAttribute("name");
+                    String validPassword = (String)httpSession.getAttribute("password");
+                    if (name != null) {
+                        if (password.equals(validPassword)) {
+                            rs.setMsg("Password verified");
+                            out.print(gson.toJson(rs));
+                        } else {
+                            response.setStatus(403);
+                            rs.setMsg("Password invalid");
+                            out.print(gson.toJson(rs));
+                        }
+                        return;
+                    }
+                }
+                else {
                     response.setStatus(403);
                     rs.setMsg("Field-allowed:email, name");
                     out.print(gson.toJson(rs));
@@ -152,7 +169,7 @@ public class UserServlet extends HttpServlet {
             return;
         }
         try {
-            String name = request.getParameter("name");
+            String name = (String)httpSession.getAttribute("name");
             User user = HibernateUtil.getSessionFactory().getCurrentSession().get(User.class, name);
             if (user != null) {
                 EntityUtility.setUser(user, request);

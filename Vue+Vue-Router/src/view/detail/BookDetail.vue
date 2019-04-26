@@ -1,6 +1,6 @@
 <template>
   <div class="view-main">
-    <book-info :book="book"></book-info>
+    <book-info :book="book" @addCart="addCart"></book-info>
     <book-content :book="book"></book-content>
     <book-remark
       v-for="(remark, index) in bookRemark"
@@ -14,6 +14,7 @@
   </div>
 </template>
 <script>
+import qs from "qs";
 import axios from "axios";
 import { mapState } from "vuex";
 import BookRemark from "../../components/remark/Remark";
@@ -43,6 +44,22 @@ export default {
         })
         .then(response => {
           this.book = response.data;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    addCart(id, quantity) {
+      axios
+        .post(
+          "cartServlet",
+          qs.stringify({
+            action: "add",
+            orderItem: "{" + "bookId:" + id + "," + "quantity:" + quantity + "}"
+          })
+        )
+        .then(response => {
+          console.log(response.data);
         })
         .catch(err => {
           console.log(err);

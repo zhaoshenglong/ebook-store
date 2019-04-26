@@ -7,31 +7,37 @@
           <span class="tag-mid">{{book.tag}}</span>
         </div>
         <h3 class="h3-heading book-head">{{book.name}}</h3>
-        <div class="author-block">
-          by
+        <div class="info-row">
+          <span>作者 ：</span>
           <span>{{book.author}}</span>
         </div>
-        <div class="info-row info-isbn">{{book.isbn}}</div>
-        <div class="info-row info-remain">
-          Remain:
+        <div class="info-row">
+          <span>ISBN：</span>
+          <span>{{book.isbn}}</span>
+        </div>
+        <div class="info-row">
+          <span>库存 ：</span>
           <span>{{book.stock}}</span>
         </div>
-        <div class="info-row info-price">
-          Unit price:
-          <span>{{book.price}}</span>
+        <div class="info-row">
+          <span>单价 ：</span>
+          <span>{{Number(book.price).toFixed(2)}}</span>
         </div>
         <div class="buy-menu">
           <div class="quantity-manage">
             <svg class="icon icon-btn" aria-hidden="true" @click="decrement">
               <use xlink:href="#iconMINUS"></use>
             </svg>
-            <input type="number" v-model="selectQuantity">
+            <input type="number" v-model="quantity">
             <svg class="icon icon-btn" aria-hidden="true" @click="increment">
               <use xlink:href="#iconPLUS"></use>
             </svg>
           </div>
           <div class="btn-manage">
-            <button class="btn btn-block btn-submit">Add to cart</button>
+            <button
+              class="btn btn-block btn-submit"
+              @click="invokeAddCart(book.id, quantity)"
+            >Add to cart</button>
           </div>
         </div>
       </div>
@@ -43,7 +49,7 @@ export default {
   name: "BookInfo",
   data() {
     return {
-      selectQuantity: 1
+      quantity: 1
     };
   },
   props: {
@@ -54,16 +60,19 @@ export default {
   },
   methods: {
     decrement() {
-      var num = parseInt(this.selectQuantity, 10);
+      var num = parseInt(this.quantity, 10);
       if (num > 1) {
         num--;
-        this.selectQuantity = num;
-      } else this.selectQuantity = 1;
+        this.quantity = num;
+      } else this.quantity = 1;
     },
     increment() {
-      var num = parseInt(this.selectQuantity, 10);
+      var num = parseInt(this.quantity, 10);
       num++;
-      this.selectQuantity = num;
+      this.quantity = num;
+    },
+    invokeAddCart(id, quantity) {
+      this.$emit("addCart", id, quantity);
     }
   }
 };
@@ -108,17 +117,9 @@ export default {
   justify-content: left;
 }
 .book-head {
-  margin-top: 12px;
-  color: black;
-}
-.author-block {
-  text-align: left;
-  padding-left: 18px;
-  font-size: 12px;
-}
-.author-block span {
-  font-size: 18px;
-  color: #525252;
+  margin: 12px 0 20px 24px;
+  color: #0a0a0a;
+  font-size: 26px;
 }
 .info-row {
   height: 24px;
@@ -126,19 +127,6 @@ export default {
   line-height: 24px;
   text-align: left;
   padding-left: 18px;
-}
-.info-isbn {
-  margin-top: 36px;
-}
-.info-remain span {
-  color: #3d3d3d;
-  margin-left: 30px;
-  font-size: 24px;
-}
-.info-price span {
-  color: red;
-  margin-left: 15px;
-  font-size: 24px;
 }
 .buy-menu {
   display: flex;

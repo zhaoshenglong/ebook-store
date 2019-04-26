@@ -41,7 +41,6 @@ public class BookServlet extends HttpServlet {
             public boolean shouldSkipField(FieldAttributes fieldAttributes) {
                 return fieldAttributes.getName().contains("Info");
             }
-
             @Override
             public boolean shouldSkipClass(Class<?> aClass) {
                 return false;
@@ -162,7 +161,7 @@ public class BookServlet extends HttpServlet {
             rs.setMsg("Update ok");
             out.print(gson.toJson(rs));
         }catch (Exception e) {
-            response.setStatus(500);
+            response.setStatus(404);
             rs.setMsg("Put failed");
             out.print(gson.toJson(rs));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
@@ -243,7 +242,6 @@ public class BookServlet extends HttpServlet {
 
     private List<Book> fetchTag(String tag) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction =  session.getTransaction();
         List<Book> books;
         Query query = session.createQuery("from Book where tag = ?1");
         query.setParameter(1, tag);
