@@ -5,14 +5,14 @@
 
 <hibernate-mapping package="org.iBookStore.entity">
 
-    <class name="Order" table="orders">
+    <class name="Order" table="orders" dynamic-update="true">
         <id name="id" column="order_id">
             <generator class="uuid"/>
         </id>
         <property name="createDate" column="create_date" />
         <property name="state" column="state" />
         <property name="userName"  column="user_name"/>
-        <set name="orderItemList" cascade="all">
+        <set name="orderItemList" cascade="all" >
             <key column="order_id"></key>
             <one-to-many class="OrderItem"/>
         </set>

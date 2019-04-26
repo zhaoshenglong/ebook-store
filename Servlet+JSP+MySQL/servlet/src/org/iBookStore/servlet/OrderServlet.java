@@ -5,15 +5,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -28,7 +26,7 @@ import org.iBookStore.entity.Order;
 import org.iBookStore.entity.ReturnJson;
 import org.iBookStore.entity.OrderItem;
 import org.iBookStore.servlet.utility.*;
-import static org.iBookStore.servlet.utility.CORS.*;
+import static org.iBookStore.servlet.utility.ServletUtility.*;
 
 @WebServlet ("/orderServlet")
 public class OrderServlet extends HttpServlet {
@@ -41,6 +39,14 @@ public class OrderServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         List orders = null;
+        ReturnJson rs = new ReturnJson();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null) {
+            rs.setMsg("Need log in");
+            response.setStatus(403);
+            out.print(gson.toJson(rs));
+            return;
+        }
         try{
             String role = request.getParameter("role");
             String action = request.getParameter("action");
@@ -62,13 +68,9 @@ public class OrderServlet extends HttpServlet {
                 }
             } else if (role.equals("user")) {
                 if (action.equals("findByUser")) {
-                    String userName = request.getParameter("user");
+                    String userName = (String)httpSession.getAttribute("name");
                     orders = findByUser(userName, 1);
                     out.print(gson.toJson(orders));
-                } else if(action.equals("findCart")) {
-                    String userName = request.getParameter("user");
-                    Order c = findCart(userName);
-                    out.print(gson.toJson(c));
                 } else if (action.equals("findBetween")) {
                     Timestamp begin = Timestamp.valueOf(request.getParameter("begin"));
                     Timestamp end = Timestamp.valueOf(request.getParameter("end"));
@@ -76,15 +78,16 @@ public class OrderServlet extends HttpServlet {
                     out.print(gson.toJson(orders));
                 }
             } else {
-                ReturnJson errorJson = new ReturnJson();
-                errorJson.setStatus("404");
-                errorJson.setMsg("Role not found");
+                response.setStatus(404);
+                rs.setMsg("Role not found");
+                out.print(gson.toJson(rs));
                 return;
             }
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
         } catch (Exception e) {
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
-            out.print("error");
+            response.setStatus(404);
+            out.print(gson.toJson(rs));
             e.printStackTrace();
         } finally {
             out.flush();
@@ -96,72 +99,47 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         setCORS(response);
-        response.setContentType("application/json");
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-        ReturnJson errorJson = new ReturnJson();
-        errorJson.setStatus("404");
-        ReturnJson successJson = new ReturnJson();
-        successJson.setStatus("200");
+        ReturnJson rs = new ReturnJson();
         PrintWriter out = response.getWriter();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+        HttpSession httpSession = request.getSession(false);
+        if (httpSession == null) {
+            rs.setMsg("Need log in");
+            response.setStatus(403);
+            out.print(gson.toJson(rs));
+            return;
+        }
         try{
-            String userName = request.getParameter("user");
-            String action = request.getParameter("action");
-            Order cart = findCart(userName);
-            String cartId;
-            Set<OrderItem> orderItemList = gson.fromJson(request.getParameter("orderItemList"), new TypeToken<Set<OrderItem>>(){}.getType());
-            /* Add to cart, create if not exists */
-            if (action.equals("add")) {
-                /* Cart not exists, create first */
-                if (cart == null) {
-                    cart = new Order();
-                    cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
-                    cart.setState("unpaid");
-                    cart.setUserName(userName);
-                    String timeString = new SimpleDateFormat("yyyyMMddHHmmss").format(cart.getCreateDate());
-                    cart.setId(StringUtility.hash(userName) + timeString + (System.currentTimeMillis() & 0xff));
-                    cartId = cart.getId();
-                    System.out.println(cartId);
-                }
-                /*
-                cartId = cart.getId();
-                Set<OrderItem> orderItemSet = ((Order)HibernateUtil.getSessionFactory().getCurrentSession().get(cartId, Order.class)).getOrderItemList();
-                HibernateUtil.getSessionFactory().getCurrentSession().delete(orderItemSet);
-                HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(orderItemList);
-                */
-                cart.setId(cart.getId());
-                cart.setOrderItemList(orderItemList);
-                //HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(cart);
-                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-                successJson.setMsg("Add ok");
-                out.print(gson.toJson(successJson));
-            } else if (action.equals("clear")) {
-                if (cart == null) {
-                    cart = new Order();
-                    cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
-                    cart.setUserName(userName);
-                    String timeString = new SimpleDateFormat("yyyyMMddHHmmss").format(cart.getCreateDate());
-                    cart.setId(StringUtility.hash(userName) + timeString + (System.currentTimeMillis() & 0xff));
-                    cartId = cart.getId();
-                    System.out.println(cartId);
-                }
-                cart.setState("paid");
-                cart.setId(cart.getId());
-                cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
-                for (OrderItem oi : orderItemList) {
-                    Book book = (Book)HibernateUtil.getSessionFactory().getCurrentSession().get(oi.getBookId(), Book.class);
-                    book.setStock(book.getStock() - oi.getQuantity());
-                }
-                HibernateUtil.getSessionFactory().getCurrentSession().saveOrUpdate(cart);
-                HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-                successJson.setMsg("Success buy books");
-                out.print(gson.toJson(successJson));
-            }
+            String userName = (String)httpSession.getAttribute("name");
+            String readerContent = StringUtility.getReaderContent(request);
+            Set<OrderItem> orderItemList = gson.fromJson(readerContent, new TypeToken<Set<OrderItem>>(){}.getType());
+            /*
+            System.out.println(gson.toJson(orderItemList));
+            System.out.println(orderItemList.size());
+            Iterator<OrderItem> itemIterator = orderItemList.iterator();
+            while (itemIterator.hasNext()) {
+                System.out.println(gson.toJson(itemIterator.next()));
+            }*/
+
+            Order order = new Order();
+            order.setState("paid");
+            order.setCreateDate(new Timestamp(System.currentTimeMillis()));
+            order.setUserName(userName);
+            order.setOrderItemList(orderItemList);
+            updateStock(orderItemList);
+            Order cart = (Order) httpSession.getAttribute("cart");
+            clearCart(orderItemList, cart);
+            HibernateUtil.getSessionFactory().getCurrentSession().update(cart);
+            HibernateUtil.getSessionFactory().getCurrentSession().save(order);
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+
         } catch (Exception e) {
+
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
-            errorJson.setMsg("Post failed");
-            out.print(gson.toJson(errorJson));
+            rs.setMsg("Post failed");
+            response.setStatus(500);
+            out.print(gson.toJson(rs));
             e.printStackTrace();
         } finally {
             out.flush();
@@ -185,7 +163,8 @@ public class OrderServlet extends HttpServlet {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
         if (flag == 1) {
             /* Return paid order */
-            Query query = session.createQuery("from Order where userName=?1 and state = 'paid'");
+            Query query = session.createQuery("select o.userName, o.createDate, o.id, b.id, b.img, b.author, b.isbn, b.name, b.price, b.tag, oi.quantity " +
+                   "from Order as o, Book as b, OrderItem  as oi  where o.userName=?1 and o.state = 'paid' and o.id = oi.order.id and oi.bookId = b.id");
             query.setParameter(1, userName);
             return query.list();
         } else {
@@ -197,21 +176,47 @@ public class OrderServlet extends HttpServlet {
     }
     private List findBetweenDate(Timestamp begin, Timestamp end) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
-        Query query = session.createQuery("from Order where createDate between ?1 and ?2 and state = 'paid'");
+        Query query = session.createQuery("from Order o where createDate between ?1 and ?2 and state = 'paid'");
         query.setParameter(1, begin);
         query.setParameter(2, end);
         return query.list();
     }
-    private Order findCart(String userName) {
+    private void updateStock(Set<OrderItem> orderItemSet) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Transaction transaction = session.getTransaction();
-        Query query = session.createQuery(
-                "from Order where userName = ?1 and state='unpaid'");
-        query.setParameter(1, userName);
-        List<Order> orders = query.list();
-        if (orders.size() == 0) {
-            return null;
-        } else return orders.get(0);
+        try{
+            Iterator<OrderItem> itemIterator = orderItemSet.iterator();
+            while(itemIterator.hasNext()) {
+                OrderItem orderItem = itemIterator.next();
+                Book book = session.get(Book.class, orderItem.getBookId());
+                if (book.getStock() >= orderItem.getQuantity()) {
+                    book.setStock(book.getStock() - orderItem.getQuantity());
+                    session.update(book);
+                } else {
+                    throw new RuntimeException();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void clearCart(Set<OrderItem> orderItemSet, Order cart) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        try {
+            Iterator<OrderItem> itemIterator = cart.getOrderItemList().iterator();
+            while(itemIterator.hasNext()) {
+                OrderItem orderItem = itemIterator.next();
+                Iterator<OrderItem> oit = orderItemSet.iterator();
+                while(oit.hasNext()) {
+                    OrderItem oi = oit.next();
+                    if (oi.getBookId().equals(orderItem.getBookId())) {
+                        itemIterator.remove();
+                        session.delete(orderItem);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -35,6 +35,7 @@ import cryptoJs from "crypto-js";
 import axios from "axios";
 import qs from "qs";
 import { mapGetters, mapMutations } from "vuex";
+import Cookies from "js-cookie";
 export default {
   name: "signIn",
   data() {
@@ -73,11 +74,17 @@ export default {
         .then(response => {
           const data = response.data;
           console.log(data);
-          if (data.status != "404") {
+          if (response.status == 200) {
             this.setUser({
               name: data.name,
               avatar: data.avatar,
               password: encrypt
+            });
+            Cookies.set("user", {
+              name: data.name,
+              avatar: data.avatar,
+              password: data.password,
+              role: data.name === "admin" ? "admin" : "user"
             });
             if (data.name == "admin") {
               this.$router.push({ name: "ManageBooks" });

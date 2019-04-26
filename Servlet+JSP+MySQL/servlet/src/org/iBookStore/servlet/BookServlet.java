@@ -18,7 +18,7 @@ import org.iBookStore.entity.ReturnJson;
 
 import javax.servlet.annotation.WebServlet;
 import org.iBookStore.servlet.utility.*;
-import static org.iBookStore.servlet.utility.CORS.*;
+import static org.iBookStore.servlet.utility.ServletUtility.*;
 @WebServlet("/bookServlet")
 public class BookServlet extends HttpServlet {
 
@@ -89,7 +89,7 @@ public class BookServlet extends HttpServlet {
                 out.print(gson.toJson(books));
             } else {
                 ReturnJson rs = new ReturnJson();
-                rs.setStatus("404");
+                response.setStatus(404);
                 rs.setMsg("Unknown query " + action);
                 out.print(gson.toJson(rs));
             }
@@ -108,7 +108,7 @@ public class BookServlet extends HttpServlet {
             throws ServletException, IOException {
         /* Set response header */
         setCORS(response);
-        response.setCharacterEncoding("UTF-8");
+
         /* Hibernate transaction initialize */
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 
@@ -124,11 +124,10 @@ public class BookServlet extends HttpServlet {
                 HibernateUtil.getSessionFactory().getCurrentSession().update(book);
                 HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
                 rs.setMsg("Update ok");
-                rs.setStatus("200");
                 out.print(gson.toJson(rs));
             } else {
                 rs.setMsg("Id not found");
-                rs.setStatus("404");
+                response.setStatus(404);
                 out.print(gson.toJson(rs));
             }
         } catch(Exception e) {
@@ -161,10 +160,9 @@ public class BookServlet extends HttpServlet {
             HibernateUtil.getSessionFactory().getCurrentSession().save(book);
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
             rs.setMsg("Update ok");
-            rs.setStatus("200");
             out.print(gson.toJson(rs));
         }catch (Exception e) {
-            rs.setStatus("404");
+            response.setStatus(500);
             rs.setMsg("Put failed");
             out.print(gson.toJson(rs));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
@@ -193,15 +191,14 @@ public class BookServlet extends HttpServlet {
                 HibernateUtil.getSessionFactory().getCurrentSession().delete(book);
                 HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
                 rs.setMsg("Delete ok");
-                rs.setStatus("200");
                 out.print(gson.toJson(rs));
             } else {
-                rs.setStatus("404");
+                response.setStatus(404);
                 rs.setMsg("Delete failed");
                 out.print(gson.toJson(rs));
             }
         }catch (Exception e) {
-            rs.setStatus("404");
+            response.setStatus(500);
             rs.setMsg("Delete failed");
             out.print(gson.toJson(rs));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().rollback();
@@ -211,7 +208,7 @@ public class BookServlet extends HttpServlet {
             out.close();
         }
     }
-    /* For CORS at developing stage */
+    /* For ServletUtility at developing stage */
     @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{

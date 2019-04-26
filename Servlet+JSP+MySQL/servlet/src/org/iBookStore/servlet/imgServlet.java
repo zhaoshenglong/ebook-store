@@ -5,12 +5,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import org.iBookStore.entity.ReturnJson;
+
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpSession;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import static org.iBookStore.servlet.utility.CORS.*;
+import static org.iBookStore.servlet.utility.ServletUtility.*;
 @WebServlet(urlPatterns = "/img")
 public class imgServlet extends HttpServlet {
     @Override
@@ -46,6 +49,21 @@ public class imgServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         setCORS(response);
+        HttpSession httpSession = request.getSession(false);
+        ReturnJson rs = new ReturnJson();
+        Gson gson = new Gson();
+        PrintWriter out = response.getWriter();
+        if (httpSession == null) {
+            rs.setMsg("Need log in");
+            response.setStatus(403);
+            out.print(gson.toJson(rs));
+            return;
+        }
         doGet(request, response);
+    }
+    @Override
+    protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        setCORS(response);
     }
 }

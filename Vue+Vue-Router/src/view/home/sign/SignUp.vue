@@ -176,11 +176,11 @@ export default {
           })
           .then(response => {
             const data = response.data;
-            if (data.status == "200") this.nameOk = true;
-            else this.nameOk = false;
+            if (response.status == 200) this.nameOk = true;
           })
           .catch(err => {
             console.log(err);
+            this.nameOk = false;
           });
       } else this.nameOk = false;
     },
@@ -196,11 +196,11 @@ export default {
           .then(response => {
             const data = response.data;
             console.log(data);
-            if (data.status == "200") this.emailOk = true;
-            else this.emailOk = false;
+            if (response.status == 200) this.emailOk = true;
           })
           .catch(err => {
             console.log(err);
+            this.emailOk = false;
           });
       } else this.emailOk = false;
     },

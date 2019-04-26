@@ -13,7 +13,13 @@
     <div class="view-main">
       <div id="store-main">
         <ul id="book-list">
-          <li class="book-item" v-for="book in filterBooks" :key="book.isbn">
+          <li
+            class="book-item"
+            v-for="book in filterBooks"
+            :key="book.isbn"
+            @mouseenter="showCart = book.id"
+            @mouseleave="showCart = ''"
+          >
             <img
               class="book-img-normal"
               :src="book.img"
@@ -21,14 +27,22 @@
               @click="toDetail(book.id)"
               alt="book picture"
             >
-            <div class="book-des">
-              <div class="book-info-normal">
-                <div class="book-name">
-                  <span class="link-normal">{{book.name}}</span>
+            <div class="book-des-container">
+              <div>
+                <div id="book-name">
+                  <span class="link-normal" @click="toDetail(book.id)">{{book.name}}</span>
                 </div>
-                <div class="book-autho">
-                  <b>by</b>
-                  {{book.author}}
+                <div class="book-info-normal">
+                  <span>作者 ：</span>
+                  <span>{{book.author}}</span>
+                </div>
+                <div class="book-info-normal">
+                  <span>ISBN :</span>
+                  <span>{{book.isbn}}</span>
+                </div>
+                <div class="book-info-normal">
+                  <span>库存 :</span>
+                  <span>{{book.stock}}本</span>
                 </div>
               </div>
 
@@ -37,7 +51,12 @@
                   <b>¥</b>
                   {{book.price}}
                 </span>
-                <svg class="icon cart-large" aria-hidden="true">
+                <svg
+                  class="icon cart-large"
+                  aria-hidden="true"
+                  @click="addCart(book.id)"
+                  v-show="showCart===book.id"
+                >
                   <use xlink:href="#iconiconfontcart-copy"></use>
                 </svg>
               </div>
@@ -51,6 +70,7 @@
 <script>
 import SideBar from "../../components/page/Sidebar";
 import axios from "axios";
+import qs from "qs";
 export default {
   name: "StoreMain",
   components: {
@@ -60,8 +80,8 @@ export default {
     return {
       bookList: [],
       dispalyTag: "All",
-      baseUrl: "http://localhost:8088/img?kind=book&name=",
-      searchMsg: ""
+      searchMsg: "",
+      showCart: ""
     };
   },
   methods: {
@@ -74,6 +94,28 @@ export default {
     changeDisplayTag(tag) {
       this.dispalyTag = tag;
       this.changeListByName();
+    },
+    cartTrue() {
+      this.showCart = true;
+    },
+    cartFalse() {
+      this.showCart = false;
+    },
+    addCart(bookId) {
+      axios
+        .post(
+          "/cartServlet",
+          qs.stringify({
+            action: "add",
+            orderItem: "{" + "bookId: " + bookId + "," + "quantity:" + 1 + "}"
+          })
+        )
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     fetchBooks() {
       axios
@@ -148,14 +190,22 @@ export default {
   height: 200px;
   padding: 0 25px;
 }
-.book-des {
+.book-img-normal:hover {
+  cursor: pointer;
+}
+.book-des-container {
   flex: 1;
   text-align: left;
 }
-.book-name {
-  margin-bottom: 20px;
-  margin-top: 5px;
+.book-info-normal span {
+  display: inline-block;
+  font-size: 18px;
+  margin-top: 12px;
+}
+#book-name {
+  margin: 5px 0 20px 20px;
   font-weight: 100;
+  font-size: 24px;
 }
 .book-autho {
   font-size: 14px;
@@ -182,6 +232,7 @@ export default {
   width: 2em;
   height: 2em;
   color: red;
+  cursor: pointer;
 }
 #search-bar {
   width: 1017px;

@@ -26,17 +26,26 @@ export default new Router({
             children: [{
                     path: '/',
                     name: 'Home',
-                    component: HomeSwiper
+                    component: HomeSwiper,
+                    meta: {
+                        role: 'guest'
+                    }
                 },
                 {
                     path: '/signIn',
                     name: 'SignIn',
-                    component: SignIn
+                    component: SignIn,
+                    meta: {
+                        role: 'guest'
+                    }
                 },
                 {
                     path: '/signUp',
                     name: 'SignUp',
-                    component: SignUp
+                    component: SignUp,
+                    meta: {
+                        role: 'guest'
+                    }
                 }
             ]
         },
@@ -48,13 +57,9 @@ export default new Router({
                     name: 'StorePage',
                     components: {
                         main: StoreMain
-                    }
-                },
-                {
-                    path: '/books/:userid',
-                    name: 'StorePageSigned',
-                    components: {
-                        main: StoreMain
+                    },
+                    meta: {
+                        role: 'guest'
                     }
                 },
                 {
@@ -62,6 +67,9 @@ export default new Router({
                     name: 'BookDetail',
                     components: {
                         main: BookDetail
+                    },
+                    meta: {
+                        role: 'guest'
                     }
                 },
                 {
@@ -69,6 +77,9 @@ export default new Router({
                     name: 'SettingProfile',
                     components: {
                         main: SettingProfile
+                    },
+                    meta: {
+                        role: 'user'
                     }
                 },
                 {
@@ -76,6 +87,9 @@ export default new Router({
                     name: 'SettingAddress',
                     components: {
                         main: SettingAddress
+                    },
+                    meta: {
+                        role: 'user'
                     }
                 },
                 {
@@ -83,6 +97,9 @@ export default new Router({
                     name: 'SettingAccount',
                     components: {
                         main: SettingAccount
+                    },
+                    meta: {
+                        role: 'user'
                     }
                 },
                 {
@@ -90,6 +107,9 @@ export default new Router({
                     name: 'Order',
                     components: {
                         main: Order
+                    },
+                    meta: {
+                        role: 'user'
                     }
                 },
                 {
@@ -97,6 +117,9 @@ export default new Router({
                     name: 'Cart',
                     components: {
                         main: Cart
+                    },
+                    meta: {
+                        role: 'user'
                     }
                 }
             ]
@@ -107,19 +130,31 @@ export default new Router({
             children: [{
                     path: 'books',
                     name: 'ManageBooks',
-                    component: AdminBooks
+                    component: AdminBooks,
+                    meta: {
+                        role: 'admin'
+                    }
                 },
                 {
                     path: 'users',
                     name: 'ManageUsers',
-                    component: AdminUsers
+                    component: AdminUsers,
+                    meta: {
+                        role: 'admin'
+                    }
                 },
                 {
                     path: 'orders',
                     name: 'ManageOrders',
-                    component: AdminOrders
+                    component: AdminOrders,
+                    meta: {
+                        role: 'admin'
+                    }
                 }
-            ]
+            ],
+            meta: {
+                role: 'admin'
+            }
         }
     ]
 })

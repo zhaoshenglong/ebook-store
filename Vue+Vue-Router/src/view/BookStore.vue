@@ -50,6 +50,8 @@
         </div>
       </div>
       <div id="main-cover">
+        <div id="back-to-store-left" @click="toStore" v-if="showBack">Back to store</div>
+        <div id="back-to-store-right" @click="toStore" v-if="showBack">Back to store</div>
         <router-view name="main"></router-view>
       </div>
       <BookFooter/>
@@ -60,6 +62,7 @@
 import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
 import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 export default {
   name: "BookStore",
   data() {
@@ -73,10 +76,10 @@ export default {
   },
   methods: {
     toSignIn() {
-      this.$router.push("/signIn");
+      this.$router.push({ name: "SignIn" });
     },
     toSignUp() {
-      this.$router.push("/signUp");
+      this.$router.push({ name: "SignUp" });
     },
     toOrder() {
       this.$router.push({ name: "Order", params: { userid: this.user.name } });
@@ -90,10 +93,17 @@ export default {
         params: { userid: this.user.name }
       });
     },
+    toStore() {
+      this.$router.push({ name: "StorePage" });
+    },
     ...mapMutations(["signOut"])
   },
   computed: {
-    ...mapState(["user", "signed", "cart", "cartChanged"])
+    ...mapState(["user", "signed"]),
+    showBack() {
+      if (this.$route.name == "StorePage") return false;
+      return true;
+    }
   },
   beforeDestroy() {
     if (this.carChanged) {
@@ -210,7 +220,35 @@ export default {
 .clear {
   clear: both;
 }
-
+#back-to-store-left {
+  position: absolute;
+  left: 0;
+  top: -32px;
+  height: 32px;
+  line-height: 32px;
+  background: rgba(229, 252, 251, 1);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-size: 24px;
+  color: #35a3c4;
+}
+#back-to-store-right {
+  position: absolute;
+  right: 0;
+  top: -32px;
+  height: 32px;
+  line-height: 32px;
+  background: rgba(229, 252, 251, 1);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  font-size: 24px;
+  color: #35a3c4;
+}
+#back-to-store-left:hover,
+#back-to-store-right:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
 #main-cover {
   display: flex;
   background: rgba(229, 252, 251, 0.7);

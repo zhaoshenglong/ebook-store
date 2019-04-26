@@ -10,7 +10,7 @@
         <property name="connection.username">dragon</property>
         <property name="connection.password">HXC19970129</property>
         <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">30</property>
+        <property name="connection.pool_size">10</property>
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQL8Dialect</property>
         <!-- Enable Hibernate's automatic session context management -->

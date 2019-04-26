@@ -13,7 +13,7 @@ import './assets/iconfont/iconfont'
 import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import axios from 'axios'
-
+import Cookies from 'js-cookie'
 Vue.use(VueAwesomeSwiper)
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
@@ -21,6 +21,42 @@ Vue.prototype.axios = axios
 axios.defaults.baseURL = 'http://localhost:8088'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
+axios.defaults.withCredentials = true
+router.afterEach(route => {
+    window.scroll(0, 0)
+})
+router.beforeEach((to, from, next) => {
+    let user = Cookies.getJSON('user')
+    let logged = Cookies.getJSON('logged')
+    /* Go to guest page, allowed all guests */
+    if (to.meta.role === 'guest') {
+        next()
+    } else if (to.meta.role === 'user') {
+        /* Go to user Page, need logged in, if not, then redirect to signIn */
+        if (logged) {
+            next()
+        } else {
+            next({
+                name: 'SignIn'
+            })
+        }
+    } else if (to.meta.role === 'admin') {
+        /* Go to admin Page, need logged in, if not, then redirect to signIn */
+        if (logged) {
+            if (user.role === 'admin') {
+                next()
+            }
+        } else {
+            alert('You are not admin!')
+            return
+        }
+    } else {
+        next({
+            name: 'SignIn'
+        })
+    }
+    next()
+})
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

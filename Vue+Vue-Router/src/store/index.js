@@ -1,16 +1,18 @@
 /* eslint-disable indent */
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Cookies from 'js-cookie'
 Vue.use(Vuex)
-
+const LocalUser = Cookies.getJSON('user')
+const logged = Cookies.getJSON('logged')
 export default new Vuex.Store({
     state: {
-        signed: false,
+        signed: logged === true,
         user: {
-            name: '',
-            avatar: '',
-            password: '',
-            role: ''
+            name: LocalUser !== undefined ? LocalUser.name : '',
+            avatar: LocalUser !== undefined ? LocalUser.avatar : '',
+            password: LocalUser !== undefined ? LocalUser.password : '',
+            role: LocalUser !== undefined ? LocalUser.role : ''
         },
         cart: {
             id: '',
@@ -44,6 +46,7 @@ export default new Vuex.Store({
         },
         signOut: state => {
             state.signed = false
+            Cookies.set('logged', false)
         },
         setCart: (state, cart) => {
             state.cart.id = cart.id
