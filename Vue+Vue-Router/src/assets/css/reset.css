@@ -357,5 +357,7 @@ a {
     border: 1px solid #3fce3f;
     color: #28a745;
     background: #b4f0ff;
+    line-height: 100%;
+    position: relative;
     vertical-align: middle;
 }

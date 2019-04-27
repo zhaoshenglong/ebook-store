@@ -156,8 +156,6 @@ public class UserServlet extends HttpServlet {
             throws ServletException, IOException {
         setCORS(response);
         response.setContentType("application/json");
-        /* Hibernate transaction initialize */
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         ReturnJson rs = new ReturnJson();
@@ -168,6 +166,8 @@ public class UserServlet extends HttpServlet {
             out.print(gson.toJson(rs));
             return;
         }
+        /* Hibernate transaction initialize */
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             String name = (String)httpSession.getAttribute("name");
             User user = HibernateUtil.getSessionFactory().getCurrentSession().get(User.class, name);

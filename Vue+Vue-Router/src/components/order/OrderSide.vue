@@ -1,6 +1,7 @@
 <template>
   <div class="side-bar">
     <ul>
+      <li class="side-menu underline text-normal" @click="fetchAll">All orders</li>
       <li class="side-menu underline text-normal" @click="alterShow">Filter by time:</li>
       <div v-if="showFilter" id="time-input">
         <div class="time">
@@ -35,8 +36,12 @@ export default {
     updateTime() {
       var begin = this.fromTime;
       var end = this.toTime;
-      console.log(this.fromTime + this.toTime);
       this.$emit("updateTime", begin, end);
+    },
+    fetchAll() {
+      if (!this.showFilter) return;
+      this.showFilter = false;
+      this.$emit("fetchAll");
     }
   }
 };

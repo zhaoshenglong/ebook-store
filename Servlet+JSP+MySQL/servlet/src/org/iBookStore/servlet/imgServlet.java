@@ -5,7 +5,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import com.google.gson.Gson;
+import org.hibernate.Session;
+import org.iBookStore.HibernateUtil;
 import org.iBookStore.entity.ReturnJson;
+import org.iBookStore.entity.User;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpSession;
@@ -46,24 +49,9 @@ public class imgServlet extends HttpServlet {
         }
     }
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        setCORS(response);
-        HttpSession httpSession = request.getSession(false);
-        ReturnJson rs = new ReturnJson();
-        Gson gson = new Gson();
-        PrintWriter out = response.getWriter();
-        if (httpSession == null) {
-            rs.setMsg("Need log in");
-            response.setStatus(403);
-            out.print(gson.toJson(rs));
-            return;
-        }
-        doGet(request, response);
-    }
-    @Override
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         setCORS(response);
     }
+
 }

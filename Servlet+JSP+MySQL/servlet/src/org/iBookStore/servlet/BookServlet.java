@@ -29,10 +29,6 @@ public class BookServlet extends HttpServlet {
         setCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-
-        /* Hibernate transaction initialize */
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
         /* Begin transaction */
         PrintWriter out = response.getWriter();
         /* Gson instance ignore details */
@@ -46,6 +42,9 @@ public class BookServlet extends HttpServlet {
                 return false;
             }
         }).create();
+
+        /* Hibernate transaction initialize */
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             String action = request.getQueryString().split("=")[0];
             if (action.equals("id")) {
@@ -107,14 +106,12 @@ public class BookServlet extends HttpServlet {
             throws ServletException, IOException {
         /* Set response header */
         setCORS(response);
-
-        /* Hibernate transaction initialize */
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
         /* Begin transaction */
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         ReturnJson rs = new ReturnJson();
+        /* Hibernate transaction initialize */
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try {
             Book book = HibernateUtil.getSessionFactory()
                     .getCurrentSession().get(Book.class, request.getParameter("id"));
@@ -144,13 +141,13 @@ public class BookServlet extends HttpServlet {
         setCORS(response);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        /* Hibernate transaction initialize */
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
         /* Begin transaction */
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         ReturnJson rs = new ReturnJson();
+        /* Hibernate transaction initialize */
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
         try {
             String data = StringUtility.getReaderContent(request);
             Book book = gson.fromJson(data, Book.class);
@@ -176,14 +173,13 @@ public class BookServlet extends HttpServlet {
             throws ServletException, IOException{
         /* Set response header */
         setCORS(response);
-
-        /* Hibernate transaction initialize */
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-
         /* Begin transaction */
         PrintWriter out = response.getWriter();
         Gson gson = new Gson();
         ReturnJson rs = new ReturnJson();
+        /* Hibernate transaction initialize */
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+
         try {
             Book book = HibernateUtil.getSessionFactory().getCurrentSession().get(Book.class, request.getParameter("id"));
             if (book != null){

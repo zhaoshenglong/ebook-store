@@ -30,10 +30,21 @@
             <input
               ref="fileInput"
               type="file"
-              name="file"
+              name="avatar"
               accept="image/jpg, image/jpeg, image/png"
               @change="updateAvatar"
+              enctype="multipart/form-data"
             >
+          </div>
+          <div>
+            <wait class="img-msg-box" :wait="imgWait" v-show="imgWait"></wait>
+            <message-box
+              class="img-msg-box"
+              :error="imgError"
+              :success="imgSuccess"
+              :message="imgMsg"
+              v-show="imgError || imgSuccess"
+            ></message-box>
           </div>
         </div>
       </div>
@@ -46,10 +57,13 @@ import MessageBox from "../../components/message/MessageBox";
 import Wait from "../../components/message/Wait";
 import axios from "axios";
 import { mapState } from "vuex";
+import qs from "qs";
 export default {
   name: "SettingProfile",
   components: {
-    SettingSide
+    SettingSide,
+    Wait,
+    MessageBox
   },
   data() {
     return {
@@ -58,7 +72,8 @@ export default {
       email: "",
       imgError: false,
       imgSuccess: false,
-      imgMsg: ""
+      imgMsg: "",
+      imgWait: false
     };
   },
   mounted: function() {
@@ -88,19 +103,73 @@ export default {
         });
     },
     updateAvatar() {
+      this.imgWait = true;
       let file = this.$refs.fileInput.files[0];
       if (file == undefined) {
         this.imgError = true;
         this.imgSuccess = false;
         this.imgMsg = "文件上传失败";
+        return;
       }
       if (file.size > 4 << 20) {
         this.imgError = true;
         this.imgSuccess = false;
         this.imgMsg = "图片大小不能超过4MB";
+        return;
       }
+      /* Prepare for the avatar to be uploaded */
+      let img = new FormData();
+      img.append("avatar", file, file.name);
+      img.append("chunk", "0");
+      let config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      axios
+        .post("avatarUpload", img, config)
+        .then(response => {
+          this.imgSuccess = true;
+          this.imgError = false;
+          this.imgMsg = "Update success";
+          console.log(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+          this.imgSuccess = false;
+          this.imgError = true;
+          if (err.status == 500) {
+            this.imgMsg = "Server failed, Please try again";
+          } else {
+            this.imgMsg = "Update failed, are you signed?";
+          }
+        });
+      this.imgWait = false;
     },
-    updateEmail() {}
+    emailFormat() {
+      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+      if (!reg.test(this.email)) {
+        console.log("test failed");
+        console.log(this.email);
+      } else return true;
+    },
+    updateEmail() {
+      if (this.emailFormat()) {
+        axios
+          .post(
+            "userServlet",
+            qs.stringify({
+              email: this.email
+            })
+          )
+          .then(response => {
+            console.log(response.data);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+    }
   },
   computed: {
     ...mapState(["user"])
@@ -147,6 +216,7 @@ button {
   width: 100%;
   height: 100%;
   max-width: 150px;
+  max-width: 150px;
 }
 #update-ava-tool {
   position: relative;
@@ -162,5 +232,9 @@ button {
   width: 100%;
   height: 100%;
   opacity: 0;
+}
+.img-msg-box {
+  width: 100%;
+  height: 80px;
 }
 </style>

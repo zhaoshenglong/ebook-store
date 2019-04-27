@@ -12,8 +12,8 @@ export default {
 
 <style scoped>
 .msg-box img {
-  height: 64px;
-  width: 64px;
-  margin: 8px auto;
+  height: 80%;
+  display: block;
+  margin: 8px auto 0;
 }
 </style>

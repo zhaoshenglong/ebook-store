@@ -33,16 +33,9 @@ public class CartServlet extends HttpServlet {
         try{
             HttpSession httpSession = request.getSession(false);
             Order cartOrder = (Order) httpSession.getAttribute("cart");
-            ReturnJson rs = new ReturnJson();
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-            if (cartOrder == null) {
-                rs.setMsg("Need login first");
-                out.print(gson.toJson(rs));
-                return;
-            } else {
-                List res = findCartDetail(cartOrder.getId());
-                out.print(gson.toJson(res));
-            }
+            List res = findCartDetail(cartOrder.getId());
+            out.print(gson.toJson(res));
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
@@ -61,12 +54,7 @@ public class CartServlet extends HttpServlet {
         ReturnJson rs = new ReturnJson();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         HttpSession httpSession = request.getSession();
-        Order cart;
-        if ( (cart = (Order)httpSession.getAttribute("cart")) == null) {
-            rs.setMsg("Need login first");
-            out.print(gson.toJson(rs));
-            return;
-        }
+        Order cart = (Order)httpSession.getAttribute("cart");
 
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         /* Get the orderItem from request */

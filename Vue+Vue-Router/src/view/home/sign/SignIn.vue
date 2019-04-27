@@ -27,6 +27,14 @@
         >
       </div>
       <button class="btn btn-block btn-submit" @click="verifyUser">sign in</button>
+      <message-box
+        class="msg"
+        :error="msgError"
+        :success="msgSuccess"
+        :message="message"
+        v-show="msgError || msgSuccess"
+      ></message-box>
+      <wait class="msg" :wait="wait" v-show="wait"/>
     </div>
   </div>
 </template>
@@ -34,14 +42,24 @@
 import cryptoJs from "crypto-js";
 import axios from "axios";
 import qs from "qs";
+import MessageBox from "../../../components/message/MessageBox";
+import Wait from "../../../components/message/Wait";
 import { mapGetters, mapMutations } from "vuex";
 import Cookies from "js-cookie";
 export default {
   name: "signIn",
+  components: {
+    Wait,
+    MessageBox
+  },
   data() {
     return {
       usrName: "",
-      usrPasswd: ""
+      usrPasswd: "",
+      msgError: false,
+      msgSuccess: false,
+      message: "",
+      wait: false
     };
   },
   methods: {
@@ -62,6 +80,7 @@ export default {
       }
     },
     verifyUser() {
+      this.wait = true;
       var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
       axios
         .get("/userServlet", {
@@ -72,27 +91,40 @@ export default {
           }
         })
         .then(response => {
-          const data = response.data;
-          console.log(data);
-          if (response.status == 200) {
-            this.setUser({
-              name: data.name,
-              avatar: data.avatar,
-              password: encrypt
-            });
-            Cookies.set("user", {
-              name: data.name,
-              avatar: data.avatar,
-              password: data.password,
-              role: data.name === "admin" ? "admin" : "user"
-            });
-            if (data.name == "admin") {
-              this.$router.push({ name: "ManageBooks" });
-            } else this.$router.push({ name: "StorePage" });
-          }
+          this.wait = false;
+          this.msgError = false;
+          this.msgSuccess = true;
+          this.message = "Success log in, heading to store page...";
+          setTimeout(() => {
+            const data = response.data;
+            console.log(data);
+            if (response.status == 200) {
+              this.setUser({
+                name: data.name,
+                avatar: data.avatar,
+                password: encrypt
+              });
+              Cookies.set("user", {
+                name: data.name,
+                avatar: data.avatar,
+                password: data.password,
+                role: data.name === "admin" ? "admin" : "user"
+              });
+              if (data.name == "admin") {
+                this.$router.push({ name: "ManageBooks" });
+              } else this.$router.push({ name: "StorePage" });
+            }
+            this.msgSuccess = false;
+          }, 3000);
         })
         .catch(err => {
           console.log(err);
+          this.wait = false;
+          this.msgError = true;
+          if (err.status == 500) {
+            this.message = "Server failed, please try again";
+          }
+          this.message = "Sign in failed, please try again";
         });
     },
     ...mapGetters(["getUser"]),
@@ -146,5 +178,8 @@ export default {
 }
 .clear-input:hover {
   opacity: 1;
+}
+.msg {
+  width: 278px;
 }
 </style>

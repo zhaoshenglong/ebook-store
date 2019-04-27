@@ -1,6 +1,6 @@
 <template>
   <div class="view-container">
-    <order-side @updateTime="updateTime"></order-side>
+    <order-side @updateTime="updateTime" @fetchAll="fetchAllOrder"></order-side>
     <div class="view-main">
       <table id="order-table" v-if="orderList.length > 0">
         <thead id="order-top">
@@ -130,6 +130,9 @@ export default {
         })
         .then(response => {
           console.log(response);
+          let data = new Array();
+          data = response.data;
+          this.transferToData(data);
         })
         .catch(err => {
           console.log(err);
@@ -174,10 +177,9 @@ export default {
       this.$router.push({ name: "BookDetail", params: { bookId: id } });
     },
     updateTime(begin, end) {
-      this.timeBegin = begin;
-      this.timeEnd = end;
-      console.log(this.timeBegin);
-      console.log(this.timeEnd);
+      this.timeBegin = begin + " 00:00:00";
+      this.timeEnd = end + " 23:59:59";
+      this.fetchOrderBetween();
     },
     total(order) {
       let res = 0;

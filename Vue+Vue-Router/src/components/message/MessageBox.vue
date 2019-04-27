@@ -1,5 +1,5 @@
 <template>
-  <div :class="['msg-box', error? 'msg-err':'', success?'msg-suc':'']">
+  <div ref="msg" :class="['msg-box', error? 'msg-err':'', success?'msg-suc':'']">
     <p>{{message}}</p>
   </div>
 </template>
@@ -21,15 +21,19 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  methods: {
+    setHeight() {}
+  },
+  mounted() {
+    this.setHeight();
   }
 };
 </script>
 <style scoped>
 .msg-box p {
   width: 100%;
-  height: 40px;
   display: block;
-  margin: 20px auto;
-  line-height: 40px;
+  padding-top: 20px;
 }
 </style>

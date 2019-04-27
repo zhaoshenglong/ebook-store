@@ -35,10 +35,9 @@ public class OrderServlet extends HttpServlet {
             throws ServletException, IOException{
         setCORS(response);
         response.setContentType("application/json");
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         PrintWriter out = response.getWriter();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-        List orders = null;
+        List orders;
         ReturnJson rs = new ReturnJson();
         HttpSession httpSession = request.getSession(false);
         if (httpSession == null) {
@@ -47,6 +46,7 @@ public class OrderServlet extends HttpServlet {
             out.print(gson.toJson(rs));
             return;
         }
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try{
             String role = request.getParameter("role");
             String action = request.getParameter("action");
@@ -61,7 +61,7 @@ public class OrderServlet extends HttpServlet {
                 } else if (action.equals("findBetween")) {
                     Timestamp begin = Timestamp.valueOf(request.getParameter("begin"));
                     Timestamp end = Timestamp.valueOf(request.getParameter("end"));
-                    orders = findBetweenDate(begin, end);
+                    orders = findBetweenDate("admin", begin, end);
                     out.print(gson.toJson(orders));
                 } else {
                     return;
@@ -74,7 +74,7 @@ public class OrderServlet extends HttpServlet {
                 } else if (action.equals("findBetween")) {
                     Timestamp begin = Timestamp.valueOf(request.getParameter("begin"));
                     Timestamp end = Timestamp.valueOf(request.getParameter("end"));
-                    orders = findBetweenDate(begin, end);
+                    orders = findBetweenDate( (String)request.getSession(false).getAttribute("name"),begin, end);
                     out.print(gson.toJson(orders));
                 }
             } else {
@@ -99,17 +99,17 @@ public class OrderServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         setCORS(response);
-        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         ReturnJson rs = new ReturnJson();
-        PrintWriter out = response.getWriter();
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
         HttpSession httpSession = request.getSession(false);
+        PrintWriter out = response.getWriter();
         if (httpSession == null) {
             rs.setMsg("Need log in");
             response.setStatus(403);
             out.print(gson.toJson(rs));
             return;
         }
+        HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try{
             String userName = (String)httpSession.getAttribute("name");
             String readerContent = StringUtility.getReaderContent(request);
@@ -166,11 +166,14 @@ public class OrderServlet extends HttpServlet {
             return query.list();
         }
     }
-    private List findBetweenDate(Timestamp begin, Timestamp end) {
+    private List findBetweenDate(String name, Timestamp begin, Timestamp end) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
-        Query query = session.createQuery("from Order o where createDate between ?1 and ?2 and state = 'paid'");
-        query.setParameter(1, begin);
-        query.setParameter(2, end);
+        Query query = session.createQuery("select o.userName, o.createDate, o.id, b.id, b.img, b.author, b.isbn, b.name, b.price, b.tag, oi.quantity " +
+                "from Order as o, Book as b, OrderItem  as oi  where o.userName=?1 and o.state = 'paid' and o.id = oi.order.id and oi.bookId = b.id " +
+                "and o.createDate between ?2 and ?3");
+        query.setParameter(1, name);
+        query.setParameter(2, begin);
+        query.setParameter(3, end);
         return query.list();
     }
     private void updateStock(Set<OrderItem> orderItemSet) {
