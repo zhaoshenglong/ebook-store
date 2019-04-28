@@ -25,17 +25,9 @@ public class userAvatarUpload extends HttpServlet {
         response.setContentType("application/json");
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         HttpSession httpSession = request.getSession(false);
-        ReturnJson rs = new ReturnJson();
-        Gson gson = new Gson();
         PrintWriter out = response.getWriter();
 
         try{
-            if (httpSession == null) {
-                rs.setMsg("Need log in");
-                response.setStatus(403);
-                out.print(gson.toJson(rs));
-                return;
-            }
             /* How to distinguish user image and book image? */
             String name = (String)httpSession.getAttribute("name");
             Part part = request.getPart("avatar");
@@ -49,11 +41,13 @@ public class userAvatarUpload extends HttpServlet {
             int len;
             while( (len = userAvatar.read(buf)) > 0) {
                 writeAvatar.write(buf, 0, len);
+                System.out.println(len);
             }
             String url = "http://localhost:8088/img?kind=user&name="+name;
             updateAvatar(name, url);
             HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-
+            writeAvatar.flush();
+            writeAvatar.close();
         } catch (Exception e) {
             e.printStackTrace();
             response.setStatus(500);

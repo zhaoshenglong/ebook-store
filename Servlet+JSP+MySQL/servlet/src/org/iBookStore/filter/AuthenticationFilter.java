@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import static org.iBookStore.servlet.utility.ServletUtility.*;
-@WebFilter(urlPatterns = {"/cartServlet", "/uploadServlet","/orderServlet"})
+@WebFilter(urlPatterns = {"/cartServlet", "/avatarUpload","/orderServlet"})
 public class AuthenticationFilter implements Filter {
     @Override
     public void doFilter(

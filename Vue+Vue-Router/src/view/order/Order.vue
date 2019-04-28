@@ -198,8 +198,8 @@ export default {
 #order-table {
   font-size: 16px;
   color: #666;
-  margin: 0 20px;
-  margin-top: 30px;
+  margin: 50px auto;
+  min-width: 850px;
 }
 #order-top {
   height: 36px;
