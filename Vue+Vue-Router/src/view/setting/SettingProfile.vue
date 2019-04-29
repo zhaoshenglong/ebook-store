@@ -56,8 +56,8 @@ import SettingSide from "../../components/setting/SettingSide";
 import MessageBox from "../../components/message/MessageBox";
 import Wait from "../../components/message/Wait";
 import axios from "axios";
-import { mapState } from "vuex";
 import qs from "qs";
+import { mapGetters } from "vuex";
 export default {
   name: "SettingProfile",
   components: {
@@ -76,27 +76,24 @@ export default {
       imgWait: false
     };
   },
-  mounted: function() {
+  props: {
+    user: {
+      type: Object
+    }
+  },
+  mounted() {
     this.fetchProfile();
   },
   methods: {
     fetchProfile() {
-      var user = this.$route.params.userid;
-      console.log(this.user.password);
+      let name = this.$route.params.userid;
       axios
-        .get("/userServlet", {
-          params: {
-            action: "get",
-            name: user,
-            password: this.user.password
-          }
-        })
+        .get("/status")
         .then(response => {
-          console.log(response);
           const data = response.data;
+          this.imgUrl = data.avatar;
           this.name = data.name;
           this.email = data.email;
-          this.imgUrl = data.avatar;
         })
         .catch(err => {
           console.log(err);
@@ -169,10 +166,8 @@ export default {
             console.log(err);
           });
       }
-    }
-  },
-  computed: {
-    ...mapState(["user"])
+    },
+    ...mapGetters(["getUser"])
   }
 };
 </script>

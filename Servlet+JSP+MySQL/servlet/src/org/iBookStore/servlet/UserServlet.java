@@ -67,7 +67,7 @@ public class UserServlet extends HttpServlet {
                     }
                 } else if (request.getParameter("password") != null){
                     String password = request.getParameter("password");
-                    HttpSession httpSession = request.getSession();
+                    HttpSession httpSession = request.getSession(false);
                     String name = (String)httpSession.getAttribute("name");
                     String validPassword = (String)httpSession.getAttribute("password");
                     if (name != null) {
@@ -235,6 +235,7 @@ public class UserServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         setCORS(response);
+        response.setStatus(200);
     }
 
     private boolean existUser(String name) {

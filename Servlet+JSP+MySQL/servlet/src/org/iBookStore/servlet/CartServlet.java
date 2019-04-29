@@ -126,6 +126,7 @@ public class CartServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         setCORS(response);
+        response.setStatus(200);
     }
 
 

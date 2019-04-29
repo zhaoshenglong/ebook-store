@@ -208,6 +208,7 @@ public class BookServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         setCORS(response);
+        response.setStatus(200);
     }
 
     /* Get functions */
@@ -246,10 +247,23 @@ public class BookServlet extends HttpServlet {
     }
 
     private List<Book> fetchLatest() {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        List<Book> books;
         return null;
     }
     private List<Book> fetchHottest() {
-        return null;
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();
+        List<Book> books;
+        Query hottest = session.createQuery("select count(bookId) as c from OrderItem group by bookId order by c");
+        List<Integer> statistic = hottest.list();
+        int hot_10 = 0;
+        if (statistic.size() > 10)
+            hot_10 = statistic.get(10);
+        else return session.createQuery("from Book where id in (select bookId from OrderItem )").list();
+
+        Query query = session.createQuery("from Book where id in (select bookId from OrderItem where  count(bookId) > ?1)");
+        query.setParameter(1, hot_10);
+        return query.list();
     }
     private List<Book> fetchTogether(String[] bookIdList) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession().getSession();

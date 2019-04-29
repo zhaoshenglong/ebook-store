@@ -128,7 +128,7 @@ export default {
         });
     },
     ...mapGetters(["getUser"]),
-    ...mapMutations(["setUser", "setCart"])
+    ...mapMutations(["setUser"])
   }
 };
 </script>

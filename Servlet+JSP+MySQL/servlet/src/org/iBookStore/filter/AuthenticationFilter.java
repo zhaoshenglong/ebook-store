@@ -4,7 +4,6 @@ import org.iBookStore.entity.ReturnJson;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -21,10 +20,11 @@ public class AuthenticationFilter implements Filter {
         setCORS((HttpServletResponse) response);
         HttpSession session = ((HttpServletRequest) request).getSession(false);
         PrintWriter out = response.getWriter();
-        ReturnJson rs = new ReturnJson();
         if (session == null) {
-            rs.setMsg("Need login in");
-            out.print(rs);
+            if (!((HttpServletRequest) request).getMethod().equals("OPTIONS"))
+            ((HttpServletResponse) response).setStatus(403);
+            System.out.println("no session");
+            out.print("Need login");
             return;
         }
         chain.doFilter(request,response);

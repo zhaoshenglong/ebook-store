@@ -141,7 +141,7 @@ export default {
   methods: {
     fetchCart() {
       axios
-        .get("cartServlet")
+        .get("/cartServlet")
         .then(response => {
           console.log(response);
           response.data.forEach(item => {
@@ -171,7 +171,7 @@ export default {
       } else {
         axios
           .post(
-            "cartServlet",
+            "/cartServlet",
             qs.stringify({
               action: "modify",
               orderItem:
@@ -197,7 +197,7 @@ export default {
       if (book.quantity > 0) {
         axios
           .post(
-            "cartServlet",
+            "/cartServlet",
             qs.stringify({
               action: "modify",
               orderItem:
@@ -284,7 +284,7 @@ export default {
         }
       });
       if (order.length > 0) {
-        axios.post("orderServlet", order).then(response => {
+        axios.post("/orderServlet", order).then(response => {
           this.cart.forEach(book => {
             if (book.select) {
               this.cart.splice(this.cart.indexOf(book), 1);

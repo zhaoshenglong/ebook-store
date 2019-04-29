@@ -52,7 +52,7 @@
       <div id="main-cover">
         <div id="back-to-store-left" @click="toStore" v-if="showBack">Back to store</div>
         <div id="back-to-store-right" @click="toStore" v-if="showBack">Back to store</div>
-        <router-view name="main"></router-view>
+        <router-view name="main" :user="User"></router-view>
       </div>
       <BookFooter/>
     </div>
@@ -61,13 +61,14 @@
 <script>
 import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 import axios from "axios";
 export default {
   name: "BookStore",
   data() {
     return {
-      showSignOut: false
+      showSignOut: false,
+      User: {}
     };
   },
   components: {
@@ -96,7 +97,11 @@ export default {
     toStore() {
       this.$router.push({ name: "StorePage" });
     },
-    ...mapMutations(["signOut"])
+    establishSession() {
+      this.signIn().then(() => {});
+    },
+    ...mapMutations(["signOut"]),
+    ...mapActions(["signIn"])
   },
   computed: {
     ...mapState(["user", "signed"]),
@@ -105,9 +110,8 @@ export default {
       return true;
     }
   },
-  beforeDestroy() {
-    if (this.carChanged) {
-    }
+  mounted() {
+    this.establishSession();
   }
 };
 </script>

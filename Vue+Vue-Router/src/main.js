@@ -22,11 +22,13 @@ axios.defaults.baseURL = 'http://localhost:8088'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 axios.defaults.headers.put['Content-Type'] = 'application/json'
 axios.defaults.withCredentials = true
+
+Cookies.set('role', 'guest')
 router.afterEach(route => {
     window.scroll(0, 0)
 })
 router.beforeEach((to, from, next) => {
-    let user = Cookies.getJSON('user')
+    let role = Cookies.getJSON('role')
     let logged = Cookies.getJSON('logged')
     /* Go to guest page, allowed all guests */
     if (to.meta.role === 'guest') {
@@ -43,7 +45,7 @@ router.beforeEach((to, from, next) => {
     } else if (to.meta.role === 'admin') {
         /* Go to admin Page, need logged in, if not, then redirect to signIn */
         if (logged) {
-            if (user.role === 'admin') {
+            if (role === 'admin') {
                 next()
             }
         } else {
@@ -57,6 +59,7 @@ router.beforeEach((to, from, next) => {
     }
     next()
 })
+
 /* eslint-disable no-new */
 new Vue({
     el: '#app',

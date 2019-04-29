@@ -40,12 +40,6 @@ public class OrderServlet extends HttpServlet {
         List orders;
         ReturnJson rs = new ReturnJson();
         HttpSession httpSession = request.getSession(false);
-        if (httpSession == null) {
-            rs.setMsg("Need log in");
-            response.setStatus(403);
-            out.print(gson.toJson(rs));
-            return;
-        }
         HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
         try{
             String role = request.getParameter("role");
@@ -143,6 +137,7 @@ public class OrderServlet extends HttpServlet {
     protected void doOptions(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException{
         setCORS(response);
+        response.setStatus(200);
     }
 
     private List<Order> findAll() {

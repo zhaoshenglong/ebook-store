@@ -6,7 +6,9 @@
         <a id="sign-in" class="sign-link" @click="signIn">sign in</a>
         <a id="sign-up" class="sign-link" @click="signUp">sign up</a>
       </div>
-      <router-view/>
+      <transition name="component-fade" mode="out-in">
+        <router-view/>
+      </transition>
     </div>
   </div>
 </template>
@@ -14,20 +16,15 @@
 <script>
 export default {
   name: "Home",
-  data() {
-    return {
-      linkLabel: "sign in"
-    };
-  },
   methods: {
     goBack() {
-      this.$router.push("/books");
+      this.$router.push({ name: "StorePage" });
     },
     signIn() {
-      this.$router.push("/signIn");
+      this.$router.push({ name: "SignIn" });
     },
     signUp() {
-      this.$router.push("/signUp");
+      this.$router.push({ name: "SignUp" });
     }
   }
 };
