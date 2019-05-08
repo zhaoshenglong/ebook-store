@@ -1,121 +1,59 @@
 package com.ibook.bookstore.Entity;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "books", schema = "bookstore", catalog = "")
+@Data
+@Table(name = "books", schema = "bookstore")
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class Book {
-    private String id;
-    private String name;
-    private String author;
-    private String isbn;
-    private double  price;
-    private String tag;
-    private String authorInfo;
-    private String contentInfo;
-    private String img;
-    private int stock;
-
-    public Book(){}
-
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public String getId() {
-        return id;
-    }
-
-    @Basic
-    @Column(name = "stock")
-    public int getStock() {
-        return stock;
-    }
-
-    @Basic
-    @Column(name = "img")
-    public String getImg() {
-        return img;
-    }
+    @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
+    @GeneratedValue( generator = "jpa-uuid")
+    private String id;
 
     @Basic
     @Column(name = "book_name")
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     @Basic
     @Column(name = "author")
-    public String getAuthor() {
-        return author;
-    }
+    private String author;
 
     @Basic
     @Column(name = "book_isbn")
-    public String getIsbn() {
-        return isbn;
-    }
+    private String isbn;
 
     @Basic
     @Column(name = "price")
-    public double getPrice() {
-        return price;
-    }
+    private double  price;
 
     @Basic
     @Column(name = "tag")
-    public String  getTag() {
-        return this.tag;
-    }
+    private String tag;
 
     @Basic
-    @Column(name = "authorInfo")
-    public String getAuthorInfo() {return authorInfo;}
+    @Column(name = "author_info")
+    private String authorInfo;
 
     @Basic
     @Column(name = "content")
-    public String getContentInfo() {
-        return contentInfo;
-    }
+    private String contentInfo;
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    public void setImg(String img) {
-        this.img = img;
-    }
+    @Basic
+    @Column(name = "img")
+    private String img;
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
-
-    public void setContentInfo(String contentInfo) {
-        this.contentInfo = contentInfo;
-    }
-
-    public void setAuthorInfo(String authorInfo) {
-        this.authorInfo = authorInfo;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
+    @Basic
+    @Column(name = "stock")
+    private int stock;
 }

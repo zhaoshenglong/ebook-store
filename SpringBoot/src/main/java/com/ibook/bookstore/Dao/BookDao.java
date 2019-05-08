@@ -1,4 +1,7 @@
 package com.ibook.bookstore.Dao;
 
-public class BookDao {
+import com.ibook.bookstore.Entity.Book;
+
+public interface BookDao {
+    Book findOne(String bookId);
 }

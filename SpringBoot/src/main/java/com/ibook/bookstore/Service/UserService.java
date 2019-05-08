@@ -1,4 +1,7 @@
 package com.ibook.bookstore.Service;
 
-public class UserService {
+import com.ibook.bookstore.Entity.User;
+
+public interface UserService {
+    User findUserByName(String name);
 }

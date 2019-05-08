@@ -1,4 +1,8 @@
 package com.ibook.bookstore.Repository;
 
-public class BookRepository {
+
+import com.ibook.bookstore.Entity.Book;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface BookRepository extends JpaRepository<Book, String> {
 }

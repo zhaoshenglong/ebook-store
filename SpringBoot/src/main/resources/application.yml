@@ -4,3 +4,7 @@ spring:
     username: dragon
     password: HXC19970129
     url: jdbc:mysql://localhost/bookstore
+  security:
+    user:
+      password: password
+      name: user

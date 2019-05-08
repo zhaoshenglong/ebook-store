@@ -1,4 +1,7 @@
 package com.ibook.bookstore.Service;
 
-public class BookService {
+import com.ibook.bookstore.Entity.Book;
+
+public interface BookService {
+    Book findBookById(String id);
 }

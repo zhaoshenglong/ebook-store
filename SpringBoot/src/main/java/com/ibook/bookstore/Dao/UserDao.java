@@ -1,4 +1,7 @@
 package com.ibook.bookstore.Dao;
 
-public class UserDao {
+import com.ibook.bookstore.Entity.User;
+
+public interface UserDao {
+    User findOne(String name);
 }

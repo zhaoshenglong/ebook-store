@@ -1,4 +1,7 @@
 package com.ibook.bookstore.Dao;
 
-public class OrderDao {
+import com.ibook.bookstore.Entity.Order;
+
+public interface OrderDao {
+    Order findOne(String id);
 }
