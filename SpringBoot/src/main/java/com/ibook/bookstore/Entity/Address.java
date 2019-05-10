@@ -9,35 +9,45 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
-
 
 @Entity
-@Table(name = "orders", schema = "bookstore")
+@Table(name = "address", schema = "bookstore")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class Order {
+public class Address {
     @Id
-    @Column(name = "order_id")
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
     @GeneratedValue(generator = "jpa-uuid")
     private String id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")
-    private User user;
+    @Basic
+    @Column(name = "province")
+    private String province;
+
+    @Basic
+    @Column(name = "city")
+    private String city;
+
+    @Basic
+    @Column(name = "district")
+    private String district;
 
     @Basic
     @Column(name = "create_date")
     private Timestamp createDate;
 
     @Basic
-    @Column(name = "state")
-    private int state;
+    @Column(name = "modify_date")
+    private Timestamp modifyDate;
 
-    @OneToMany(targetEntity = OrderItem.class, mappedBy = "orderId", cascade = CascadeType.ALL)
-    private Set<OrderItem> orderItemList;
+    @Basic
+    @Column(name = "detail")
+    private String detail;
+
+    @Basic
+    @Column(name = "user_name")
+    private String userName;
 }

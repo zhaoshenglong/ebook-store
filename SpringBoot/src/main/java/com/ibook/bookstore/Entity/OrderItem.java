@@ -1,9 +1,7 @@
 package com.ibook.bookstore.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,6 +11,8 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class OrderItem {
     @Id
@@ -23,15 +23,15 @@ public class OrderItem {
 
     @Basic
     @Column(name = "order_id")
-    private String order_id;
-/*
-    @ManyToOne(targetEntity = Order.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
-    private Order order;
-*/
+    private String orderId;
+
     @Basic
     @Column(name = "quantity")
     private int quantity;
+
+    @Basic
+    @Column(name = "book_price")
+    private double bookPrice;
 
     @ManyToOne(targetEntity = Book.class)
     @JoinColumn(name = "book_id", referencedColumnName = "id")

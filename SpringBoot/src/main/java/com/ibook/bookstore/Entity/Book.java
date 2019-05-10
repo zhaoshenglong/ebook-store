@@ -4,15 +4,19 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
+import java.util.Set;
 
 @Entity
 @Data
 @Table(name = "books", schema = "bookstore")
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class Book {
     @Id
@@ -56,4 +60,20 @@ public class Book {
     @Basic
     @Column(name = "stock")
     private int stock;
+
+    @Basic
+    @Column(name = "create_date")
+    private Timestamp createDate;
+
+    @Basic
+    @Column(name = "modify_date")
+    private Timestamp modifyDate;
+
+    @Basic
+    @Column(name = "deleted")
+    private boolean deleted;
+
+    @Basic
+    @Column(name = "liked")
+    private int liked;
 }
