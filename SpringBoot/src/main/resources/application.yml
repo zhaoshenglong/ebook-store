@@ -4,7 +4,11 @@ spring:
     username: dragon
     password: HXC19970129
     url: jdbc:mysql://localhost/bookstore
-  security:
-    user:
-      password: password
-      name: user
+  #security:
+   # user:
+    #  password: password
+     # name: user
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+

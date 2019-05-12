@@ -29,66 +29,27 @@ public class BookDaoImpl implements BookDao {
     public Page<Book> findAllByTag(String tag, Pageable pageable){
         Book book = new Book();
         book.setTag(tag);
+
+        /* There some problem with Example
+         * Reason may be for that withIncludeNullValues must set before withIgnorePaths,
+         * or it may ignore the null String / Object and thus has no effect
+         * */
+
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreCase()
-                .withMatcher("tag", ExampleMatcher.GenericPropertyMatchers.contains());
+                .withMatcher("tag", ExampleMatcher.GenericPropertyMatchers.startsWith())
+                .withIgnorePaths("price", "stock", "deleted", "liked", "id",  "name",
+                        "author", "isbn", "authorInfo", "contentInfo", "img", "createDate", "modifyDate")
+                .withIncludeNullValues();
+
         Example<Book> example = Example.of(book, matcher);
         return bookRepository.findAll(example, pageable);
     }
 
     @Override
     public Page<Book> findByIsbnNameAuthorLike(String isbn, String name, String author, Pageable pageable){
-        Book book = new Book();
-        book.setIsbn(isbn);
-        book.setName(name);
-        book.setAuthor(author);
-        ExampleMatcher matcher = ExampleMatcher.matching()
-                .withIgnoreCase()
-                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains())
-                .withMatcher("author", ExampleMatcher.GenericPropertyMatchers.contains())
-                .withMatcher("isbn", ExampleMatcher.GenericPropertyMatchers.contains());
-        Example<Book> example = Example.of(book, matcher);
-        return bookRepository.findAll(example, pageable);
-    }
 
-    @Override
-    public Book updateIsbn(Book book, String isbn) {
-        book.setIsbn(isbn);
-        return bookRepository.save(book);
-    }
-
-    @Override
-    public Book updateName(Book book, String name){
-        book.setName(name);
-        return bookRepository.save(book);
-    }
-    @Override
-    public Book updateAuthor(Book book, String author){
-        book.setName(author);
-        return bookRepository.save(book);
-    }
-    @Override
-    public Book updateAuthorInfo(Book book, String authorInfo){
-        book.setName(authorInfo);
-        return bookRepository.save(book);
-    }
-
-    @Override
-    public Book updateContent(Book book, String content){
-        book.setName(content);
-        return bookRepository.save(book);
-    }
-
-    @Override
-    public Book updatePrice(Book book, double price) {
-        book.setPrice(price);
-        return bookRepository.save(book);
-    }
-
-    @Override
-    public Book updateStock(Book book, int stock) {
-        book.setStock(stock);
-        return bookRepository.save(book);
+        return bookRepository.findAllByAuthorContainsOrNameContainsOrIsbnContains(author, name, isbn, pageable);
     }
 
     @Override

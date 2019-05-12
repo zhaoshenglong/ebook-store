@@ -21,7 +21,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByName(String name) {return userRepository.getOne(name);}
+    public User findByEmail(String email) {return userRepository.findByEmail(email);}
 
     @Override
     public Page<User> findAll(Pageable pageable) {
@@ -29,25 +29,13 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User createUser(User user) {
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
-
-    @Override
-    public User updatePassword(String password, User user) {
-        user.setPassword(password);
-        return userRepository.save(user);
-    }
-
-    @Override
-    public User updateState(boolean state, User user) {
-        user.setState(false);
-        return userRepository.save(user);
+    public void deleteUser(String name) {
+        userRepository.deleteByName(name);
     }
 
     @Override

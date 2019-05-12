@@ -36,6 +36,7 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
+    // true -> activated false -> forbidden
     @Basic
     @Column(name = "state")
     private boolean state;

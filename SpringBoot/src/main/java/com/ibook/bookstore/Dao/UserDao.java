@@ -8,18 +8,16 @@ import org.springframework.data.domain.Pageable;
 public interface UserDao {
     /* Query methods */
     User findOne(String name);
-    User findByName(String name);
+    User findByEmail(String email);
     Page<User> findAll(Pageable pageable);
 
     /* Create methods */
-    User createUser(User user);
+    User saveUser(User user);
 
     /* Delete methods */
-    void deleteUser(User user);
+    void deleteUser(String name);
 
     /* Update methods */
 
-    User updatePassword(String password, User user);
-    User updateState(boolean state, User user);
     User AddAddress(Address address, User user);
 }
