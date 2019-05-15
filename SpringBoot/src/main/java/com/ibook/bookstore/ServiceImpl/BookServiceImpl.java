@@ -9,6 +9,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.UUID;
@@ -26,19 +30,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public Page<Book> findBookByPage(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookDao.findAll(pageable);
+        return bookDao.findAllNotDeleted(pageable);
     }
 
     @Override
     public Page<Book> findBookByTagPage(String tag, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookDao.findAllByTag(tag, pageable);
+        return bookDao.findAllByTagNotDeleted(tag, pageable);
     }
 
     @Override
     public Page<Book> findAllLike(String pattern, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookDao.findByIsbnNameAuthorLike(pattern, pattern, pattern, pageable);
+        return bookDao.findByIsbnNameAuthorLikeNotDeleted(pattern, pattern, pattern, pageable);
     }
 
     /*
@@ -98,5 +102,20 @@ public class BookServiceImpl implements BookService {
             book.setStock(Integer.parseInt(stock));
         book.setModifyDate(new Timestamp(System.currentTimeMillis()));
         return bookDao.saveBook(book);
+    }
+
+    @Override
+    public byte[] loadImage(String kind, String name)  {
+        try {
+            File img = new File("/home/zhaoshenglong/bookstore/" + kind + "/" + name + ".jpg");
+            FileInputStream inputStream = new FileInputStream(img);
+
+            byte[] imgBytes = new byte[inputStream.available()];
+            inputStream.read(imgBytes, 0, inputStream.available());
+            return imgBytes;
+        } catch (IOException e){
+            //...
+            return null;
+        }
     }
 }

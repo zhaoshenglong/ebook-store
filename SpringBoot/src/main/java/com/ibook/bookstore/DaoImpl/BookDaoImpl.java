@@ -21,15 +21,15 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Page<Book> findAll(Pageable pageable) {
-        return bookRepository.findAll(pageable);
+    public Page<Book> findAllNotDeleted(Pageable pageable) {
+        return bookRepository.findAllByDeletedIsFalse(pageable);
     }
 
     @Override
-    public Page<Book> findAllByTag(String tag, Pageable pageable){
+    public Page<Book> findAllByTagNotDeleted(String tag, Pageable pageable){
         Book book = new Book();
         book.setTag(tag);
-
+        book.setDeleted(false);
         /* There some problem with Example
          * Reason may be for that withIncludeNullValues must set before withIgnorePaths,
          * or it may ignore the null String / Object and thus has no effect
@@ -38,7 +38,7 @@ public class BookDaoImpl implements BookDao {
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withMatcher("tag", ExampleMatcher.GenericPropertyMatchers.startsWith())
-                .withIgnorePaths("price", "stock", "deleted", "liked", "id",  "name",
+                .withIgnorePaths("price", "stock", "liked", "id",  "name",
                         "author", "isbn", "authorInfo", "contentInfo", "img", "createDate", "modifyDate")
                 .withIncludeNullValues();
 
@@ -47,9 +47,14 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
-    public Page<Book> findByIsbnNameAuthorLike(String isbn, String name, String author, Pageable pageable){
+    public Page<Book> findByIsbnNameAuthorLikeNotDeleted(String isbn, String name, String author, Pageable pageable){
 
         return bookRepository.findAllByAuthorContainsOrNameContainsOrIsbnContains(author, name, isbn, pageable);
+    }
+
+    @Override
+    public Page<Book> findAllIncludeDeleted(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     @Override

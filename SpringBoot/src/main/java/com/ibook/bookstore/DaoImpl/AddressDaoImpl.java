@@ -15,26 +15,12 @@ public class AddressDaoImpl implements AddressDao {
     public Address findOne(String id) {return addressRepository.getOne(id);}
 
     @Override
-    public Address updateProvince(Address address, String province) {
-        address.setProvince(province);
+    public Address saveAddress(Address address) {
         return addressRepository.save(address);
     }
 
     @Override
-    public Address updateCity(Address address, String city) {
-        address.setCity(city);
-        return addressRepository.save(address);
-    }
-
-    @Override
-    public Address updateDistrict(Address address, String district) {
-        address.setDistrict(district);
-        return addressRepository.save(address);
-    }
-
-    @Override
-    public Address updateDetail(Address address, String detail) {
-        address.setDetail(detail);
-        return addressRepository.save(address);
+    public void deleteAddress(String id){
+        addressRepository.deleteById(id);
     }
 }

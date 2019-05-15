@@ -1,10 +1,8 @@
 package com.ibook.bookstore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -18,6 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class Order {
     @Id
@@ -34,6 +33,7 @@ public class Order {
     @Column(name = "create_date")
     private Timestamp createDate;
 
+    @JsonIgnore
     @Basic
     @Column(name = "state")
     private int state;

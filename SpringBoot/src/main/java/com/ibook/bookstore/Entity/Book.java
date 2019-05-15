@@ -1,15 +1,12 @@
 package com.ibook.bookstore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Entity
 @Data
@@ -17,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class Book {
     @Id
@@ -61,18 +59,22 @@ public class Book {
     @Column(name = "stock")
     private int stock;
 
+    @JsonIgnore
     @Basic
     @Column(name = "create_date")
     private Timestamp createDate;
 
+    @JsonIgnore
     @Basic
     @Column(name = "modify_date")
     private Timestamp modifyDate;
 
+    @JsonIgnore
     @Basic
     @Column(name = "deleted")
     private boolean deleted;
 
+    @JsonIgnore
     @Basic
     @Column(name = "liked")
     private int liked;

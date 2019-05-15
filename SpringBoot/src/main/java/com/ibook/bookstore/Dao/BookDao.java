@@ -7,10 +7,10 @@ import org.springframework.data.domain.Pageable;
 public interface BookDao {
     /* Query methods */
     Book findOne(String bookId);
-    Page<Book> findAll(Pageable pageable);
-    Page<Book> findAllByTag(String tag, Pageable pageable);
-    Page<Book> findByIsbnNameAuthorLike(String isbn, String name, String author, Pageable pageable);
-
+    Page<Book> findAllNotDeleted(Pageable pageable);
+    Page<Book> findAllByTagNotDeleted(String tag, Pageable pageable);
+    Page<Book> findByIsbnNameAuthorLikeNotDeleted(String isbn, String name, String author, Pageable pageable);
+    Page<Book> findAllIncludeDeleted(Pageable pageable);
     /* Delete methods */
     void deleteBook(Book book);
 

@@ -3,7 +3,6 @@ package com.ibook.bookstore.DaoImpl;
 import com.ibook.bookstore.Dao.OrderDao;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
-import com.ibook.bookstore.Repository.OrderItemRepository;
 import com.ibook.bookstore.Repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -33,8 +32,8 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Page<Order> findAllByUserPaidBetween(Timestamp beg, Timestamp end, Pageable pageable) {
-        return orderRepository.findAllByUser_NameAndCreateDateBetweenAndStateEquals(beg, end, 1, pageable);
+    public Page<Order> findAllByUserPaidBetween(String name, Timestamp beg, Timestamp end, Pageable pageable) {
+        return orderRepository.findAllByUser_NameAndCreateDateBetweenAndStateEquals(name, beg, end, 1, pageable);
     }
 
 
@@ -55,33 +54,15 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order findByUserUnpaid(String user) {
-        return orderRepository.findOrderByUser_NameAndStateEquals(user, "unpaid");
+        return orderRepository.findOrderByUser_NameAndStateEquals(user, 0);
     }
 
-    /* Create order */
+    /* save or update order */
     @Override
-    public Order createOne(Order order) {
+    public Order saveOrder(Order order) {
         return orderRepository.save(order);
     }
 
-    /* Modify order */
-    @Override
-    public Order updateOrderState(Order order, int state) {
-        order.setState(state);
-        return orderRepository.save(order);
-    }
-
-    @Override
-    public Order addOrderItem(Order order, OrderItem orderItem) {
-        order.getOrderItemList().add(orderItem);
-        return orderRepository.save(order);
-    }
-
-    @Override
-    public Order deleteOrderItem(Order order, OrderItem orderItem) {
-        order.getOrderItemList().remove(orderItem);
-        return orderRepository.save(order);
-    }
 
     @Override
     public Order deleteOrder(Order order) {

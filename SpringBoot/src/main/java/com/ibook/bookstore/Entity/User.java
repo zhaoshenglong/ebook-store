@@ -1,10 +1,9 @@
 package com.ibook.bookstore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.fasterxml.jackson.annotation.JsonView;
+import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -17,34 +16,44 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class User {
+    public interface userSimpleView{};
+    public interface userDetailView{};
+
+    @JsonView(userSimpleView.class)
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_name")
     private String name;
 
+    @JsonView(userSimpleView.class)
     @Basic
     @Column(name = "email")
     private String email;
 
+    @JsonIgnore
     @Basic
     @Column(name = "passwd")
     private String password;
 
+    @JsonView(userSimpleView.class)
     @Basic
     @Column(name = "avatar")
     private String avatar;
 
     // true -> activated false -> forbidden
+    @JsonIgnore
     @Basic
     @Column(name = "state")
     private boolean state;
 
+    @JsonIgnore
     @Basic
     @Column(name = "create_date")
     private Timestamp createDate;
 
+    @JsonIgnore
     @Basic
     @Column(name = "modify_date")
     private Timestamp modifyDate;
@@ -56,4 +65,6 @@ public class User {
 
     @OneToMany(targetEntity = Address.class, mappedBy = "userName")
     private Set<Address> addresses;
+
 }
+

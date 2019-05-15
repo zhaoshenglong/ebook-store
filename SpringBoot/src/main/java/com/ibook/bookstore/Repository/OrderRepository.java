@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 
 public interface OrderRepository extends JpaRepository<Order, String> {
     Page<Order> findAllByUser_Name(String name, Pageable pageable);
-    Page<Order> findAllByUser_NameAndCreateDateBetweenAndStateEquals(Timestamp beg, Timestamp end, int state, Pageable pageable);
+    Page<Order> findAllByUser_NameAndCreateDateBetweenAndStateEquals(String name, Timestamp beg, Timestamp end, int state, Pageable pageable);
     Page<Order> findAllByCreateDateBetween(Timestamp start, Timestamp end, Pageable pageable);
     Page<Order> findAllByUser_NameAndStateEquals(String name, int state, Pageable pageable);
     Page<Order> findAllByStateEquals(int state, Pageable pageable);
-    Order findOrderByUser_NameAndStateEquals(String name, String state);
+    Order findOrderByUser_NameAndStateEquals(String name, int state);
 
 }

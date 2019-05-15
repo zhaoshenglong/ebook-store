@@ -1,10 +1,8 @@
 package com.ibook.bookstore.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -16,6 +14,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
 public class Address {
     @Id
@@ -35,10 +34,12 @@ public class Address {
     @Column(name = "district")
     private String district;
 
+    @JsonIgnore
     @Basic
     @Column(name = "create_date")
     private Timestamp createDate;
 
+    @JsonIgnore
     @Basic
     @Column(name = "modify_date")
     private Timestamp modifyDate;
@@ -47,6 +48,7 @@ public class Address {
     @Column(name = "detail")
     private String detail;
 
+    @JsonIgnore
     @Basic
     @Column(name = "user_name")
     private String userName;

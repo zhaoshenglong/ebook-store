@@ -1,7 +1,9 @@
 package com.ibook.bookstore.Service;
 
+import com.ibook.bookstore.Entity.Address;
 import com.ibook.bookstore.Entity.User;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -12,9 +14,16 @@ public interface UserService {
 
     User createUser(User user);
 
+    User likeBook(String name, String id);
+
+    @Transactional
     void deleteUser(String name);
 
     User updateUser(Map<String, String> data);
 
-    User addAddress()
+    User addAddress(String name, Address address);
+
+    User updateAddress(Map<String, String> addressData);
+
+    void deleteAddress(String id);
 }

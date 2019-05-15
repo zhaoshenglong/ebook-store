@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<Book, String> {
     Page<Book> findAllByAuthorContainsOrNameContainsOrIsbnContains(String author, String name, String isbn, Pageable pageable);
+    Page<Book> findAllByDeletedIsFalse(Pageable pageable);
 }
