@@ -148,13 +148,11 @@ export default {
       this.showCart = false;
     },
     addCart(bookId) {
-      var apiUrl = "/api/user/" + this.getUser.name + "/orders/item/add";
+      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
       axios
-        .post(apiUrl, {
-          data: {
-            bookId: bookId,
-            quantity: 1
-          }
+        .put(apiUrl, {
+          bookId: bookId,
+          quantity: 1
         })
         .then(response => {
           console.log(response);
@@ -223,6 +221,7 @@ export default {
           this.bookList = data.content;
           this.pager.total = data.totalElements;
           this.pager.size = data.pageSize;
+          this.searchMsg = "";
         })
         .catch(err => {
           console.log(err);

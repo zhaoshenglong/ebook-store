@@ -30,37 +30,37 @@
           <tr class="book-item">
             <td width="70%">
               <ul>
-                <li v-for="book in order.books" :key="book.id" class="book-desc">
-                  <img :src="book.img" alt="Book picture" width="50px" class="desc-img">
+                <li v-for="item in order.orderItemList" :key="item.id" class="book-desc">
+                  <img :src="item.book.img" alt="Book picture" width="50px" class="desc-img">
                   <div class="desc-info">
-                    <div class="link-normal desc-name">{{book.name}}</div>
+                    <div class="link-normal desc-name">{{item.book.name}}</div>
                     <div class="desc-auth">
                       by
-                      <span>{{book.author}}</span>
+                      <span>{{item.book.author}}</span>
                     </div>
-                    <div class="desc-unit">{{Number(book.price).toFixed(2)}}</div>
+                    <div class="desc-unit">{{Number(item.bookPrice).toFixed(2)}}</div>
                     <div class="feedback">
                       <span title="like">
                         <svg class="icon" aria-hidden="true">
                           <use xlink:href="#iconlike"></use>
                         </svg>
                       </span>
-                      <span title="feedback" @click="toRemark(book.id)">
+                      <span title="feedback" @click="toRemark(item.book.id)">
                         <svg class="icon" aria-hidden="true">
                           <use xlink:href="#iconyijianfankui"></use>
                         </svg>
                       </span>
                     </div>
                   </div>
-                  <div class="desc-quantity">x{{book.quantity}}</div>
-                  <div class="desc-total">{{Number(book.price * book.quantity).toFixed(2)}}</div>
+                  <div class="desc-quantity">x{{item.quantity}}</div>
+                  <div class="desc-total">{{Number(item.bookPrice * item.quantity).toFixed(2)}}</div>
                 </li>
               </ul>
             </td>
-            <td :rowspan="order.books.length" width="15%">
-              <div class="td-block">{{order.costumer}}</div>
+            <td :rowspan="order.orderItemList.length" width="15%">
+              <div class="td-block">{{order.user.name}}</div>
             </td>
-            <td :rowspan="order.books.length" width="15%">
+            <td :rowspan="order.orderItemList.length" width="15%">
               <div class="td-block">{{total(order)}}</div>
             </td>
           </tr>
@@ -70,13 +70,24 @@
         <p>还没有订单哦！ 现在去买！</p>
         <a @click="toStore">Back to Store</a>
       </div>
+      <el-pagination
+        v-if="orderList.length != 0"
+        :page-size="pager.size"
+        :page-count="5"
+        layout="prev, pager, next"
+        :total="pager.total"
+        background
+        :hide-on-single-page="true"
+        @current-change="changePage"
+      ></el-pagination>
     </div>
   </div>
 </template>
 <script>
 import OrderSide from "../../components/order/OrderSide";
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
+import Cookies from "js-cookie";
 export default {
   name: "Order",
   components: {
@@ -87,6 +98,7 @@ export default {
       orderList: [],
       timeBegin: "",
       timeEnd: "",
+      orderState: "",
       pager: {
         page: 0,
         size: 10,
@@ -105,8 +117,17 @@ export default {
     toStore() {
       this.$router.push({ name: "StorePage" });
     },
+    changePage(page) {
+      this.pager.page = page--;
+      if (this.orderState == "time") {
+        this.fetchOrderBetween();
+      } else {
+        this.fetchAllOrder();
+      }
+    },
     fetchAllOrder() {
-      var apiUrl = "/api/user/" + this.getUser.name + "/orders";
+      this.orderState = "";
+      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders";
       axios
         .get(apiUrl, {
           params: {
@@ -114,30 +135,33 @@ export default {
           }
         })
         .then(response => {
+          console.log("response:");
           console.log(response);
-          let data = new Array();
-          data = response.data;
-          this.transferToData(data);
+          const data = response.data;
+          this.orderList = data.content;
+          this.pager.size = data.pageSize;
+          this.pager.total = data.totalElements;
         })
         .catch(err => {
           console.log(err);
         });
     },
     fetchOrderBetween() {
+      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/between";
       axios
-        .get("orderServlet", {
+        .get(apiUrl, {
           params: {
-            role: "user",
-            action: "findBetween",
-            begin: this.timeBegin,
+            page: this.pager.page,
+            beg: this.timeBegin,
             end: this.timeEnd
           }
         })
         .then(response => {
           console.log(response);
-          let data = new Array();
-          data = response.data;
-          this.transferToData(data);
+          const data = response.data;
+          this.orderList = data.content;
+          this.pager.size = data.pageSize;
+          this.pager.total = data.totalElements;
         })
         .catch(err => {
           console.log(err);
@@ -184,15 +208,17 @@ export default {
     updateTime(begin, end) {
       this.timeBegin = begin + " 00:00:00";
       this.timeEnd = end + " 23:59:59";
+      this.orderState = "time";
       this.fetchOrderBetween();
     },
     total(order) {
       let res = 0;
-      order.books.forEach(book => {
-        res += book.price * book.quantity;
+      order.orderItemList.forEach(item => {
+        res += item.bookPrice * item.quantity;
       });
       return Number(res).toFixed(2);
-    }
+    },
+    ...mapGetters(["getUser"])
   },
   mounted() {
     this.fetchAllOrder();

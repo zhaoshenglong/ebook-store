@@ -29,14 +29,14 @@ export default new Vuex.Store({
             state.user.avatar = user.avatar
             state.user.role = user.name === 'admin' ? 'admin' : 'user'
             state.signed = true
-            Cookies.set('role', state.user.role)
         },
         signOut: state => {
             state.signed = false
+            Cookies.set('role', 'guest')
             Cookies.set('logged', false)
         },
         signIn: (state) => {
-            axios.get('/status')
+            axios.get('/api/public/status')
                 .then(response => {
                     console.log(response)
                     let user = response.data
@@ -45,8 +45,12 @@ export default new Vuex.Store({
                     state.user.email = user.email
                     state.user.role = user.name === 'admin' ? 'admin' : 'user'
                     state.signed = true
+                    Cookies.set('role', state.user.role)
+                    Cookies.set('logged', true)
+                    Cookies.set('name', state.user.name)
                 }).catch(err => {
                     console.log(err)
+                    state.user.signed = false
                 })
         }
     },

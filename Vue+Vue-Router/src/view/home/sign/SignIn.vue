@@ -84,18 +84,14 @@ export default {
             name: data.name,
             avatar: data.avatar
           });
+          Cookies.set("logged", true);
+          Cookies.set("name", data.name);
           this.$message({
             showClose: true,
             message: "登录成功，3秒后自动为您跳转到商品页面",
             type: "success"
           });
           setTimeout(() => {
-            /*Cookies.set("user", {
-                name: data.name,
-                avatar: data.avatar,
-                password: data.password,
-                role: data.name === "admin" ? "admin" : "user"
-              });*/
             if (data.name == "admin") {
               this.$router.push({ name: "ManageBooks" });
             } else this.$router.push({ name: "StorePage" });

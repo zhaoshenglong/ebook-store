@@ -14,7 +14,9 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import axios from 'axios'
 import Cookies from 'js-cookie'
-import ElementUI from 'element-ui'
+import ElementUI, {
+    Message
+} from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(ElementUI)
@@ -25,13 +27,9 @@ Vue.prototype.axios = axios
 axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.withCredentials = true
 
-Cookies.set('role', 'guest')
-router.afterEach(route => {
-    window.scroll(0, 0)
-})
 router.beforeEach((to, from, next) => {
-    let role = Cookies.getJSON('role')
-    let logged = Cookies.getJSON('logged')
+    let role = Cookies.get('role')
+    let logged = Cookies.get('logged')
     /* Go to guest page, allowed all guests */
     if (to.meta.role === 'guest') {
         next()
@@ -40,9 +38,16 @@ router.beforeEach((to, from, next) => {
         if (logged) {
             next()
         } else {
-            next({
-                name: 'SignIn'
+            Message({
+                type: 'warning',
+                message: '您还没有登录哦，3秒后为您跳转到登录页面',
+                duration: 3000
             })
+            setTimeout(() => {
+                next({
+                    name: 'SignIn'
+                })
+            }, 3000)
         }
     } else if (to.meta.role === 'admin') {
         /* Go to admin Page, need logged in, if not, then redirect to signIn */
@@ -51,8 +56,11 @@ router.beforeEach((to, from, next) => {
                 next()
             }
         } else {
-            alert('You are not admin!')
-            return
+            Message({
+                type: 'warning',
+                message: '抱歉的通知您，您没有该权限'
+            })
+            setTimeout(() => {}, 3000)
         }
     } else {
         next({

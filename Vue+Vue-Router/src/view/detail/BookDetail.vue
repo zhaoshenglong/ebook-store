@@ -16,6 +16,7 @@
 <script>
 import qs from "qs";
 import axios from "axios";
+import Cookies from "js-cookie";
 import { mapGetters } from "vuex";
 import BookRemark from "../../components/remark/Remark";
 import BookInfo from "../../components/book/BookInfo";
@@ -46,13 +47,11 @@ export default {
         });
     },
     addCart(id, quantity) {
-      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
+      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/item/add";
       axios
-        .post(apiUrl, {
-          data: {
-            bookId: id,
-            quantity: quantity
-          }
+        .put(apiUrl, {
+          bookId: id,
+          quantity: quantity
         })
         .then(response => {
           console.log(response.data);
