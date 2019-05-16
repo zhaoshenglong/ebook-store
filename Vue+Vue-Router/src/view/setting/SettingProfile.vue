@@ -36,16 +36,6 @@
               enctype="multipart/form-data"
             >
           </div>
-          <div>
-            <wait class="img-msg-box" :wait="imgWait" v-show="imgWait"></wait>
-            <message-box
-              class="img-msg-box"
-              :error="imgError"
-              :success="imgSuccess"
-              :message="imgMsg"
-              v-show="imgError || imgSuccess"
-            ></message-box>
-          </div>
         </div>
       </div>
     </div>
@@ -53,17 +43,13 @@
 </template>
 <script>
 import SettingSide from "../../components/setting/SettingSide";
-import MessageBox from "../../components/message/MessageBox";
-import Wait from "../../components/message/Wait";
 import axios from "axios";
 import qs from "qs";
 import { mapGetters } from "vuex";
 export default {
   name: "SettingProfile",
   components: {
-    SettingSide,
-    Wait,
-    MessageBox
+    SettingSide
   },
   data() {
     return {
@@ -91,27 +77,17 @@ export default {
         .get("/status")
         .then(response => {
           const data = response.data;
-          this.imgUrl = data.avatar;
-          this.name = data.name;
-          this.email = data.email;
         })
         .catch(err => {
           console.log(err);
         });
     },
     updateAvatar() {
-      this.imgWait = true;
       let file = this.$refs.fileInput.files[0];
       if (file == undefined) {
-        this.imgError = true;
-        this.imgSuccess = false;
-        this.imgMsg = "文件上传失败";
         return;
       }
       if (file.size > 4 << 20) {
-        this.imgError = true;
-        this.imgSuccess = false;
-        this.imgMsg = "图片大小不能超过4MB";
         return;
       }
       /* Prepare for the avatar to be uploaded */
@@ -126,22 +102,14 @@ export default {
       axios
         .post("avatarUpload", img, config)
         .then(response => {
-          this.imgSuccess = true;
-          this.imgError = false;
-          this.imgMsg = "Update success";
           console.log(response.data);
         })
         .catch(err => {
           console.log(err);
-          this.imgSuccess = false;
-          this.imgError = true;
           if (err.status == 500) {
-            this.imgMsg = "Server failed, Please try again";
           } else {
-            this.imgMsg = "Update failed, are you signed?";
           }
         });
-      this.imgWait = false;
     },
     emailFormat() {
       var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;

@@ -14,13 +14,15 @@ import VueAwesomeSwiper from 'vue-awesome-swiper'
 import 'swiper/dist/css/swiper.css'
 import axios from 'axios'
 import Cookies from 'js-cookie'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+
+Vue.use(ElementUI)
 Vue.use(VueAwesomeSwiper)
 Vue.config.productionTip = false
 Vue.prototype.axios = axios
 
-axios.defaults.baseURL = 'http://localhost:8088'
-axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-axios.defaults.headers.put['Content-Type'] = 'application/json'
+axios.defaults.baseURL = 'http://localhost:8080'
 axios.defaults.withCredentials = true
 
 Cookies.set('role', 'guest')

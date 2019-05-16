@@ -16,7 +16,7 @@
 <script>
 import qs from "qs";
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapGetters } from "vuex";
 import BookRemark from "../../components/remark/Remark";
 import BookInfo from "../../components/book/BookInfo";
 import BookContent from "../../components/book/BookContent";
@@ -37,11 +37,7 @@ export default {
     fetchBookData() {
       this.book.id = this.$route.params.bookId;
       axios
-        .get("/bookServlet", {
-          params: {
-            id: this.book.id
-          }
-        })
+        .get("/api/public/books/id/" + this.book.id)
         .then(response => {
           this.book = response.data;
         })
@@ -50,23 +46,34 @@ export default {
         });
     },
     addCart(id, quantity) {
+      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
       axios
-        .post(
-          "cartServlet",
-          qs.stringify({
-            action: "add",
-            orderItem: "{" + "bookId:" + id + "," + "quantity:" + quantity + "}"
-          })
-        )
+        .post(apiUrl, {
+          data: {
+            bookId: id,
+            quantity: quantity
+          }
+        })
         .then(response => {
           console.log(response.data);
+          this.$message({
+            message: "成功加入购物车！",
+            duration: 800,
+            type: "success"
+          });
         })
         .catch(err => {
           console.log(err);
+          this.$message({
+            message: "加入购物车失败，我们的服务器挂了",
+            duration: 800,
+            type: "error"
+          });
         });
     },
     fetchBookRemark() {},
-    postRemark() {}
+    postRemark() {},
+    ...mapGetters(["getUser"])
   },
   mounted() {
     this.fetchBookData();

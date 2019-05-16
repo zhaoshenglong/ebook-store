@@ -142,24 +142,36 @@ export default {
         console.log("test failed");
       } else return true;
     },
+
     register() {
       if (this.nameOk && this.passwdOk && this.emailOk) {
         var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
         axios
-          .put("/userServlet", {
+          .post("/api/public/register", {
             name: this.usrName,
             password: encrypt,
             email: this.usrEmail
           })
           .then(response => {
             console.log(response.data);
-            var c = confirm("注册成功！ 现在就登录？");
-            if (c) {
-              this.$router.push({ name: "SignIn" });
-            }
+            this.$message({
+              showClose: true,
+              message: "注册成功，3秒后自动跳转到登录页面",
+              type: "success",
+              center: true
+            });
+            setTimeout(() => {
+              this.$router.push("SignIn");
+            }, 3000);
           })
           .catch(err => {
             console.log(err);
+            this.$message({
+              showClose: true,
+              message: "注册失败了,抱歉，我们服务器可能挂了",
+              type: "error",
+              center: true
+            });
           });
       }
     }
@@ -168,15 +180,14 @@ export default {
     nameVerified() {
       if (this.usrName != "") {
         axios
-          .get("/userServlet", {
+          .get("/api/public/name/verify", {
             params: {
-              action: "verify",
               name: this.usrName
             }
           })
           .then(response => {
             const data = response.data;
-            if (response.status == 200) this.nameOk = true;
+            this.nameOk = true;
           })
           .catch(err => {
             console.log(err);
@@ -187,16 +198,15 @@ export default {
     emailVerified() {
       if (this.emailFormat()) {
         axios
-          .get("/userServlet", {
+          .get("/api/public/email/verify", {
             params: {
-              action: "verify",
               email: this.usrEmail
             }
           })
           .then(response => {
             const data = response.data;
             console.log(data);
-            if (response.status == 200) this.emailOk = true;
+            this.emailOk = true;
           })
           .catch(err => {
             console.log(err);

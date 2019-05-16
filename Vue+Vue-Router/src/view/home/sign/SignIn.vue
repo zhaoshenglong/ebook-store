@@ -26,15 +26,7 @@
           v-model="usrPasswd"
         >
       </div>
-      <button class="btn btn-block btn-submit" @click="verifyUser">sign in</button>
-      <message-box
-        class="msg"
-        :error="msgError"
-        :success="msgSuccess"
-        :message="message"
-        v-show="msgError || msgSuccess"
-      ></message-box>
-      <wait class="msg" :wait="wait" v-show="wait"/>
+      <button class="btn btn-block btn-submit" @click="logIn">sign in</button>
     </div>
   </div>
 </template>
@@ -42,24 +34,14 @@
 import cryptoJs from "crypto-js";
 import axios from "axios";
 import qs from "qs";
-import MessageBox from "../../../components/message/MessageBox";
-import Wait from "../../../components/message/Wait";
 import { mapGetters, mapMutations } from "vuex";
 import Cookies from "js-cookie";
 export default {
   name: "signIn",
-  components: {
-    Wait,
-    MessageBox
-  },
   data() {
     return {
       usrName: "",
-      usrPasswd: "",
-      msgError: false,
-      msgSuccess: false,
-      message: "",
-      wait: false
+      usrPasswd: ""
     };
   },
   methods: {
@@ -79,52 +61,61 @@ export default {
         });
       }
     },
-    verifyUser() {
-      this.wait = true;
+    logIn() {
       var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
       axios
-        .get("/userServlet", {
-          params: {
-            action: "get",
-            name: this.usrName,
+        .post(
+          "/login",
+          qs.stringify({
+            username: this.usrName,
             password: encrypt
+          }),
+          {
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
           }
-        })
+        )
         .then(response => {
-          this.wait = false;
-          this.msgError = false;
-          this.msgSuccess = true;
-          this.message = "Success log in, heading to store page...";
+          const data = response.data;
+          console.log(data);
+
+          this.setUser({
+            name: data.name,
+            avatar: data.avatar
+          });
+          this.$message({
+            showClose: true,
+            message: "登录成功，3秒后自动为您跳转到商品页面",
+            type: "success"
+          });
           setTimeout(() => {
-            const data = response.data;
-            console.log(data);
-            if (response.status == 200) {
-              this.setUser({
-                name: data.name,
-                avatar: data.avatar,
-                password: encrypt
-              });
-              Cookies.set("user", {
+            /*Cookies.set("user", {
                 name: data.name,
                 avatar: data.avatar,
                 password: data.password,
                 role: data.name === "admin" ? "admin" : "user"
-              });
-              if (data.name == "admin") {
-                this.$router.push({ name: "ManageBooks" });
-              } else this.$router.push({ name: "StorePage" });
-            }
-            this.msgSuccess = false;
+              });*/
+            if (data.name == "admin") {
+              this.$router.push({ name: "ManageBooks" });
+            } else this.$router.push({ name: "StorePage" });
           }, 3000);
         })
         .catch(err => {
           console.log(err);
-          this.wait = false;
-          this.msgError = true;
           if (err.status == 500) {
-            this.message = "Server failed, please try again";
+            this.$message({
+              showClose: true,
+              message: "登录失败，我们的服务器可能挂了:(",
+              type: "error"
+            });
+          } else {
+            this.$message({
+              showClose: true,
+              message: "登录失败，是不是密码错了？",
+              type: "error"
+            });
           }
-          this.message = "Sign in failed, please try again";
         });
     },
     ...mapGetters(["getUser"]),

@@ -86,7 +86,12 @@ export default {
     return {
       orderList: [],
       timeBegin: "",
-      timeEnd: ""
+      timeEnd: "",
+      pager: {
+        page: 0,
+        size: 10,
+        total: 0
+      }
     };
   },
   computed: {
@@ -101,11 +106,11 @@ export default {
       this.$router.push({ name: "StorePage" });
     },
     fetchAllOrder() {
+      var apiUrl = "/api/user/" + this.getUser.name + "/orders";
       axios
-        .get("orderServlet", {
+        .get(apiUrl, {
           params: {
-            role: "user",
-            action: "findByUser"
+            page: this.pager.page
           }
         })
         .then(response => {

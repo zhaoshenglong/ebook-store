@@ -3,19 +3,24 @@
     <div id="search-bar">
       <img class="easing-variables" src="../../../static/logo/logo1.png">
       <div id="search-container">
-        <input type="text" v-model="searchMsg" placeholder="书名 / 作者 / ISBN">
+        <input
+          type="text"
+          v-model="searchMsg"
+          placeholder="书名 / 作者 / ISBN"
+          @keyup.enter="changeBookListByLike"
+        >
         <svg id="search" class="icon" aria-hidden="true">
           <use xlink:href="#iconsearch"></use>
         </svg>
       </div>
     </div>
-    <side-bar @changeDisplayTag="changeDisplayTag" :displayTag="dispalyTag"></side-bar>
+    <side-bar @changeDisplayTag="changeBookListByTag" :displayTag="dispalyTag"></side-bar>
     <div class="view-main">
       <div id="store-main">
         <ul id="book-list">
           <li
             class="book-item"
-            v-for="book in filterBooks"
+            v-for="book in bookList"
             :key="book.isbn"
             @mouseenter="showCart = book.id"
             @mouseleave="showCart = ''"
@@ -63,6 +68,17 @@
             </div>
           </li>
         </ul>
+        <div>
+          <el-pagination
+            :page-size="pager.size"
+            :page-count="5"
+            layout="prev, pager, next"
+            :total="pager.total"
+            background
+            :hide-on-single-page="true"
+            @current-change="changePage"
+          ></el-pagination>
+        </div>
       </div>
     </div>
   </div>
@@ -71,6 +87,7 @@
 import SideBar from "../../components/page/Sidebar";
 import axios from "axios";
 import qs from "qs";
+import { mapGetters } from "vuex";
 export default {
   name: "StoreMain",
   components: {
@@ -81,7 +98,13 @@ export default {
       bookList: [],
       dispalyTag: "All",
       searchMsg: "",
-      showCart: ""
+      showCart: "",
+      bookState: "",
+      pager: {
+        page: 0,
+        size: 10,
+        total: 10
+      }
     };
   },
   methods: {
@@ -91,9 +114,32 @@ export default {
         params: { bookId: bookId }
       });
     },
-    changeDisplayTag(tag) {
+    changeBookListByTag(tag) {
       this.dispalyTag = tag;
-      this.changeListByName();
+      this.pager.page = 0;
+      if (tag == "All") {
+        this.fetchBooks();
+      } else {
+        this.bookState = "tag";
+        this.fetchBooksByTag();
+      }
+    },
+    changeBookListByLike() {
+      this.pager.page = 0;
+      this.bookState = "like";
+      this.fetchBooksLike();
+    },
+
+    // There is a bug with changing current page
+    changePage(page) {
+      this.pager.page = page - 1;
+      if (this.bookState == "tag") {
+        this.fetchBooksByTag();
+      } else if (this.bookState == "like") {
+        this.fetchBooksLike();
+      } else {
+        this.fetchBooks();
+      }
     },
     cartTrue() {
       this.showCart = true;
@@ -102,67 +148,91 @@ export default {
       this.showCart = false;
     },
     addCart(bookId) {
+      var apiUrl = "/api/user/" + this.getUser.name + "/orders/item/add";
       axios
-        .post(
-          "/cartServlet",
-          qs.stringify({
-            action: "add",
-            orderItem: "{" + "bookId: " + bookId + "," + "quantity:" + 1 + "}"
-          })
-        )
+        .post(apiUrl, {
+          data: {
+            bookId: bookId,
+            quantity: 1
+          }
+        })
         .then(response => {
           console.log(response);
+          this.$message({
+            message: "成功加入购物车",
+            type: "success",
+            duration: 800
+          });
         })
         .catch(err => {
           console.log(err);
+          this.$message({
+            message: "加入购物车失败,我们的服务器挂了",
+            type: "error",
+            duration: 800
+          });
         });
     },
     fetchBooks() {
       axios
-        .get("/bookServlet", {
+        .get("/api/public/books/tag/all", {
           params: {
-            id: "all"
+            page: this.pager.page
           }
         })
         .then(response => {
           const data = response.data;
           console.log(data);
-          this.bookList = data;
+          this.bookList = data.content;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.pageSize;
         })
         .catch(err => {
           console.log(err);
         });
     },
-    changeListByName() {
-      console.log(this.filterBooks.length);
-      console.log(this.filterBooks);
-    }
-  },
-  computed: {
-    filterBooks() {
-      var books = [];
-      if (this.searchMsg != "") {
-        this.bookList.forEach(ele => {
-          if (ele.name.match(this.searchMsg)) {
-            books.push(ele);
+    fetchBooksByTag() {
+      axios
+        .get("/api/public/books/tag/" + this.dispalyTag, {
+          params: {
+            page: this.pager.page
           }
+        })
+        .then(response => {
+          const data = response.data;
+          console.log(data);
+          this.bookList = data.content;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.pageSize;
+        })
+        .catch(err => {
+          console.log(err);
         });
-      } else {
-        if (this.dispalyTag === "All") {
-          this.bookList.forEach(ele => {
-            books.push(ele);
-          });
-        } else {
-          this.bookList.forEach(ele => {
-            var tag = this.dispalyTag;
-            if (ele.tag == this.dispalyTag) books.push(ele);
-          });
-        }
-      }
-      return books;
-    }
+    },
+    fetchBooksLike() {
+      axios
+        .get("/api/public/books/search", {
+          params: {
+            page: this.pager.page,
+            search_text: this.searchMsg
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          console.log(data);
+          this.bookList = data.content;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.pageSize;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    ...mapGetters(["getUser"])
   },
+  computed: {},
   mounted() {
+    this.pager.page = 0;
     this.fetchBooks();
   }
 };
