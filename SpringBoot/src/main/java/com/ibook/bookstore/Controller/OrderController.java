@@ -20,6 +20,11 @@ public class OrderController {
         return orderService.findOrderById(id);
     }
 
+    @GetMapping("/api/user/{name}/cart")
+    public Order getCart(@PathVariable("name")String name) {
+        return orderService.findCart(name);
+    }
+
     @GetMapping("/api/user/{name}/orders")
     public Page<Order> getOrderPage(@PathVariable("name") String name,
                                     @RequestParam("page") String page) {
@@ -46,6 +51,12 @@ public class OrderController {
     public Order addItem(@PathVariable("name") String name,
                          @RequestBody Map<String, String> data){
         return orderService.addItemToCart(name, data);
+    }
+
+    @PutMapping("/api/user/{name}/orders/item/set")
+    public Order setItem(@PathVariable("name")String name,
+                         @RequestBody Map<String, String> data) {
+        return orderService.setItemQuantity(name, data);
     }
 
     @DeleteMapping("/api/user/{name}/orders/item/delete")

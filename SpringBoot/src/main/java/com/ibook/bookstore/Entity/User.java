@@ -32,7 +32,7 @@ public class User {
     @Column(name = "email")
     private String email;
 
-    @JsonIgnore
+
     @Basic
     @Column(name = "passwd")
     private String password;
@@ -43,7 +43,6 @@ public class User {
     private String avatar;
 
     // true -> activated false -> forbidden
-    @JsonIgnore
     @Basic
     @Column(name = "state")
     private boolean state;

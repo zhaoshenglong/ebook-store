@@ -69,12 +69,12 @@ public class Book {
     @Column(name = "modify_date")
     private Timestamp modifyDate;
 
-    @JsonIgnore
+
     @Basic
     @Column(name = "deleted")
     private boolean deleted;
 
-    @JsonIgnore
+
     @Basic
     @Column(name = "liked")
     private int liked;

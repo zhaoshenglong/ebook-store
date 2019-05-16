@@ -48,7 +48,7 @@ public class Address {
     @Column(name = "detail")
     private String detail;
 
-    @JsonIgnore
+
     @Basic
     @Column(name = "user_name")
     private String userName;

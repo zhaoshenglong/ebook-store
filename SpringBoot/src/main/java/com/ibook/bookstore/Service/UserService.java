@@ -5,6 +5,8 @@ import com.ibook.bookstore.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 public interface UserService {
@@ -26,4 +28,9 @@ public interface UserService {
     User updateAddress(Map<String, String> addressData);
 
     void deleteAddress(String id);
+
+    Boolean nameCanBeRegistered(String name);
+    Boolean emailCanBeRegistered(String email);
+
+    Map<String, String> getStatus(HttpSession session, HttpServletResponse response);
 }

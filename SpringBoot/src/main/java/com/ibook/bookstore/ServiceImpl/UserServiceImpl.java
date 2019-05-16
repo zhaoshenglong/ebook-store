@@ -16,7 +16,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -143,6 +146,46 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAddress(String id) {
         addressDao.deleteAddress(id);
+    }
+
+    @Override
+    public Boolean nameCanBeRegistered(String name) {
+        User user;
+        try {
+            user = userDao.findOne(name);
+            if (user != null) {
+                return false;
+            } else return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    @Override
+    public Boolean emailCanBeRegistered(String email) {
+        User user;
+        try  {
+            user = userDao.findByEmail(email);
+            if (user != null) return false;
+            return true;
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+    @Override
+    public Map<String, String> getStatus(HttpSession session, HttpServletResponse response) {
+        Map<String, String> status = new HashMap<>();
+        if (session != null) {
+            status.put("name", (String)session.getAttribute("name"));
+            status.put("avatar", (String)session.getAttribute("avatar"));
+            status.put("email", (String)session.getAttribute("email"));
+            response.setStatus(200);
+        } else {
+            status.put("msg", "session not found");
+            response.setStatus(401);
+        }
+        return status;
     }
 
 

@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
@@ -26,9 +29,15 @@ public class UserController {
 
     @PostMapping("/api/public/register")
     public User register(@RequestBody User user) {
+        System.out.println(user);
         return userService.createUser(user);
     }
 
+    @GetMapping("/api/public/status")
+    public Map<String, String>getStatus(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        return userService.getStatus(session, response);
+    }
     @PostMapping("/api/user/{name}/addresses/add")
     public User addAddress(@PathVariable("name") String name, @RequestBody Address address){
         return userService.addAddress(name, address);

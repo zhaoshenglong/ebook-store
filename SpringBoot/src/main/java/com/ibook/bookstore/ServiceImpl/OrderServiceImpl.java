@@ -3,6 +3,7 @@ package com.ibook.bookstore.ServiceImpl;
 import com.ibook.bookstore.Dao.BookDao;
 import com.ibook.bookstore.Dao.OrderDao;
 import com.ibook.bookstore.Dao.OrderItemDao;
+import com.ibook.bookstore.Dao.UserDao;
 import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
@@ -28,6 +29,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     BookDao bookDao;
 
+    @Autowired
+    UserDao userDao;
     @Override
     public Order findOrderById(String id) {
         return orderDao.findOne(id);
@@ -47,37 +50,47 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.findAllByUserPaidBetween(name, Timestamp.valueOf(beg), Timestamp.valueOf(end), pageable);
     }
 
+
+
     @Override
     public Order addItemToCart(String name, Map<String, String> itemData) {
         String id = itemData.get("id");
 
-        String orderId = itemData.get("orderId"), quantity = itemData.get("quantity"),
-               bookPrice = itemData.get("bookPrice"), bookId = itemData.get("bookId");
-        OrderItem orderItem;
+        String quantity = itemData.get("quantity"),
+               bookId = itemData.get("bookId");
+        OrderItem orderItem = null;
+        Order cart = orderDao.findByUserUnpaid(name);
 
         // Assumes that bookId is not null
-        Book book = bookDao.findOne(bookId);
+
         if (id == null) {
-            /* Maybe need to create a new order */
-            orderItem = new OrderItem();
-            if (orderId != null)
-                orderItem.setOrderId(orderId);
-            if (quantity != null)
-                orderItem.setQuantity(Integer.parseInt(quantity));
-            if (bookPrice != null)
-                orderItem.setBookPrice(Double.parseDouble(bookPrice));
-            orderItem.setBook(book);
+            for (OrderItem oi :cart.getOrderItemList() ) {
+                if (oi.getBook().getId().equals(bookId)) {
+                    orderItem = oi;
+                    break;
+                }
+            }
+            if (orderItem != null) {
+                orderItem.setQuantity(orderItem.getQuantity() + Integer.parseInt(quantity));
+            } else {
+                orderItem = new OrderItem();
+                if (quantity != null)
+                    orderItem.setQuantity(Integer.parseInt(quantity));
+                Book book = bookDao.findOne(bookId);
+                orderItem.setBook(book);
+            }
         } else {
             /* Order item may exist */
             orderItem = orderItemDao.findOne(id);
             orderItem.setQuantity(orderItem.getQuantity() + Integer.parseInt(quantity));
         }
-        Order cart = orderDao.findByUserUnpaid(name);
         if (orderItem.getOrderId() == null)
             orderItem.setOrderId(cart.getId());
         orderItemDao.saveItem(orderItem);
         return cart;
     }
+
+
 
     @Override
     public Order delItemFromCart(String name, String id) {
@@ -89,10 +102,44 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
         Order order = new Order();
-        Order cart = orderDao.findByUserUnpaid(name);
-        order.getOrderItemList().addAll(orderItems);
-        cart.getOrderItemList().removeAll(orderItems);
+        order.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        order.setUser(userDao.findOne(name));
+        order.setState(1);
+        orderDao.saveOrder(order);
+        for (OrderItem oi : orderItems) {
+            OrderItem orderItem = orderItemDao.findOne(oi.getId());
+            orderItem.setOrderId(order.getId());
+            if (oi.getQuantity() > orderItem.getBook().getStock()) {
+                return null;
+            } else {
+                Book book = orderItem.getBook();
+                book.setStock(book.getStock() - oi.getQuantity());
+                orderItem.setBookPrice(book.getPrice());
+                bookDao.saveBook(book);
+            }
+            orderItemDao.saveItem(orderItem);
+        }
         return order;
+    }
+
+    @Override
+    public Order findCart(String name) {
+        Order cart = orderDao.findByUserUnpaid(name);
+        return cart;
+    }
+
+    @Override
+    public Order setItemQuantity(String name, Map<String, String> data) {
+        Order cart = orderDao.findByUserUnpaid(name);
+        String itemId = data.get("id"), quantity = data.get("quantity");
+        if (itemId == null || quantity == null) {
+            return null;
+        } else {
+            OrderItem orderItem = orderItemDao.findOne(itemId);
+            orderItem.setQuantity(Integer.parseInt(quantity));
+            orderItemDao.saveItem(orderItem);
+        }
+        return cart;
     }
 
 }

@@ -23,7 +23,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
+        System.out.println(name);
         User user = userDao.findOne(name);
+        System.out.println(user);
         /**
          * Check if session expires
          */

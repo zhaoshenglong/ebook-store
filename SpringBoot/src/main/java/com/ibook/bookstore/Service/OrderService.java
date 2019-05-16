@@ -19,4 +19,8 @@ public interface OrderService {
     Order delItemFromCart(String name, String id);
 
     Order buyFromCart(String name, List<OrderItem> orderItems);
+
+    Order findCart(String name);
+
+    Order setItemQuantity(String name, Map<String, String> data);
 }

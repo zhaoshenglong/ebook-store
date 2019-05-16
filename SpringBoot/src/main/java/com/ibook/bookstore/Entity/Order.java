@@ -33,7 +33,7 @@ public class Order {
     @Column(name = "create_date")
     private Timestamp createDate;
 
-    @JsonIgnore
+
     @Basic
     @Column(name = "state")
     private int state;
