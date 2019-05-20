@@ -6,6 +6,7 @@ import com.ibook.bookstore.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -22,9 +23,18 @@ public class UserController {
         return userService.findUserByName(name);
     }
 
-    @GetMapping("/api/user")
-    public User findUserByEmail(@RequestParam(name = "email")String email) {
-        return userService.findUserByEmail(email);
+    @GetMapping("/api/user/{name}/password/verify")
+    public String verifyPassword(@PathVariable("name")String name,
+                                  @RequestParam("password")String password,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) {
+        return userService.verifyPassword(request.getSession(), password, response);
+    }
+
+    @PutMapping("/api/user/{name}/modify")
+    public User updateUser(@PathVariable("name") String name,
+                           @RequestBody Map<String, String> data) {
+        return userService.updateUser(data);
     }
 
     @PostMapping("/api/public/register")
@@ -55,7 +65,17 @@ public class UserController {
         userService.deleteAddress(id);
     }
 
-    @GetMapping("/api/admin/users/all")
+    @PostMapping("/api/user/{name}/avatars/upload")
+    public void uploadAvatar(@RequestParam("avatar")MultipartFile avatar,
+                             @PathVariable("name")String name) {
+        userService.uploadAvatar(avatar, name);
+    }
+
+    /**
+     * Admin manage controller, get / manage / delete users
+     */
+
+     @GetMapping("/api/admin/users/all")
     public Page<User> findUserByPage(@RequestParam(name = "page", defaultValue = "0") Integer page) {
         return userService.findUserByPage(page, 10);
     }

@@ -25,13 +25,24 @@
         <svg
           class="icon icon-verify icon-error"
           aria-hidden="true"
-          v-show="!nameOk && usrName != ''"
+          v-show="!nameStatus.ok && usrName != ''"
         >
           <use xlink:href="#iconerror"></use>
         </svg>
-        <svg class="icon icon-verify icon-success" aria-hidden="true" v-show="nameVerified||nameOk">
+        <svg
+          class="icon icon-verify icon-success"
+          aria-hidden="true"
+          v-show="nameVerified||nameStatus.ok"
+        >
           <use xlink:href="#iconcomplete"></use>
         </svg>
+        <el-alert
+          v-show="!nameStatus.ok && usrName != ''"
+          class="alert-label"
+          :title="nameStatus.msg"
+          type="error"
+          show-icon
+        ></el-alert>
       </div>
       <div class="sign-in-up">
         <svg class="icon" aria-hidden="true">
@@ -57,17 +68,24 @@
         <svg
           class="icon icon-verify icon-error"
           aria-hidden="true"
-          v-show="!emailOk && usrEmail != ''"
+          v-show="!emailStatus.ok && usrEmail != ''"
         >
           <use xlink:href="#iconerror"></use>
         </svg>
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="emailVerified || emailOk"
+          v-show="emailVerified || emailStatus.ok"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
+        <el-alert
+          v-show="!emailStatus.ok && usrEmail != ''"
+          class="alert-label"
+          :title="emailStatus.msg"
+          type="error"
+          show-icon
+        ></el-alert>
       </div>
       <div class="sign-in-up">
         <svg class="icon" aria-hidden="true">
@@ -102,10 +120,17 @@
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="passwdOk&& usrPasswd != '' && usrPasswdAgain != ''"
+          v-show="passwdStatus.ok&& usrPasswd != '' && usrPasswdAgain != ''"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
+        <el-alert
+          v-show="!passwdStatus.ok"
+          class="alert-label"
+          :title="passwdStatus.msg"
+          type="error"
+          show-icon
+        ></el-alert>
       </div>
 
       <button id="commit" class="btn btn-block btn-submit" @click="register">Create an account</button>
@@ -123,9 +148,18 @@ export default {
       usrEmail: "",
       usrPasswd: "",
       usrPasswdAgain: "",
-      nameOk: false,
-      emailOk: false,
-      passwdOk: false
+      emailStatus: {
+        ok: false,
+        msg: ""
+      },
+      passwdStatus: {
+        ok: false,
+        msg: ""
+      },
+      nameStatus: {
+        ok: false,
+        msg: ""
+      }
     };
   },
   methods: {
@@ -144,7 +178,7 @@ export default {
     },
 
     register() {
-      if (this.nameOk && this.passwdOk && this.emailOk) {
+      if (this.nameStatus.ok && this.passwdStatus.ok && this.emailStatus.ok) {
         var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
         axios
           .post("/api/public/register", {
@@ -186,14 +220,17 @@ export default {
             }
           })
           .then(response => {
-            const data = response.data;
-            this.nameOk = true;
+            this.nameStatus.ok = response.data;
+            if (!this.nameStatus.ok) {
+              this.nameStatus.msg = "用户名已存在！";
+            }
           })
           .catch(err => {
             console.log(err);
-            this.nameOk = false;
+            this.nameStatus.ok = false;
+            this.nameStatus.msg = "我们的服务器挂了:(";
           });
-      } else this.nameOk = false;
+      } else this.nameStatus.ok = false;
     },
     emailVerified() {
       if (this.emailFormat()) {
@@ -204,22 +241,28 @@ export default {
             }
           })
           .then(response => {
-            const data = response.data;
-            console.log(data);
-            this.emailOk = true;
+            this.emailStatus.ok = response.data;
+            if (!this.emailStatus.ok) {
+              this.emailStatus.msg = "邮箱地址已存在！";
+            }
           })
           .catch(err => {
             console.log(err);
-            this.emailOk = false;
+            this.emailStatus.ok = false;
+            this.emailStatus.msg = "我们的服务器挂了:(";
           });
-      } else this.emailOk = false;
+      } else {
+        this.emailStatus.ok = false;
+        this.emailStatus.msg = "邮箱格式不正确";
+      }
     },
     passwdVerified() {
       if (this.usrPasswd != this.usrPasswdAgain && this.usrPasswdAgain != "") {
-        this.passwdOk = false;
+        this.passwdStatus.ok = false;
+        this.passwdStatus.msg = "两次密码不一致哦～";
         return false;
       } else {
-        this.passwdOk = true;
+        this.passwdStatus.ok = true;
         return true;
       }
     }
@@ -252,6 +295,7 @@ export default {
   position: relative;
   background: rgba(255, 255, 255, 0.7);
 }
+
 .sign-in-up label {
   margin-bottom: 7px;
   height: 24px;
@@ -259,7 +303,7 @@ export default {
 .sign-in-up {
   position: relative;
   width: 300px;
-  height: 80px;
+  margin-bottom: 15px;
 }
 #signup-field,
 #email-field,
@@ -267,7 +311,7 @@ export default {
 #passwd-confirm {
   width: 282px;
   margin-top: 5px;
-  margin-bottom: 15px;
+  margin-bottom: 5px;
 }
 #commit {
   width: 300px;

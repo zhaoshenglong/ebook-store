@@ -2,11 +2,20 @@
   <div class="admin">
     <book-header></book-header>
     <div id="admin-bar">
-      <section>
+      <section id="admin-bar-content">
         <span>
-          <svg class="icon icon-bar" aria-hidden="true">
-            <use xlink:href="#iconuser"></use>
-          </svg>admin
+          <el-dropdown trigger="hover">
+            <span class="el-dropdown-link">
+              <svg class="icon icon-bar" aria-hidden="true">
+                <use xlink:href="#iconuser"></use>
+              </svg>
+              admin
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item @click="closeSession">sign out</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </span>Welcome, Admin!
       </section>
     </div>
@@ -46,7 +55,8 @@ export default {
     },
     toOrders() {
       this.$router.push({ name: "ManageOrders" });
-    }
+    },
+    closeSession() {}
   }
 };
 </script>
@@ -72,6 +82,9 @@ export default {
   margin-bottom: 40px;
   background: rgba(229, 252, 251, 0.8);
   font-size: 16px;
+}
+#admin-bar-content {
+  padding-top: 5px;
 }
 #admin-bar span {
   margin: 0 20px;
@@ -115,5 +128,12 @@ export default {
 }
 .focus {
   background: red;
+}
+.el-dropdown-link {
+  cursor: pointer;
+  color: #409eff;
+}
+.el-icon-arrow-down {
+  font-size: 12px;
 }
 </style>

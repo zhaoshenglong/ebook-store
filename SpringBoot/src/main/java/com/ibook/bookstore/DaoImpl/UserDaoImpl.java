@@ -1,14 +1,15 @@
 package com.ibook.bookstore.DaoImpl;
 
+import com.google.common.base.Optional;
 import com.ibook.bookstore.Dao.UserDao;
 import com.ibook.bookstore.Entity.Address;
 import com.ibook.bookstore.Entity.User;
-import com.ibook.bookstore.Repository.AddressRepository;
 import com.ibook.bookstore.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -21,7 +22,12 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User findByEmail(String email) {return userRepository.findByEmail(email);}
+    public Optional<User> findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
+    @Override
+    public Optional<User> findByEmail(String email) {return userRepository.findByEmail(email);}
 
     @Override
     public Page<User> findAll(Pageable pageable) {

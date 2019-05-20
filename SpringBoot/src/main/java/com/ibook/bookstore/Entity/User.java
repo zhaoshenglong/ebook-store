@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.sql.Timestamp;
 import java.util.Set;
 
@@ -27,6 +28,7 @@ public class User {
     @Column(name = "user_name")
     private String name;
 
+    @Email
     @JsonView(userSimpleView.class)
     @Basic
     @Column(name = "email")

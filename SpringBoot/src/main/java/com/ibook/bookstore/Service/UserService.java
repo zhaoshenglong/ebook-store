@@ -4,6 +4,7 @@ import com.ibook.bookstore.Entity.Address;
 import com.ibook.bookstore.Entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -11,7 +12,6 @@ import java.util.Map;
 
 public interface UserService {
     User findUserByName(String name);
-    User findUserByEmail(String email);
     Page<User> findUserByPage(int page, int size);
 
     User createUser(User user);
@@ -29,8 +29,10 @@ public interface UserService {
 
     void deleteAddress(String id);
 
+    void uploadAvatar(MultipartFile avatar, String name);
+
     Boolean nameCanBeRegistered(String name);
     Boolean emailCanBeRegistered(String email);
-
+    String verifyPassword(HttpSession session, String password, HttpServletResponse response);
     Map<String, String> getStatus(HttpSession session, HttpServletResponse response);
 }

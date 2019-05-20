@@ -25,6 +25,7 @@
         <div id="profile-right">
           <h3 class="h3-heading">Profile picture</h3>
           <img :src="imgUrl" alt="upload avatar" id="userAvatar">
+          <el-alert title="支持jpeg/jpg,大小不超过4KB" type="info" show-icon :closable="false"></el-alert>
           <div id="update-ava-tool" class="btn btn-block btn-submit">
             update avatar
             <input
@@ -55,11 +56,7 @@ export default {
     return {
       imgUrl: "",
       name: "",
-      email: "",
-      imgError: false,
-      imgSuccess: false,
-      imgMsg: "",
-      imgWait: false
+      email: ""
     };
   },
   props: {
@@ -72,22 +69,26 @@ export default {
   },
   methods: {
     fetchProfile() {
-      let name = this.$route.params.userid;
-      axios
-        .get("/status")
-        .then(response => {
-          const data = response.data;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      this.imgUrl = this.getUser().avatar;
+      this.email = this.getUser().email;
+      this.name = this.getUser().name;
     },
     updateAvatar() {
       let file = this.$refs.fileInput.files[0];
       if (file == undefined) {
+        this.$message({
+          type: "error",
+          message: "上传失败，未选中文件",
+          duration: 1000
+        });
         return;
       }
       if (file.size > 4 << 20) {
+        this.$message({
+          type: "error",
+          message: "上传失败，文件大小不能超过4ＫＢ",
+          duration: 1000
+        });
         return;
       }
       /* Prepare for the avatar to be uploaded */
@@ -99,15 +100,32 @@ export default {
           "Content-Type": "multipart/form-data"
         }
       };
+      let apiUrl = "/api/user/" + this.getUser().name + "/avatars/upload";
       axios
-        .post("avatarUpload", img, config)
+        .post(apiUrl, img, config)
         .then(response => {
           console.log(response.data);
+          this.$message({
+            type: "success",
+            message: "上传成功",
+            duration: 1000
+          });
+          window.location.reload(true);
         })
         .catch(err => {
           console.log(err);
           if (err.status == 500) {
+            this.$message({
+              type: "error",
+              message: "上传失败，我们的服务器挂了:(",
+              duration: 1000
+            });
           } else {
+            this.$message({
+              type: "error",
+              message: "上传失败， 是不是未登录？",
+              duration: 1000
+            });
           }
         });
     },
@@ -120,17 +138,22 @@ export default {
     },
     updateEmail() {
       if (this.emailFormat()) {
+        let apiUrl = "/api/user/" + this.getUser().name + "/modify";
         axios
-          .post(
-            "userServlet",
-            qs.stringify({
-              email: this.email
-            })
-          )
+          .put(apiUrl, { email: this.email, name: this.name })
           .then(response => {
-            console.log(response.data);
+            this.$message({
+              type: "success",
+              message: "更新邮箱成功",
+              duration: 1000
+            });
           })
           .catch(err => {
+            this.$message({
+              type: "error",
+              message: "更新邮箱失败，我们的服务器挂了:(",
+              duration: 1000
+            });
             console.log(err);
           });
       }

@@ -133,9 +133,9 @@ export default {
     // There is a bug with changing current page
     changePage(page) {
       this.pager.page = page - 1;
-      if (this.bookState == "tag") {
+      if (this.bookState === "tag") {
         this.fetchBooksByTag();
-      } else if (this.bookState == "like") {
+      } else if (this.bookState === "like") {
         this.fetchBooksLike();
       } else {
         this.fetchBooks();

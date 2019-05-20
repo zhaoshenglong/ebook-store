@@ -13,10 +13,15 @@
       <input type="text" :value="book.isbn" :readonly="disabledIsbn" @dblclick="activicate(3)">
     </div>
     <div class="col5">
-      <input type="text" :value="book.price" :readonly="disabledPrice" @dblclick="activicate(4)">
+      <input
+        type="text"
+        :value="Number(book.price).toFixed(2)"
+        :readonly="disabledPrice"
+        @dblclick="activicate(4)"
+      >
     </div>
     <div class="col6">
-      <input type="text" :value="book.remain" :readonly="disabledRemain" @dblclick="activicate(5)">
+      <input type="text" :value="book.stock" :readonly="disabledRemain" @dblclick="activicate(5)">
     </div>
   </div>
 </template>

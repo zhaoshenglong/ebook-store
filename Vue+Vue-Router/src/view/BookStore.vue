@@ -13,7 +13,7 @@
           >
             <img id="user-avatar" :src="user.avatar" alt="avatar">
             <span>{{user.name}}</span>
-            <span v-show="showSignOut" id="signout-label" @click="signOut">Sign out</span>
+            <span v-show="showSignOut" id="signout-label" @click="closeSession">Sign out</span>
           </span>
           <span class="info-item" id="login" @click="toSignIn" v-if="!signed">
             <svg class="icon" aria-hidden="true">
@@ -61,7 +61,7 @@
 <script>
 import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
-import { mapState, mapMutations, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 import axios from "axios";
 export default {
   name: "BookStore",
@@ -83,25 +83,73 @@ export default {
       this.$router.push({ name: "SignUp" });
     },
     toOrder() {
-      this.$router.push({ name: "Order", params: { userid: this.user.name } });
+      if (this.signed) {
+        this.$router.push({
+          name: "Order",
+          params: { userid: this.user.name }
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "您还没有登录,请先登录～"
+        });
+      }
     },
     toCart() {
-      this.$router.push({ name: "Cart", params: { userid: this.user.name } });
+      if (this.signed) {
+        this.$router.push({ name: "Cart", params: { userid: this.user.name } });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "您还没有登录,请先登录～"
+        });
+      }
     },
     toSetting() {
-      this.$router.push({
-        name: "SettingProfile",
-        params: { userid: this.user.name }
-      });
+      if (this.signed) {
+        this.$router.push({
+          name: "SettingProfile",
+          params: { userid: this.user.name }
+        });
+      } else {
+        this.$message({
+          type: "warning",
+          message: "您还没有登录,请先登录～"
+        });
+      }
     },
     toStore() {
       this.$router.push({ name: "StorePage" });
     },
     establishSession() {
-      this.signIn().then(() => {});
+      this.$store
+        .dispatch("getStatus")
+        .then(data => {
+          console.log(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
-    ...mapMutations(["signOut"]),
-    ...mapActions(["signIn"])
+    closeSession() {
+      this.$store
+        .dispatch("signOut")
+        .then(() => {
+          this.$message({
+            type: "success",
+            message: "您已成功退出登录！",
+            duration: 2000
+          });
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: "退出登录失败，我们的服务器可能挂了:(",
+            duration: 2000
+          }),
+            console.log(err);
+        });
+    }
   },
   computed: {
     ...mapState(["user", "signed"]),

@@ -86,8 +86,7 @@
 <script>
 import OrderSide from "../../components/order/OrderSide";
 import axios from "axios";
-import { mapState, mapGetters } from "vuex";
-import Cookies from "js-cookie";
+import { mapGetters } from "vuex";
 export default {
   name: "Order",
   components: {
@@ -106,13 +105,6 @@ export default {
       }
     };
   },
-  computed: {
-    filterOrder() {
-      var orders = this.orderList;
-      return orders;
-    },
-    ...mapState(["user"])
-  },
   methods: {
     toStore() {
       this.$router.push({ name: "StorePage" });
@@ -127,7 +119,7 @@ export default {
     },
     fetchAllOrder() {
       this.orderState = "";
-      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders";
+      var apiUrl = "/api/user/" + this.getUser().name + "/orders";
       axios
         .get(apiUrl, {
           params: {
@@ -147,7 +139,7 @@ export default {
         });
     },
     fetchOrderBetween() {
-      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/between";
+      var apiUrl = "/api/user/" + this.getUser().name + "/orders/between";
       axios
         .get(apiUrl, {
           params: {
@@ -166,40 +158,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-    },
-    transferToData(data) {
-      this.orderList = new Array();
-      let prevOrderId = new String();
-      let order;
-      prevOrderId = "";
-      let count = 0;
-      data.forEach(item => {
-        let orderId = item[2];
-        if (orderId !== prevOrderId) {
-          if (prevOrderId !== "") {
-            this.orderList.push(order);
-          }
-          order = new Object();
-          order.id = orderId;
-          order.createDate = item[1];
-          order.books = new Array();
-          order.costumer = item[0];
-        }
-        let book = new Object();
-        book.id = item[3];
-        book.img = item[4];
-        book.author = item[5];
-        book.isbn = item[6];
-        book.name = item[7];
-        book.price = item[8];
-        book.quantity = item[10];
-        order.books.push(book);
-        prevOrderId = orderId;
-        count++;
-        if (count === data.length) {
-          this.orderList.push(order);
-        }
-      });
     },
     postLike() {},
     toRemark(id) {
@@ -221,7 +179,19 @@ export default {
     ...mapGetters(["getUser"])
   },
   mounted() {
-    this.fetchAllOrder();
+    this.$store
+      .dispatch("getStatus")
+      .then(user => {
+        this.fetchAllOrder();
+      })
+      .catch(err => {
+        this.$message({
+          type: "warning",
+          message: "获取订单失败,你可能已经登出了？",
+          duration: 2500
+        }),
+          console.log(err);
+      });
   }
 };
 </script>

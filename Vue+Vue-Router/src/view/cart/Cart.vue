@@ -129,7 +129,20 @@ export default {
     CartSide
   },
   mounted: function() {
-    this.fetchCart();
+    this.$store
+      .dispatch("getStatus")
+      .then(user => {
+        console.log(user);
+        this.fetchCart();
+      })
+      .catch(err => {
+        this.$message({
+          type: "error",
+          message: "获取购物车失败了,可能我们的服务ｉｑｉ挂了:(",
+          duration: 2500
+        }),
+          console.log(err);
+      });
   },
   computed: {
     total() {
@@ -144,27 +157,29 @@ export default {
   },
   methods: {
     fetchCart() {
-      var apiUrl = "/api/user/" + Cookies.get("name") + "/cart";
+      var apiUrl = "/api/user/" + this.getUser().name + "/cart";
       axios
         .get(apiUrl)
         .then(response => {
           console.log(response);
           const data = response.data;
-          data.orderItemList.forEach(item => {
-            let i = new Object();
-            i.id = item.id;
-            i.orderId = item.orderId;
-            i.quantity = item.quantity;
-            i.select = true;
-            i.book = new Object();
-            i.book.name = item.book.name;
-            i.book.author = item.book.name;
-            i.book.price = item.book.price;
-            i.book.bookId = item.book.id;
-            i.book.img = item.book.img;
-            i.book.stock = item.book.stock;
-            this.cart.orderItemList.push(i);
-          });
+          if (data.orderItemList !== undefined) {
+            data.orderItemList.forEach(item => {
+              let i = new Object();
+              i.id = item.id;
+              i.orderId = item.orderId;
+              i.quantity = item.quantity;
+              i.select = true;
+              i.book = new Object();
+              i.book.name = item.book.name;
+              i.book.author = item.book.author;
+              i.book.price = item.book.price;
+              i.book.bookId = item.book.id;
+              i.book.img = item.book.img;
+              i.book.stock = item.book.stock;
+              this.cart.orderItemList.push(i);
+            });
+          }
           console.log(this.cart.orderItemList);
         })
         .catch(err => {
@@ -183,7 +198,7 @@ export default {
         });
         return;
       } else {
-        var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/item/set";
+        var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/set";
         axios
           .put(apiUrl, {
             id: item.id,
@@ -205,7 +220,7 @@ export default {
     },
     decrement(item) {
       if (item.quantity > 0) {
-        var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/item/set";
+        var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/set";
         axios
           .put(apiUrl, {
             id: item.id,
@@ -236,7 +251,7 @@ export default {
       if (confirm("确定要删除吗？")) {
         var apiUrl =
           "/api/user/" +
-          Cookies.get("name") +
+          this.getUser().name +
           "/orders/item/delete?id=" +
           item.id;
         axios
@@ -299,7 +314,7 @@ export default {
         }
       });
       if (order.length > 0) {
-        var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/buy";
+        var apiUrl = "/api/user/" + this.getUser().name + "/orders/buy";
         axios
           .post(apiUrl, order)
           .then(response => {

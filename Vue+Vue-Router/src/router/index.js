@@ -63,7 +63,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/detail/:bookId',
+                    path: 'books/detail/:bookId',
                     name: 'BookDetail',
                     components: {
                         main: BookDetail
@@ -73,7 +73,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/home/:userid/setting/Profile',
+                    path: '/home/:userid/settings/Profile',
                     name: 'SettingProfile',
                     components: {
                         main: SettingProfile
@@ -83,7 +83,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/home/:userid/setting/Address',
+                    path: '/home/:userid/settings/Address',
                     name: 'SettingAddress',
                     components: {
                         main: SettingAddress
@@ -93,7 +93,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/home/:userid/setting/Account',
+                    path: '/home/:userid/settings/Account',
                     name: 'SettingAccount',
                     components: {
                         main: SettingAccount
@@ -103,7 +103,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: '/home/:userid/order',
+                    path: '/home/:userid/orders',
                     name: 'Order',
                     components: {
                         main: Order

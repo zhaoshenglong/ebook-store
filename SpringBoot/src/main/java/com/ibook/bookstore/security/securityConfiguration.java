@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -90,6 +91,19 @@ public class securityConfiguration extends WebSecurityConfigurerAdapter {
                     .logoutUrl("/logout")
                     .invalidateHttpSession(true)
                     .deleteCookies("JSESSIONID")
+                    .logoutSuccessHandler(new LogoutSuccessHandler() {
+                        @Override
+                        public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+                            httpServletResponse.setHeader("Access-Control-Allow-Origin", "http://localhost:8081");
+                            httpServletResponse.setHeader("Access-Control-Allow-Header","*");
+                            httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
+                            PrintWriter out = httpServletResponse.getWriter();
+                            httpServletResponse.setStatus(200);
+                            out.print(("{\"msg\":\"logout success\"}"));
+                            out.flush();
+                            out.close();
+                        }
+                    })
                     .permitAll()
                     .and()
                 .authorizeRequests()

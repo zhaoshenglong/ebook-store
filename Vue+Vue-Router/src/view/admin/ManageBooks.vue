@@ -29,7 +29,7 @@
         </svg>
       </div>
       <div id="col6" class="icon-container">
-        <div>Remain</div>
+        <div>Stock</div>
         <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
           <use xlink:href="#iconsort"></use>
         </svg>
@@ -44,51 +44,24 @@
 
 <script>
 import BookModify from "../../components/admin/bookModify";
+import axios from "axios";
 export default {
   components: {
     BookModify
   },
   data() {
     return {
-      bookList: [
-        {
-          name: "小王子",
-          isbn: "9787020042494",
-          author: " [法] 圣埃克苏佩里",
-          price: "22.00",
-          tags: ["Literature", "Hottest"],
-          img: "https://img3.doubanio.com/view/subject/l/public/s1103152.jpg",
-          remain: "55"
-        },
-        {
-          name: "天才在左 疯子在右",
-          isbn: "9787307075429",
-          author: " 高铭",
-          price: "29.80",
-          tags: ["Literature", "Lattest"],
-          img: "https://img1.doubanio.com/view/subject/l/public/s6340977.jpg",
-          remain: "56"
-        },
-        {
-          name: "房思琪的初恋乐园",
-          isbn: "9787559614636",
-          author: " 林奕含 ",
-          price: "45.00",
-          tags: ["Novel", "Hottest"],
-          img: "https://img3.doubanio.com/view/subject/l/public/s29651121.jpg",
-          remain: "56"
-        },
-        {
-          name: "失踪的孩子",
-          isbn: "9787559614236",
-          author: "埃莱娜·费兰特",
-          price: "62.00",
-          tags: ["Novel", "Hottest"],
-          img: "https://img1.doubanio.com/view/subject/l/public/s29799269.jpg",
-          remain: "56"
-        }
-      ]
+      bookList: [],
+      pager: {
+        page: 0,
+        total: 0,
+        size: 10
+      }
     };
+  },
+  mounted() {
+    this.fetchAllBooks();
+    console.log(this.bookList);
   },
   computed: {
     filterBookList() {
@@ -99,7 +72,27 @@ export default {
       return filterList;
     }
   },
-  methods: {}
+  methods: {
+    fetchAllBooks() {
+      axios
+        .get("/api/admin/books/all", {
+          params: {
+            page: this.pager.page
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          console.log(data);
+          this.bookList = data.content;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.pageSize;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchAllLike() {}
+  }
 };
 </script>
 

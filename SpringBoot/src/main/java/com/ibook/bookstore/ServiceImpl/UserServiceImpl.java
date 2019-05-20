@@ -1,5 +1,6 @@
 package com.ibook.bookstore.ServiceImpl;
 
+import com.google.common.base.Optional;
 import com.ibook.bookstore.Dao.AddressDao;
 import com.ibook.bookstore.Dao.BookDao;
 import com.ibook.bookstore.Dao.OrderDao;
@@ -15,13 +16,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.BufferedOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
 
 
 @Service
@@ -40,11 +50,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByName(String name) {
         return  userDao.findOne(name);
-    }
-
-    @Override
-    public User findUserByEmail(String email) {
-        return userDao.findByEmail(email);
     }
 
     @Override
@@ -149,28 +154,75 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean nameCanBeRegistered(String name) {
-        User user;
+    public void uploadAvatar(MultipartFile avatar, String name) {
         try {
-            user = userDao.findOne(name);
-            if (user != null) {
-                return false;
-            } else return true;
+            System.out.println("name: " + avatar.getName());
+            System.out.println("content-type: " + avatar.getContentType());
+            System.out.println("size: " + avatar.getSize());
+            InputStream in = avatar.getInputStream();
+            Path filePath = Paths.get("/home/zhaoshenglong/bookstore/user/" + name + ".jpg");
+            OutputStream out = new BufferedOutputStream(Files.newOutputStream(filePath));
+            byte[] buf = new byte[1024];
+            int len;
+            while ( (len = in.read(buf)) > 0 ) {
+                out.write(buf, 0, len);
+            }
+            User user = userDao.findOne(name);
+            user.setAvatar("http://localhost:8080/img?kind=user&name=" + name);
+            userDao.saveUser(user);
+            out.flush();
+            out.close();
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public Boolean nameCanBeRegistered(String name) {
+        Optional<User> optionalUser = userDao.findByName(name);
+        User user = optionalUser.orNull();
+        if (user != null) {
+            /* User exists, can not be registered */
+            return false;
+        } else  {
             return true;
         }
     }
 
     @Override
     public Boolean emailCanBeRegistered(String email) {
-        User user;
-        try  {
-            user = userDao.findByEmail(email);
-            if (user != null) return false;
-            return true;
-        } catch (Exception e) {
+        Optional<User> optionalUser = userDao.findByEmail(email);
+        User user = optionalUser.orNull();
+        if (user != null) {
+            /* User can not be registered */
+            return false;
+        } else {
             return true;
         }
+    }
+
+    @Override
+    public String verifyPassword(HttpSession session, String password, HttpServletResponse response) {
+        String template = "{\"msg\":%s}";
+        String msg;
+        String name = (String)session.getAttribute("name");
+        if (name == null) {
+            response.setStatus(401);
+            msg = String.format(template, "user not logged in");
+            return msg;
+        } else {
+            User user = userDao.findOne(name);
+            if (passwordEncoder.matches(password ,user.getPassword())) {
+                msg = String.format(template, "password verified");
+                return msg;
+            } else {
+                response.setStatus(401);
+                msg = String.format(template, "password not verified");
+                return msg;
+            }
+        }
+
     }
 
     @Override

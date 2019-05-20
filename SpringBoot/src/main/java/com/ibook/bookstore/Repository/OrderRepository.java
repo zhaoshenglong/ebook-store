@@ -14,5 +14,4 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     Page<Order> findAllByUser_NameAndStateEquals(String name, int state, Pageable pageable);
     Page<Order> findAllByStateEquals(int state, Pageable pageable);
     Order findOrderByUser_NameAndStateEquals(String name, int state);
-
 }

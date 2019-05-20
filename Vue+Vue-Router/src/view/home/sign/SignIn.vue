@@ -34,8 +34,6 @@
 import cryptoJs from "crypto-js";
 import axios from "axios";
 import qs from "qs";
-import { mapGetters, mapMutations } from "vuex";
-import Cookies from "js-cookie";
 export default {
   name: "signIn",
   data() {
@@ -48,51 +46,25 @@ export default {
     clearInput() {
       this.usrName = "";
     },
-    toStore() {
-      var name = this.usrName;
-      if (name == "admin") {
-        this.$router.push({ name: "ManageBooks" });
-      } else {
-        this.setUser({ name: name });
-        user = this.getUser();
-        this.$router.push({
-          name: "StorePageSigned",
-          params: { userid: user.name }
-        });
-      }
-    },
     logIn() {
-      var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
-      axios
-        .post(
-          "/login",
-          qs.stringify({
-            username: this.usrName,
-            password: encrypt
-          }),
-          {
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            }
-          }
-        )
-        .then(response => {
-          const data = response.data;
-          console.log(data);
-
-          this.setUser({
-            name: data.name,
-            avatar: data.avatar
-          });
-          Cookies.set("logged", true);
-          Cookies.set("name", data.name);
+      let encrypt = cryptoJs.MD5(this.usrPasswd).toString();
+      let data = qs.stringify({
+        username: this.usrName,
+        password: encrypt
+      });
+      this.$store
+        .dispatch("signIn", data)
+        .then(user => {
+          console.log(user);
+          console.group("password");
+          console.log(encrypt);
           this.$message({
             showClose: true,
             message: "登录成功，3秒后自动为您跳转到商品页面",
             type: "success"
           });
           setTimeout(() => {
-            if (data.name == "admin") {
+            if (this.usrName === "admin") {
               this.$router.push({ name: "ManageBooks" });
             } else this.$router.push({ name: "StorePage" });
           }, 3000);
@@ -113,9 +85,7 @@ export default {
             });
           }
         });
-    },
-    ...mapGetters(["getUser"]),
-    ...mapMutations(["setUser"])
+    }
   }
 };
 </script>
