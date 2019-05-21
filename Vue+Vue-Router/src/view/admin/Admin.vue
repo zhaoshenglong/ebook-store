@@ -3,20 +3,24 @@
     <book-header></book-header>
     <div id="admin-bar">
       <section id="admin-bar-content">
-        <span>
+        <span class="sign-bar" v-if="signed">
           <el-dropdown trigger="hover">
             <span class="el-dropdown-link">
-              <svg class="icon icon-bar" aria-hidden="true">
-                <use xlink:href="#iconuser"></use>
-              </svg>
+              <i class="el-icon-s-custom"></i>
               admin
               <i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click="closeSession">sign out</el-dropdown-item>
+              <el-dropdown-item>
+                <span @click="closeSession">sign out</span>
+              </el-dropdown-item>
             </el-dropdown-menu>
-          </el-dropdown>
-        </span>Welcome, Admin!
+          </el-dropdown>Welcome, Admin!
+        </span>
+        <span class="sign-bar" v-if="!signed">
+          <i class="el-icon-s-custom"></i>
+          <span>sign in</span>
+        </span>
       </section>
     </div>
     <div id="admin-main">
@@ -43,8 +47,12 @@ export default {
   },
   data() {
     return {
-      show: "user"
+      show: "user",
+      signed: true
     };
+  },
+  mounted() {
+    this.establishSession();
   },
   methods: {
     toBooks() {
@@ -56,7 +64,41 @@ export default {
     toOrders() {
       this.$router.push({ name: "ManageOrders" });
     },
-    closeSession() {}
+    closeSession() {
+      this.$store
+        .dispatch("signOut")
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "您已成功退出登录,将为您定向到登录页面..."
+          });
+          this.signed = false;
+          setTimeout(() => {
+            this.$router.push("signIn");
+          }, 3000);
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: "退出登录失败，我们的服务器可能挂了:("
+          });
+        });
+    },
+    establishSession() {
+      this.$store
+        .dispatch("getStatus")
+        .then(response => {
+          this.signed = true;
+        })
+        .catch(err => {
+          console.log(err);
+          this.signed = false;
+          this.$message({
+            type: "error",
+            message: "您已退出登录，请重新登录"
+          });
+        });
+    }
   }
 };
 </script>
@@ -83,8 +125,9 @@ export default {
   background: rgba(229, 252, 251, 0.8);
   font-size: 16px;
 }
+
 #admin-bar-content {
-  padding-top: 5px;
+  padding-top: 10px;
 }
 #admin-bar span {
   margin: 0 20px;

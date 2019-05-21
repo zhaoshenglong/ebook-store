@@ -3,14 +3,19 @@
     <div class="col1" id="img-container">
       <img :src="user.avatar" alt="avatar">
     </div>
-    <div class="col2">{{user.id}}</div>
-    <div class="col3">{{user.name}}</div>
-    <div class="col4" :style="styleColor">{{state}}</div>
-    <div class="col5">
-      <svg class="icon icon-on" aria-hidden="true" v-show="authen" @click="switchOnOff">
+    <div class="col2">
+      <p id="name-area">{{user.name}}</p>
+    </div>
+    <div class="col3">
+      <p id="email-area">{{user.email}}</p>
+    </div>
+    <div class="col4"></div>
+    <div class="col5" :style="styleColor">{{state}}</div>
+    <div class="col6">
+      <svg class="icon icon-on" aria-hidden="true" v-show="activated" @click="switchOnOff">
         <use xlink:href="#icontoggleon"></use>
       </svg>
-      <svg class="icon icon-off" aria-hidden="true" v-show="!authen" @click="switchOnOff">
+      <svg class="icon icon-off" aria-hidden="true" v-show="!activated" @click="switchOnOff">
         <use xlink:href="#icontoggle-off"></use>
       </svg>
     </div>
@@ -27,16 +32,16 @@ export default {
   },
   data() {
     return {
-      authen: true
+      activated: true
     };
   },
   computed: {
     state() {
-      if (this.authen) return "Activated";
+      if (this.activated) return "Activated";
       else return "Forbidden";
     },
     styleColor() {
-      if (this.authen)
+      if (this.activated)
         return {
           color: "green"
         };
@@ -47,12 +52,26 @@ export default {
     }
   },
   mounted: function() {
-    this.authen = this.$props.user.authen;
+    this.activated = !this.$props.user.state;
   },
   methods: {
     switchOnOff() {
-      if (this.authen) this.authen = false;
-      else this.authen = true;
+      if (this.activated) {
+        this.$emit("updateUser", {
+          name: this.user.name,
+          state: true
+        });
+      } else {
+        this.$emit("updateUser", {
+          name: this.user.name,
+          state: false
+        });
+      }
+    }
+  },
+  watch: {
+    user: function(newUser) {
+      this.activated = !newUser.state;
     }
   }
 };
@@ -61,8 +80,8 @@ export default {
 <style scoped>
 #user-container {
   height: 100px;
-  margin: 25px 20px;
-  line-height: 100px;
+  margin: 15px 10px;
+  line-height: 24px;
   display: flex;
   flex-direction: row;
   font-size: 24px;
@@ -79,17 +98,17 @@ export default {
 .col1 {
   width: 20%;
 }
-.col2 {
-  width: 15%;
-}
-.col3 {
-  flex: 1;
-}
-.col4 {
-  width: 15%;
-}
+.col2,
+.col3,
+.col3,
+.col4,
 .col5 {
-  width: 20%;
+  width: 15%;
+  padding-top: 24px;
+}
+.col6 {
+  width: 10%;
+  padding-top: 10px;
 }
 .icon-on {
   color: green;
@@ -100,5 +119,13 @@ export default {
   color: red;
   position: relative;
   top: 8px;
+}
+p {
+  word-wrap: break-word;
+  width: 140px;
+  height: 80px;
+  font-size: 20px;
+  line-height: 24px;
+  line-break: normal;
 }
 </style>

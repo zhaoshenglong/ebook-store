@@ -4,13 +4,13 @@
       <div class="col1">Avatar</div>
       <div class="col2 icon-container">
         Name
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('name')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div class="col3 icon-container">
         Email
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
@@ -18,34 +18,89 @@
       <div class="col5">State</div>
       <div class="col6">Operation</div>
     </div>
-    <user-modify v-for="user in userList" :key="user.id" :user="user"></user-modify>
+    <user-modify v-for="user in userList" :key="user.name" :user="user"></user-modify>
+    <div>
+      <el-pagination
+        :page-size="pager.size"
+        layout="prev, pager, next"
+        background
+        :total="pager.total"
+        @current-change="changPage(page)"
+      ></el-pagination>
+    </div>
   </div>
 </template>
 
 <script>
 import UserModify from "../../components/admin/userModify";
+import axios from "axios";
 export default {
   components: {
     UserModify
   },
   data() {
     return {
-      userList: []
+      userList: [],
+      pager: {
+        size: 0,
+        page: 0,
+        total: 0
+      },
+      display: "",
+      search: ""
     };
+  },
+  mounted() {
+    this.fetchAllUsers(0);
   },
   computed: {},
   methods: {
-    sortUser(sign) {
-      if (sign === "id") {
-        this.userList.sort((u1, u2) => {
-          return u1.id - u2.id;
-        });
+    changePage(page) {
+      if (this.display === "search") {
+        this.fetchSearchUsers(page);
       } else {
-        this.userList.sort((u1, u2) => {
-          if (u1.name > u2.name) return 1;
-          else if (u1.name <= u2.name) return -1;
-        });
+        this.fetchAllUsers(page);
       }
+    },
+    fetchAllUsers(page) {
+      this.display = "";
+      axios
+        .get("/api/admin/users/all", {
+          params: {
+            page: this.pager.page
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          this.userList = data.content;
+          this.pager.size = data.pageSize;
+          this.pager.total = data.totalElements;
+          this.pager.page = page;
+          console.log(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchSearchUsers(page) {
+      this.display = "search";
+      axios
+        .get("/api/admin/users/all", {
+          params: {
+            page: this.pager.page
+          }
+        })
+        .then(response => {
+          console.log(response.data);
+          const data = response.data;
+          this.userList = data.content;
+          this.pager.size = data.pageSize;
+          this.pager.total = data.totalElements;
+          this.pager.page = page;
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
   }
 };
