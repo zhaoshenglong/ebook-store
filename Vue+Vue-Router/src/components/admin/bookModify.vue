@@ -1,27 +1,26 @@
 <template>
-  <div id="book-container" @click="disableInput">
+  <div id="book-container">
     <div class="col1" id="img-block">
       <img :src="book.img" alt="Book picture">
     </div>
     <div class="col2">
-      <input type="text" :value="book.name" :readonly="disabledName" @dblclick="activicate(1)">
+      <p>{{book.name}}</p>
     </div>
     <div class="col3">
-      <input type="text" :value="book.author" :readonly="disabledAuthor" @dblclick="activicate(2)">
+      <p>{{book.author}}</p>
     </div>
     <div class="col4">
-      <input type="text" :value="book.isbn" :readonly="disabledIsbn" @dblclick="activicate(3)">
+      <input type="text" :value="book.isbn" :readonly="disabledIsbn">
     </div>
     <div class="col5">
-      <input
-        type="text"
-        :value="Number(book.price).toFixed(2)"
-        :readonly="disabledPrice"
-        @dblclick="activicate(4)"
-      >
+      <input type="text" :value="Number(book.price).toFixed(2)" :readonly="disabledPrice">
     </div>
     <div class="col6">
-      <input type="text" :value="book.stock" :readonly="disabledRemain" @dblclick="activicate(5)">
+      <input type="text" :value="book.stock" :readonly="disabledRemain">
+    </div>
+    <div class="col7">
+      <el-button type="primary" @click="editBook(book.id)">Edit</el-button>
+      <el-button type="danger" @click="deleteBook(book.id)">Delete</el-button>
     </div>
   </div>
 </template>
@@ -44,47 +43,11 @@ export default {
     }
   },
   methods: {
-    activicate(s) {
-      var sign = parseInt(s);
-      var e = window.event;
-      console.log(s);
-      e.target.className = "input-block input-control";
-      switch (sign) {
-        case 1:
-          this.disabledName = null;
-          break;
-        case 2:
-          this.disabledAuthor = null;
-          break;
-        case 3:
-          this.disabledIsbn = null;
-          break;
-        case 4:
-          this.disabledPrice = null;
-          break;
-        case 5:
-          this.disabledRemain = null;
-          break;
-        default:
-          break;
-      }
+    editBook(bookId) {
+      this.$emit("openBookDialog", bookId);
     },
-    disableInput() {
-      var e = window.event;
-      if (e.target.tagName != "INPUT") {
-        this.disabledName = "readonly";
-        this.disabledAuthor = "readonly";
-        this.disabledIsbn = "readonly";
-        this.disabledPrice = "readonly";
-        this.disabledRemain = "readonly";
-        var list = document.getElementsByTagName("INPUT");
-        var len = list.length;
-        for (var i = 0; i < len; i++) {
-          if (list[i].className != "") {
-            list[i].className = "";
-          }
-        }
-      }
+    deleteBook(bookId) {
+      this.$emit("deleteBook", bookId);
     }
   }
 };
@@ -109,12 +72,23 @@ export default {
 }
 .col2,
 .col3,
-.col4,
-.col5,
-.col6 {
+.col4 {
+  min-width: 140px;
   width: 15%;
   display: flex;
   flex-direction: row;
+}
+.col5,
+.col6 {
+  min-width: 100px;
+  width: 10%;
+  display: flex;
+  flex-direction: row;
+}
+.col7 {
+  min-width: 180px;
+  width: 20%;
+  margin-top: 25px;
 }
 input {
   display: block;
@@ -124,12 +98,20 @@ input {
   padding: 6px 0;
   background: transparent;
   height: 48px;
-  white-space: normal;
-  word-wrap: break-word;
-  word-break: break-all;
   font-size: 18px;
-  line-height: 24px;
+  overflow: auto;
+  line-break: normal;
+  line-height: 20px;
   color: rgb(31, 31, 31);
   text-align: center;
+}
+p {
+  margin-top: 40px;
+  width: 100%;
+  padding: 6px 0;
+  height: 48px;
+  font-size: 18px;
+  line-height: 20px;
+  color: rgb(31, 31, 31);
 }
 </style>

@@ -98,6 +98,7 @@ export default {
   min-height: 1024px;
   width: 70%;
   margin: 0 auto;
+  margin-bottom: 30px;
   min-width: 1024px;
 }
 #main-top {

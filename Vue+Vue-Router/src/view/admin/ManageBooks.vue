@@ -1,53 +1,91 @@
 <template>
   <div>
+    <div id="page-top">
+      <section id="top-left" @keyup.enter="searchBook">
+        <el-input placeholder="Name / Author / Isbn" v-model="search" id="search-input" clearable>
+          <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        </el-input>
+      </section>
+      <section id="top-blank"></section>
+      <section id="page-right">
+        <el-button type="primary" @click="openBookDialog('')">Create New Book</el-button>
+      </section>
+    </div>
     <div id="heading">
       <div id="col1">
         <div>Picture</div>
       </div>
       <div id="col2" class="icon-container">
         <div>Name</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div id="col3" class="icon-container">
         <div>Author</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div id="col4" class="icon-container">
         <div>ISBN</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div id="col5" class="icon-container">
         <div>Price</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
       <div id="col6" class="icon-container">
         <div>Stock</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+        <svg class="icon icon-sort" aria-hidden="true">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
-      <div id="col7"></div>
+      <div id="col7">
+        <div>Operation</div>
+      </div>
     </div>
     <div>
-      <book-modify v-for="book in filterBookList" :key="book.isbn" :book="book"></book-modify>
+      <book-modify
+        v-for="book in bookList"
+        :key="book.id"
+        :book="book"
+        @openBookDialog="openBookDialog"
+        @deleteBook="deleteBook"
+      ></book-modify>
+      <book-form
+        :dialogVisible="dialogVisible"
+        :action="action"
+        :oldBook="oldBook"
+        @cancleBookDialog="cancleBookDialog"
+        @updateBook="updateBook"
+      ></book-form>
+    </div>
+    <div id="book-pagination">
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="pager.total"
+        :page-size="pager.size"
+        :current-page.sync="pager.page"
+        @current-change="changePage(page)"
+      ></el-pagination>
     </div>
   </div>
 </template>
 
 <script>
 import BookModify from "../../components/admin/bookModify";
+import BookForm from "../../components/admin/bookForm";
 import axios from "axios";
 export default {
   components: {
-    BookModify
+    BookModify,
+    BookForm
   },
   data() {
     return {
@@ -56,24 +94,21 @@ export default {
         page: 0,
         total: 0,
         size: 10
-      }
+      },
+      dialogVisible: false,
+      action: "Update Book",
+      oldBook: {},
+      display: "",
+      search: ""
     };
   },
   mounted() {
-    this.fetchAllBooks();
-    console.log(this.bookList);
+    this.fetchAllBooks(this.pager.page);
   },
-  computed: {
-    filterBookList() {
-      var filterList = [];
-      this.bookList.forEach(book => {
-        filterList.push(book);
-      });
-      return filterList;
-    }
-  },
+  computed: {},
   methods: {
-    fetchAllBooks() {
+    fetchAllBooks(page) {
+      this.display = "";
       axios
         .get("/api/admin/books/all", {
           params: {
@@ -91,7 +126,74 @@ export default {
           console.log(err);
         });
     },
-    fetchAllLike() {}
+    changePage(page) {
+      if (this.display === "search") {
+        this.fetchAllLike(page);
+      } else {
+        this.fetchAllBooks(page);
+      }
+    },
+    fetchAllLike(page) {
+      this.display = "like";
+      axios
+        .get("/api/admin/books/search", {
+          params: {
+            pattern: this.search,
+            page: this.pager.page
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          console.log(data);
+          this.bookList = data.content;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.pageSize;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    cancleBookDialog() {
+      this.dialogVisible = false;
+    },
+    openBookDialog(bookId) {
+      if (bookId !== "") {
+        this.dialogVisible = true;
+        this.bookList.forEach(book => {
+          if (bookId === book.id) {
+            this.oldBook = book;
+          }
+        });
+        this.action = "Update Book";
+      } else {
+        this.dialogVisible = true;
+        this.oldBook = new Object();
+        this.action = "Create A New Book";
+      }
+    },
+    updateBook(book) {
+      alert("update book");
+    },
+    deleteBook(bookId) {
+      let bookToDelete;
+      this.bookList.forEach(book => {
+        if (bookId === book.id) {
+          bookToDelete = book;
+        }
+      });
+      console.log(bookToDelete);
+    },
+    searchBook() {
+      this.display = "search";
+      this.pager.page = 0;
+      this.fetchAllLike(this.pager.page);
+      this.search = "";
+    },
+    createBook() {
+      this.action = "Create A New Book";
+      this.oldBook = new Object();
+      this.dialogVisible = true;
+    }
   }
 };
 </script>
@@ -99,6 +201,26 @@ export default {
 <style scoped>
 div {
   font-size: 24px;
+}
+#page-top {
+  margin: 15px 20px;
+  display: flex;
+}
+#top-left >>> div {
+  left: 15px;
+  width: 250px;
+  margin-left: 3%;
+  font-size: 16px;
+}
+#top-blank {
+  width: 55%;
+}
+#search-input {
+  font-size: 16px;
+}
+#top-right {
+  margin-right: 3%;
+  width: 150px;
 }
 #heading {
   margin: 20px 25px;
@@ -115,16 +237,23 @@ div {
 }
 #col2,
 #col3,
-#col4,
-#col5,
-#col6 {
+#col4 {
   width: 15%;
   display: flex;
   flex-direction: row;
   justify-content: center;
   text-align: center;
 }
+#col5,
+#col6 {
+  width: 10%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  text-align: center;
+}
 #col7 {
+  width: 20%;
   flex: 1;
 }
 .icon-container {
@@ -137,5 +266,9 @@ div {
   position: relative;
   margin-left: 5px;
   top: 5px;
+}
+#book-pagination {
+  height: 50px;
+  margin-bottom: 15px;
 }
 </style>

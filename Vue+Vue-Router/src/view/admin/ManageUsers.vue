@@ -3,21 +3,22 @@
     <div id="heading">
       <div class="col1">Avatar</div>
       <div class="col2 icon-container">
-        ID
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
-          <use xlink:href="#iconsort"></use>
-        </svg>
-      </div>
-      <div class="col3 icon-container">
         Name
         <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('name')">
           <use xlink:href="#iconsort"></use>
         </svg>
       </div>
-      <div class="col4">Authentication</div>
-      <div class="col5">Management</div>
+      <div class="col3 icon-container">
+        Email
+        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
+          <use xlink:href="#iconsort"></use>
+        </svg>
+      </div>
+      <div class="col4">总消费</div>
+      <div class="col5">State</div>
+      <div class="col6">Operation</div>
     </div>
-    <user-modify v-for="user in filterUserList" :key="user.id" :user="user"></user-modify>
+    <user-modify v-for="user in userList" :key="user.id" :user="user"></user-modify>
   </div>
 </template>
 
@@ -29,33 +30,10 @@ export default {
   },
   data() {
     return {
-      userList: [
-        {
-          id: "165456",
-          avatar:
-            "https://b-ssl.duitang.com/uploads/item/201410/16/20141016202155_5ycRZ.thumb.1900_0.jpeg",
-          authen: true,
-          name: "+QQ15646541"
-        },
-        {
-          id: "15165",
-          avatar:
-            "http://img4.imgtn.bdimg.com/it/u=3630436912,4127152828&fm=26&gp=0.jpg",
-          authen: true,
-          name: "Monkey.D.Luffy"
-        }
-      ]
+      userList: []
     };
   },
-  computed: {
-    filterUserList() {
-      var filterList = [];
-      this.userList.forEach(user => {
-        filterList.push(user);
-      });
-      return filterList;
-    }
-  },
+  computed: {},
   methods: {
     sortUser(sign) {
       if (sign === "id") {
@@ -92,13 +70,16 @@ export default {
   width: 15%;
 }
 .col3 {
-  flex: 1;
+  width: 15%;
 }
 .col4 {
   width: 15%;
 }
 .col5 {
-  width: 20%;
+  width: 15%;
+}
+.col6 {
+  width: 10%;
 }
 .icon-container {
   display: flex;
