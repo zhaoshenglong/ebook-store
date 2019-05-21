@@ -72,7 +72,7 @@
         :total="pager.total"
         :page-size="pager.size"
         :current-page.sync="pager.page"
-        @current-change="changePage(page)"
+        @current-change="changePage"
       ></el-pagination>
     </div>
   </div>
@@ -99,10 +99,12 @@ export default {
       action: "Update Book",
       oldBook: {},
       display: "",
-      search: ""
+      search: "",
+      p: 0
     };
   },
   mounted() {
+    this.pager.page = 0;
     this.fetchAllBooks(this.pager.page);
   },
   computed: {},
@@ -112,12 +114,11 @@ export default {
       axios
         .get("/api/admin/books/all", {
           params: {
-            page: this.pager.page
+            page: page
           }
         })
         .then(response => {
           const data = response.data;
-          console.log(data);
           this.bookList = data.content;
           this.pager.total = data.totalElements;
           this.pager.size = data.pageSize;
@@ -128,9 +129,9 @@ export default {
     },
     changePage(page) {
       if (this.display === "search") {
-        this.fetchAllLike(page);
+        this.fetchAllLike(page - 1);
       } else {
-        this.fetchAllBooks(page);
+        this.fetchAllBooks(page - 1);
       }
     },
     fetchAllLike(page) {
@@ -139,12 +140,11 @@ export default {
         .get("/api/admin/books/search", {
           params: {
             pattern: this.search,
-            page: this.pager.page
+            page: page
           }
         })
         .then(response => {
           const data = response.data;
-          console.log(data);
           this.bookList = data.content;
           this.pager.total = data.totalElements;
           this.pager.size = data.pageSize;

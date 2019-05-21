@@ -18,7 +18,7 @@
       <div class="col5">State</div>
       <div class="col6">Operation</div>
     </div>
-    <user-modify v-for="user in userList" :key="user.name" :user="user"></user-modify>
+    <user-modify v-for="user in userList" :key="user.name" :user="user" @updateUser="updateUser"></user-modify>
     <div>
       <el-pagination
         :page-size="pager.size"
@@ -101,6 +101,9 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    updateUser(data) {
+      console.log(data);
     }
   }
 };

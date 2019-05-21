@@ -79,12 +79,13 @@ export default {
     };
   },
   mounted() {
-    //this.fetchOrderByOption("all");
-    this.orderList.push({
+    this.fetchOrderByOption("all");
+    /*this.orderList.push({
       id: "123456",
       user: {
         name: "zhaoshenglong",
-        avatar: "none"
+        avatar:
+          "http://localhost:8080/img?kind=book&name=026a1a583a68438187c70126189c59e7"
       },
       createDate: "2019-05-17",
       orderItemList: [
@@ -93,14 +94,15 @@ export default {
             name: "book1",
             author: "author1",
             isbn: "97897813511",
-            img: "none"
+            img:
+              "http://localhost:8080/img?kind=book&name=026a1a583a68438187c70126189c59e7"
           },
           price: 53.0,
           quantity: 5,
           id: "dwadawada"
         }
       ]
-    });
+    });*/
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -121,7 +123,8 @@ export default {
         .get("/api/admin/orders/between", {
           params: {
             start: start,
-            end: end
+            end: end,
+            page: 0
           }
         })
         .then(response => {
@@ -135,10 +138,12 @@ export default {
       axios
         .get("/api/admin/orders/option", {
           params: {
-            option: option
+            option: option,
+            page: 0
           }
         })
         .then(response => {
+          this.orderList = response.data.content;
           console.log(response);
         })
         .catch(err => {
