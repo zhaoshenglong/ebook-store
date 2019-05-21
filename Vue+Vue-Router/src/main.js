@@ -62,7 +62,6 @@ router.beforeEach((to, from, next) => {
                             type: 'warning',
                             message: '抱歉的通知您，您没有该权限'
                         })
-                        setTimeout(() => {}, 3000)
                     }
                 } else {
                     next({

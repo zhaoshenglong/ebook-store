@@ -128,7 +128,7 @@ export default new Router({
             path: '/home/admin/',
             component: Admin,
             children: [{
-                    path: 'books',
+                    path: 'manage/books',
                     name: 'ManageBooks',
                     component: AdminBooks,
                     meta: {
@@ -136,7 +136,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: 'users',
+                    path: 'manage/users',
                     name: 'ManageUsers',
                     component: AdminUsers,
                     meta: {
@@ -144,7 +144,7 @@ export default new Router({
                     }
                 },
                 {
-                    path: 'orders',
+                    path: 'manage/orders',
                     name: 'ManageOrders',
                     component: AdminOrders,
                     meta: {

@@ -1,31 +1,31 @@
 <template>
   <div>
-    <div id="order-header">
-      <section class="col1 icon-container">
-        <div>Order ID</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
-          <use xlink:href="#iconsort"></use>
-        </svg>
-      </section>
-      <section class="col2">
-        <div>Avatar</div>
-      </section>
-      <section class="col3 icon-container">
-        <div>User name</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
-          <use xlink:href="#iconsort"></use>
-        </svg>
-      </section>
-      <section class="col4 icon-container">
-        <div>Order date</div>
-        <svg class="icon icon-sort" aria-hidden="true" @click="sortUser('id')">
-          <use xlink:href="#iconsort"></use>
-        </svg>
-      </section>
-      <section class="col5">
-        <div>Order content</div>
-      </section>
-    </div>
+    <el-menu
+      mode="horizontal"
+      @select="handleSelect"
+      id="order-header"
+      :default-active="activeIndex"
+    >
+      <el-menu-item index="1">全部订单</el-menu-item>
+      <el-menu-item index="2">未支付订单</el-menu-item>
+      <el-menu-item index="3">已完成订单</el-menu-item>
+      <el-menu-item index="4">已删除订单</el-menu-item>
+      <el-menu-item index="5">
+        时间过滤
+        <el-date-picker
+          v-model="date"
+          type="daterange"
+          align="right"
+          unlink-panels
+          range-separator="To"
+          start-placeholder="Start date"
+          end-placeholder="End date"
+          :picker-options="pickerOptions"
+          format="yyyy-MM-dd"
+          @blur="fetchOrderByDate"
+        ></el-date-picker>
+      </el-menu-item>
+    </el-menu>
     <div id="order-list">
       <order-modify v-for="order in orderList" :key="order.id" :order="order"></order-modify>
     </div>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import OrderModify from "../../components/admin/orderModify";
 export default {
   name: "MangeOrders",
@@ -41,8 +42,114 @@ export default {
   },
   data() {
     return {
-      orderList: []
+      orderList: [],
+      pickerOptions: {
+        shortcuts: [
+          {
+            text: "Last week",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "Last month",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit("pick", [start, end]);
+            }
+          },
+          {
+            text: "Last 3 months",
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit("pick", [start, end]);
+            }
+          }
+        ]
+      },
+      date: [],
+      activeIndex: "1"
     };
+  },
+  mounted() {
+    //this.fetchOrderByOption("all");
+    this.orderList.push({
+      id: "123456",
+      user: {
+        name: "zhaoshenglong",
+        avatar: "none"
+      },
+      createDate: "2019-05-17",
+      orderItemList: [
+        {
+          book: {
+            name: "book1",
+            author: "author1",
+            isbn: "97897813511",
+            img: "none"
+          },
+          price: 53.0,
+          quantity: 5,
+          id: "dwadawada"
+        }
+      ]
+    });
+  },
+  methods: {
+    handleSelect(key, keyPath) {
+      if (key == "1") {
+        this.fetchOrderByOption("all");
+      } else if (key == "2") {
+        this.fetchOrderByOption("paid");
+      } else if (key == "3") {
+        this.fetchOrderByOption("unpaid");
+      } else {
+        this.fetchOrderByOption("deleted");
+      }
+    },
+    fetchOrderByDate() {
+      let start, end;
+
+      axios
+        .get("/api/admin/orders/between", {
+          params: {
+            start: start,
+            end: end
+          }
+        })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchOrderByOption(option) {
+      axios
+        .get("/api/admin/orders/option", {
+          params: {
+            option: option
+          }
+        })
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  },
+  watch: {
+    date: function(date) {
+      console.log(date);
+    }
   }
 };
 </script>
@@ -50,34 +157,7 @@ export default {
 <style scoped>
 #order-header {
   background: #dddddd;
-  height: 30px;
-  line-height: 30px;
   color: rgba(31, 32, 31, 1);
-  font-size: 24px;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
   margin: 25px 20px;
-}
-.col1,
-.col4 {
-  width: 200px;
-}
-.col3,
-.col2 {
-  width: 250px;
-}
-.col5 {
-  width: 300px;
-}
-.icon-container {
-  display: flex;
-  justify-content: center;
-}
-.icon-sort {
-  cursor: pointer;
-  font-size: 16px;
-  position: relative;
-  top: 4px;
 }
 </style>
