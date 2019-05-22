@@ -99,8 +99,7 @@ export default {
       action: "Update Book",
       oldBook: {},
       display: "",
-      search: "",
-      p: 0
+      search: ""
     };
   },
   mounted() {
@@ -121,21 +120,24 @@ export default {
           const data = response.data;
           this.bookList = data.content;
           this.pager.total = data.totalElements;
-          this.pager.size = data.pageSize;
+          this.pager.size = data.size;
         })
         .catch(err => {
           console.log(err);
         });
     },
     changePage(page) {
+      console.log("boolean", this.display === "search");
       if (this.display === "search") {
+        console.log("display", this.display);
         this.fetchAllLike(page - 1);
       } else {
+        console.log("display", this.display);
         this.fetchAllBooks(page - 1);
       }
     },
     fetchAllLike(page) {
-      this.display = "like";
+      this.display = "search";
       axios
         .get("/api/admin/books/search", {
           params: {
@@ -144,10 +146,11 @@ export default {
           }
         })
         .then(response => {
+          console.log(response.data);
           const data = response.data;
           this.bookList = data.content;
           this.pager.total = data.totalElements;
-          this.pager.size = data.pageSize;
+          this.pager.size = data.size;
         })
         .catch(err => {
           console.log(err);
@@ -172,7 +175,14 @@ export default {
       }
     },
     updateBook(book) {
-      alert("update book");
+      axios
+        .put("/api/admin/books/modify", book)
+        .then(response => {
+          console.log(response.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     deleteBook(bookId) {
       let bookToDelete;
@@ -187,12 +197,14 @@ export default {
       this.display = "search";
       this.pager.page = 0;
       this.fetchAllLike(this.pager.page);
-      this.search = "";
     },
     createBook() {
-      this.action = "Create A New Book";
-      this.oldBook = new Object();
-      this.dialogVisible = true;
+      axios.post("api/admin/books/create", book);
+      then(response => {
+        console.log(response.data);
+      }).catch(err => {
+        console.log(err);
+      });
     }
   }
 };

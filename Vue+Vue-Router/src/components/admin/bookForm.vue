@@ -11,10 +11,10 @@
         <el-input v-model="book.isbn"></el-input>
       </el-form-item>
       <el-form-item label="Price" prop="price">
-        <el-input type="number" v-model="book.price"></el-input>
+        <el-input type="number" v-model.number="book.price"></el-input>
       </el-form-item>
       <el-form-item label="Stock" prop="stock">
-        <el-input type="number" v-model="book.stock"></el-input>
+        <el-input type="number" v-model.number="book.stock"></el-input>
       </el-form-item>
       <el-form-item label="Author Information" prop="authorInfo" label-width="150px">
         <el-input type="textarea" v-model="book.authorInfo" class="block-area"></el-input>
@@ -23,8 +23,8 @@
         <el-input type="textarea" v-model="book.contentInfo" class="block-area"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="updateBook('bookForm')">{{action}}</el-button>
-        <el-button @click="cancleUpdate">cancle</el-button>
+        <el-button type="primary" @click="executeAction('bookForm')">{{action}}</el-button>
+        <el-button @click="cancleAction">cancle</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>
@@ -40,8 +40,8 @@ export default {
         name: "",
         author: "",
         isbn: "",
-        price: new Number(),
-        stock: new Number(),
+        price: 0,
+        stock: 0,
         authorInfo: "",
         contentInfo: ""
       },
@@ -118,8 +118,8 @@ export default {
     }
   },
   methods: {
-    updateBook(formName) {
-      this.$refs[fomName].validate(valid => {
+    executeAction(formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           this.$emit("updateBook", this.book);
         } else {
@@ -132,7 +132,7 @@ export default {
         }
       });
     },
-    cancleUpdate() {
+    cancleAction() {
       this.$emit("cancleBookDialog");
     }
   },
@@ -140,22 +140,9 @@ export default {
     oldBook: function(data) {
       console.log(data);
       if (data.id !== undefined) {
-        this.book.id = data.id;
-        this.book.name = data.name;
-        this.book.author = data.author;
-        this.book.isbn = data.isbn;
-        this.book.price = data.price;
-        this.book.stock = data.stock;
-        this.book.contentInfo = data.contentInfo;
-        this.book.authorInfo = data.contentInfo;
+        this.book = data;
       } else {
-        this.book.name = "";
-        this.book.author = "";
-        this.book.isbn = "";
-        this.book.price = 0;
-        this.book.stock = 0;
-        this.book.authorInfo = "";
-        this.book.contentInfo = "";
+        this.book = new Object();
       }
     }
   }

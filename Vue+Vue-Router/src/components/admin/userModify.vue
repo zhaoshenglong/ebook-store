@@ -10,7 +10,7 @@
       <p id="email-area">{{user.email}}</p>
     </div>
     <div class="col4"></div>
-    <div class="col5" :style="styleColor">{{state}}</div>
+    <div class="col5" :style="styleColor">{{stateText}}</div>
     <div class="col6">
       <svg class="icon icon-on" aria-hidden="true" v-show="activated" @click="switchOnOff">
         <use xlink:href="#icontoggleon"></use>
@@ -28,6 +28,10 @@ export default {
     user: {
       type: Object,
       required: true
+    },
+    state: {
+      type: Boolean,
+      required: true
     }
   },
   data() {
@@ -36,7 +40,7 @@ export default {
     };
   },
   computed: {
-    state() {
+    stateText() {
       if (this.activated) return "Activated";
       else return "Forbidden";
     },
@@ -72,6 +76,9 @@ export default {
   watch: {
     user: function(newUser) {
       this.activated = !newUser.state;
+    },
+    state: function(newState) {
+      this.activated = !newState;
     }
   }
 };

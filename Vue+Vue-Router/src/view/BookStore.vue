@@ -140,6 +140,9 @@ export default {
             message: "您已成功退出登录！",
             duration: 2000
           });
+          setTimeout(() => {
+            window.location.reload(true);
+          }, 2000);
         })
         .catch(err => {
           this.$message({

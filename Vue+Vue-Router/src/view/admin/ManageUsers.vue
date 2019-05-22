@@ -18,7 +18,13 @@
       <div class="col5">State</div>
       <div class="col6">Operation</div>
     </div>
-    <user-modify v-for="user in userList" :key="user.name" :user="user" @updateUser="updateUser"></user-modify>
+    <user-modify
+      v-for="user in userList"
+      :key="user.name"
+      :user="user"
+      @updateUser="updateUser"
+      :state="user.state"
+    ></user-modify>
     <div>
       <el-pagination
         :page-size="pager.size"
@@ -103,7 +109,22 @@ export default {
         });
     },
     updateUser(data) {
-      console.log(data);
+      axios
+        .put("/api/admin/users/modify", data)
+        .then(response => {
+          this.userList.forEach(user => {
+            if (user.name === data.name) {
+              user.state = !user.state;
+            }
+          });
+        })
+        .catch(err => {
+          console.log(err);
+          this.$message({
+            type: "error",
+            message: "修改失败，服务器可能挂了:("
+          });
+        });
     }
   }
 };

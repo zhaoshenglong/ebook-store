@@ -7,8 +7,8 @@
       :default-active="activeIndex"
     >
       <el-menu-item index="1">全部订单</el-menu-item>
-      <el-menu-item index="2">未支付订单</el-menu-item>
-      <el-menu-item index="3">已完成订单</el-menu-item>
+      <el-menu-item index="2">已完成订单</el-menu-item>
+      <el-menu-item index="3">未支付订单</el-menu-item>
       <el-menu-item index="4">已删除订单</el-menu-item>
       <el-menu-item index="5">
         时间过滤
@@ -80,29 +80,6 @@ export default {
   },
   mounted() {
     this.fetchOrderByOption("all");
-    /*this.orderList.push({
-      id: "123456",
-      user: {
-        name: "zhaoshenglong",
-        avatar:
-          "http://localhost:8080/img?kind=book&name=026a1a583a68438187c70126189c59e7"
-      },
-      createDate: "2019-05-17",
-      orderItemList: [
-        {
-          book: {
-            name: "book1",
-            author: "author1",
-            isbn: "97897813511",
-            img:
-              "http://localhost:8080/img?kind=book&name=026a1a583a68438187c70126189c59e7"
-          },
-          price: 53.0,
-          quantity: 5,
-          id: "dwadawada"
-        }
-      ]
-    });*/
   },
   methods: {
     handleSelect(key, keyPath) {
