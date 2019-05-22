@@ -26,15 +26,19 @@
         ></el-date-picker>
       </el-menu-item>
     </el-menu>
+    <!-- Misss search -->
     <div id="order-list">
       <order-modify v-for="order in orderList" :key="order.id" :order="order"></order-modify>
     </div>
+    <!-- Misss statistics -->
+    <div id="statisticcs"></div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import OrderModify from "../../components/admin/orderModify";
+
 export default {
   name: "MangeOrders",
   components: {
@@ -95,12 +99,17 @@ export default {
     },
     fetchOrderByDate() {
       let start, end;
-
+      start = this.date[0];
+      end = this.date[1];
+      console.log(start);
+      console.log(end);
+      start = this.convertDateFmt(start);
+      end = this.convertDateFmt(end);
       axios
         .get("/api/admin/orders/between", {
           params: {
-            start: start,
-            end: end,
+            start: start + "00:00:00",
+            end: end + "23:59:59",
             page: 0
           }
         })
@@ -110,6 +119,11 @@ export default {
         .catch(err => {
           console.log(err);
         });
+    },
+    convertDateFmt(date) {
+      return (
+        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+      );
     },
     fetchOrderByOption(option) {
       axios

@@ -72,7 +72,9 @@ export default {
             type: "success",
             message: "您已成功退出登录,将为您定向到登录页面..."
           });
-          window.location.reload(true);
+          setTimeout(() => {
+            this.$router.push("signIn");
+          }, 2000);
         })
         .catch(err => {
           this.$message({

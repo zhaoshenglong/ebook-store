@@ -137,7 +137,7 @@ export default {
         .then(() => {
           this.$message({
             type: "success",
-            message: "您已成功退出登录！",
+            message: "您已成功退出登录!",
             duration: 2000
           });
           setTimeout(() => {

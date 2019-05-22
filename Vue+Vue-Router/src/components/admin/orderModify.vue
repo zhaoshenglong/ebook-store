@@ -1,22 +1,21 @@
 <template>
   <div id="order-container">
-    <div id="order-header">
-      <section class="order-header-sec">
-        <span>Order ID:</span>
-        <span>{{propOrder.id}}</span>
-      </section>
-      <section class="order-header-sec">
+    <div id="order-header" :class="headerState">
+      <section class="order-header-sec-left">
         <span>Costumer:</span>
         <span>
           <img id="costumer-avatar" :src="propOrder.user.avatar">
         </span>
-        <span id="costumer-info">{{propOrder.user.name}}</span>
+        <el-popover placement="top-start" width="300" trigger="hover">
+          <profile :user="propOrder.user"></profile>
+          <span slot="reference" id="costumer-info">{{propOrder.user.name}}</span>
+        </el-popover>
       </section>
-      <section class="order-header-sec">
+      <section class="order-header-sec-mid">
         <span>Order Date:</span>
         <span>{{propOrder.createDate}}</span>
       </section>
-      <section class="order-header-sec">
+      <section class="order-header-sec-right">
         <span>State:</span>
         <span>{{orderState}}</span>
       </section>
@@ -40,24 +39,33 @@
             <span>{{item.quantity}}</span>
           </section>
           <section class="item-sec">
-            <span>{{item.price}}</span>
+            <span>¥{{Number(item.bookPrice).toFixed(2)}}</span>
           </section>
         </li>
       </ul>
     </div>
     <div id="order-footer">
       <span>Total paid:</span>
-      <span>{{totalPrice}}</span>
+      <span>RMB¥{{totalPrice}}</span>
     </div>
   </div>
 </template>
 
 <script>
+import Profile from "./profile";
 export default {
   name: "OrderModify",
+  components: {
+    Profile
+  },
   data() {
     return {
-      propOrder: {}
+      propOrder: {
+        user: {
+          avatar: ""
+        },
+        orderItemList: []
+      }
     };
   },
   props: {
@@ -68,16 +76,15 @@ export default {
   },
   mounted() {
     this.propOrder = this.$props.order;
-    console.log(this.propOrder);
   },
   methods: {},
   computed: {
     totalPrice() {
       let res = 0;
       this.propOrder.orderItemList.forEach(item => {
-        res += item.quantity * item.price;
+        res += item.quantity * item.bookPrice;
       });
-      return res;
+      return Number(res).toFixed(2);
     },
     orderState() {
       if (this.propOrder.state === 0) {
@@ -89,12 +96,22 @@ export default {
       } else {
         return "Unknown";
       }
+    },
+    headerState() {
+      if (this.propOrder.state === 0) {
+        return "header-unpaid";
+      } else if (this.propOrder.state === 1) {
+        return "header-paid";
+      } else if (this.propOrder.state === 2) {
+        return "header-deleted";
+      } else {
+        return "header-unknown";
+      }
     }
   },
   watch: {
     order: function(order) {
       this.propOrder = order;
-      console.log(this.propOrder);
     }
   }
 };
@@ -106,22 +123,36 @@ export default {
   font-size: 18px;
   border-bottom: 1px solid #dddddd;
   color: rgb(31, 31, 31);
+  padding-bottom: 25px;
 }
 #order-header {
-  background: #dddddd;
   height: 32px;
   position: relative;
 }
-.order-header-sec {
+.order-header-sec-left {
+  position: absolute;
   display: inline-block;
   margin: 6px 10px;
+  left: 10px;
+}
+.order-header-sec-mid {
+  position: absolute;
+  display: inline-block;
+  margin: 6px 10px;
+  left: 40%;
+}
+.order-header-sec-right {
+  position: absolute;
+  display: inline-block;
+  margin: 6px 10px;
+  right: 10px;
 }
 #costumer-avatar {
   width: 24px;
   height: 24px;
   border-radius: 100px;
   position: absolute;
-  top: 3px;
+  bottom: -4px;
 }
 #costumer-info {
   margin-left: 28px;
@@ -153,8 +184,20 @@ export default {
 }
 #order-footer {
   width: 20%;
-  margin: 0;
+  margin: 5px 15px 10px 0;
   position: relative;
   left: 80%;
+}
+.header-paid {
+  background: #b1e895;
+}
+.header-unpaid {
+  background: #ffcb7c;
+}
+.header-deleted {
+  background: #f8a2a2;
+}
+.header-unknown {
+  background: #bbbbbb;
 }
 </style>
