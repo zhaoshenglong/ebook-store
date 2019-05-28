@@ -21,7 +21,7 @@
           <li
             class="book-item"
             v-for="book in bookList"
-            :key="book.isbn"
+            :key="book.id"
             @mouseenter="showCart = book.id"
             @mouseleave="showCart = ''"
           >
@@ -115,6 +115,7 @@ export default {
       });
     },
     changeBookListByTag(tag) {
+      this.searchMsg = "";
       this.dispalyTag = tag;
       this.pager.page = 0;
       if (tag == "All") {
@@ -221,7 +222,6 @@ export default {
           this.bookList = data.content;
           this.pager.total = data.totalElements;
           this.pager.size = data.pageSize;
-          this.searchMsg = "";
         })
         .catch(err => {
           console.log(err);

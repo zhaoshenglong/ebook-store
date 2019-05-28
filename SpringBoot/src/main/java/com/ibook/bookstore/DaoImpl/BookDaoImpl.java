@@ -34,7 +34,6 @@ public class BookDaoImpl implements BookDao {
          * Reason may be for that withIncludeNullValues must set before withIgnorePaths,
          * or it may ignore the null String / Object and thus has no effect
          * */
-
         ExampleMatcher matcher = ExampleMatcher.matching()
                 .withIgnoreCase()
                 .withMatcher("tag", ExampleMatcher.GenericPropertyMatchers.startsWith())
@@ -58,8 +57,14 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
+    public Page<Book> findAllByIsbnNameAuthorLikeIncludeDeleted(String isbn, String name, String author, Pageable pageable) {
+        return bookRepository.findAllByAuthorContainsOrNameContainsOrIsbnContains(author,name,isbn,pageable);
+    }
+
+
+    @Override
     public void deleteBook(Book book) {
-        book.setDeleted(false);
+        book.setDeleted(true);
         bookRepository.save(book);
     }
 

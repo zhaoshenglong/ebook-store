@@ -110,7 +110,9 @@ export default {
             message: "上传成功",
             duration: 1000
           });
-          window.location.reload(true);
+          setTimeout(() => {
+            window.location.reload(true);
+          }, 1000);
         })
         .catch(err => {
           console.log(err);

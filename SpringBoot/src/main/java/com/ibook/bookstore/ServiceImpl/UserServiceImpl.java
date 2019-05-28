@@ -154,7 +154,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadAvatar(MultipartFile avatar, String name) {
+    public void uploadAvatar(MultipartFile avatar, String name, HttpSession session) {
         try {
             System.out.println("name: " + avatar.getName());
             System.out.println("content-type: " + avatar.getContentType());
@@ -170,6 +170,7 @@ public class UserServiceImpl implements UserService {
             User user = userDao.findOne(name);
             user.setAvatar("http://localhost:8080/img?kind=user&name=" + name);
             userDao.saveUser(user);
+            session.setAttribute("avatar", user.getAvatar());
             out.flush();
             out.close();
         } catch (Exception e) {

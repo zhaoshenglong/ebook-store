@@ -4,10 +4,14 @@ import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -23,7 +27,7 @@ public class BookController {
 
     @GetMapping("/api/public/books/tag/all")
     public Page<Book> getBookPage(@RequestParam(name = "page", defaultValue = "0")Integer page) {
-        return bookService.findBookByPage(page, 10);
+        return bookService.findBookByPage(page, 10, "user");
     }
 
     @GetMapping("/api/public/books/tag/{tag}")
@@ -35,9 +39,15 @@ public class BookController {
 
     @GetMapping("/api/public/books/search")
     public Page<Book> getBookLikePage(@RequestParam(name = "search_text")String text,
-                                      @RequestParam(name = "page", defaultValue = "0")Integer page ) {
-        System.out.println(text);
-        return bookService.findAllLike(text,page, 10);
+                                      @RequestParam(name = "page", defaultValue = "0")Integer page,
+                                      HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        String user = (String)session.getAttribute("name");
+        if (user == null) {
+            return null;
+        } else {
+            return bookService.findAllLike(text,page, 10, user);
+        }
     }
 
     @GetMapping(value = "/img", produces = MediaType.IMAGE_JPEG_VALUE)
@@ -45,11 +55,28 @@ public class BookController {
         return bookService.loadImage(kind, name);
     }
 
-    @GetMapping("/api/admin/books/all")
-    public Page<Book> getAllBookByPage(@RequestParam(name = "page", defaultValue = "0")Integer page) {
-        return bookService.findBookByPage(page, 10);
+    @PostMapping(value = "/img/upload")
+    public Map uploadImage(@RequestParam("bookPicture")MultipartFile bookPicture) {
+        if (!bookPicture.isEmpty()) {
+            return bookService.uploadImage(bookPicture);
+        } else {
+            Map<String, String> res = new HashMap<>();
+            res.put("status", "Upload failed");
+            res.put("msg", "Picture not found");
+            return res;
+        }
     }
 
+    @GetMapping("/api/admin/books/all")
+    public Page<Book> getAllBookByPage(@RequestParam(name = "page", defaultValue = "0")Integer page) {
+        return bookService.findBookByPage(page, 10, "admin");
+    }
+
+    @GetMapping("/api/admin/books/search")
+    public Page<Book> getAllBookLikeByPage(@RequestParam(name = "page", defaultValue = "0")Integer page,
+                                           @RequestParam(name = "pattern", defaultValue = "")String pattern) {
+        return bookService.findAllLike(pattern, page, 10, "admin");
+    }
     /**
      *
      * @param book

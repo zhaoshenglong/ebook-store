@@ -67,8 +67,10 @@ public class UserController {
 
     @PostMapping("/api/user/{name}/avatars/upload")
     public void uploadAvatar(@RequestParam("avatar")MultipartFile avatar,
-                             @PathVariable("name")String name) {
-        userService.uploadAvatar(avatar, name);
+                             @PathVariable("name")String name,
+                             HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        userService.uploadAvatar(avatar, name, session);
     }
 
     /**

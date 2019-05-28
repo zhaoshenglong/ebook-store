@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class OrderController {
     @GetMapping("/api/user/{name}/orders")
     public Page<Order> getOrderPage(@PathVariable("name") String name,
                                     @RequestParam("page") String page) {
-        return orderService.findAllOrderPage(name, Integer.parseInt(page), 10);
+        return orderService.findUserOrderPage(name, Integer.parseInt(page), 10);
     }
 
     @GetMapping("/api/user/{name}/orders/between")
@@ -38,7 +39,7 @@ public class OrderController {
                                        @RequestParam("page") Integer page){
         System.out.println(beg);
         System.out.println(end);
-        return orderService.findAllOrderBetween(name, beg, end, page, 10);
+        return orderService.findUserOrderBetween(name, beg, end, page, 10);
     }
 
     @PostMapping("/api/user/{name}/orders/buy")
@@ -63,5 +64,25 @@ public class OrderController {
     public Order deleteOrder(@PathVariable("name") String name,
                              @RequestParam("id") String id) {
         return orderService.delItemFromCart(name, id);
+    }
+
+    @GetMapping("/api/admin/orders/option")
+    public Page<Order> getAllOrderAdmin(@RequestParam("option")String option,
+                                        @RequestParam("page") Integer page) {
+        return orderService.getAdminOrders(option, page, 10);
+    }
+
+    @GetMapping("/api/admin/orders/between")
+    public Page<Order> getOrderBetween(@RequestParam("start")String start,
+                                       @RequestParam("end")String end,
+                                       @RequestParam("page")Integer page) {
+        return orderService.getAdminOrderBetween(Timestamp.valueOf(start),Timestamp.valueOf(end), page, 10);
+    }
+
+    @GetMapping("/api/admin/orders/search")
+    public Page<Order> getOrderBetweenAdmin(@RequestParam("start")Timestamp start,
+                                            @RequestParam("end")Timestamp end,
+                                            @RequestParam("page")Integer page) {
+        return orderService.getAdminOrderBetween(start, end, page, 10);
     }
 }

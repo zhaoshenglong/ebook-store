@@ -8,12 +8,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,9 +30,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findBookByPage(int page, int size) {
+    public Page<Book> findBookByPage(int page, int size, String user) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookDao.findAllNotDeleted(pageable);
+        if (user.equals("admin")) {
+            return bookDao.findAllIncludeDeleted(pageable);
+        } else {
+            return bookDao.findAllNotDeleted(pageable);
+        }
     }
 
     @Override
@@ -40,9 +46,13 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Page<Book> findAllLike(String pattern, int page, int size) {
+    public Page<Book> findAllLike(String pattern, int page, int size, String user) {
         Pageable pageable = PageRequest.of(page, size);
-        return bookDao.findByIsbnNameAuthorLikeNotDeleted(pattern, pattern, pattern, pageable);
+        if (user.equals("admin")) {
+            return bookDao.findAllByIsbnNameAuthorLikeIncludeDeleted(pattern, pattern, pattern, pageable);
+        } else {
+            return bookDao.findByIsbnNameAuthorLikeNotDeleted(pattern, pattern, pattern, pageable);
+        }
     }
 
     /*
@@ -117,5 +127,11 @@ public class BookServiceImpl implements BookService {
             //...
             return null;
         }
+    }
+
+    @Override
+    public Map uploadImage(MultipartFile image) {
+        Map<String, String > res = new HashMap<>();
+        return res;
     }
 }

@@ -70,19 +70,46 @@ export default {
           }, 3000);
         })
         .catch(err => {
-          console.log(err);
-          if (err.status == 500) {
+          const status = err.status;
+          const message = err.data;
+          if (status == 500) {
             this.$message({
               showClose: true,
               message: "登录失败，我们的服务器可能挂了:(",
               type: "error"
             });
           } else {
-            this.$message({
-              showClose: true,
-              message: "登录失败，是不是密码错了？",
-              type: "error"
-            });
+            if (status === 401) {
+              if (message.msg === "User credentials have expired") {
+                console.log(message);
+                this.$message({
+                  showClose: true,
+                  message: "登录失败，您帐号已过期:(",
+                  type: "error"
+                });
+              } else if (message.msg === "Bad credentials") {
+                console.log(message);
+                this.$message({
+                  showClose: true,
+                  message: "登录失败，您的密码不正确:(",
+                  type: "error"
+                });
+              } else if (message.msg === "User account is locked") {
+                console.log(message);
+                this.$message({
+                  showClose: true,
+                  message: "登录失败，您的账户已被管理员锁定:(",
+                  type: "error"
+                });
+              } else {
+                console.log(message);
+                this.$message({
+                  showClose: true,
+                  message: "登录失败，我们遇到了未知错误:(",
+                  type: "error"
+                });
+              }
+            }
           }
         });
     }

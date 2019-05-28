@@ -134,15 +134,28 @@ export default {
     closeSession() {
       this.$store
         .dispatch("signOut")
-        .then(() => {
+        .then(user => {
           this.$message({
             type: "success",
             message: "您已成功退出登录!",
-            duration: 2000
+            duration: 1000
           });
           setTimeout(() => {
-            window.location.reload(true);
-          }, 2000);
+            let currentRoute = this.$route;
+            if (
+              currentRoute.meta.role === "user" ||
+              currentRoute.meta.role === "admin"
+            ) {
+              this.$message({
+                type: "warning",
+                message: "当前页面需要您登录才能访问!",
+                duration: 2000
+              });
+              setTimeout(() => {
+                this.$router.push("signIn");
+              }, 2000);
+            }
+          }, 1000);
         })
         .catch(err => {
           this.$message({

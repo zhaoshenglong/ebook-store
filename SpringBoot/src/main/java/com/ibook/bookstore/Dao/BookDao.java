@@ -11,6 +11,9 @@ public interface BookDao {
     Page<Book> findAllByTagNotDeleted(String tag, Pageable pageable);
     Page<Book> findByIsbnNameAuthorLikeNotDeleted(String isbn, String name, String author, Pageable pageable);
     Page<Book> findAllIncludeDeleted(Pageable pageable);
+
+    Page<Book> findAllByIsbnNameAuthorLikeIncludeDeleted(String isbn, String name, String author, Pageable pageable);
+
     /* Delete methods */
     void deleteBook(Book book);
 

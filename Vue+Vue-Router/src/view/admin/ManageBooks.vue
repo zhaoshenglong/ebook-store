@@ -63,6 +63,7 @@
         :oldBook="oldBook"
         @cancleBookDialog="cancleBookDialog"
         @updateBook="updateBook"
+        @createBook="createBook"
       ></book-form>
     </div>
     <div id="book-pagination">
@@ -171,40 +172,79 @@ export default {
       } else {
         this.dialogVisible = true;
         this.oldBook = new Object();
-        this.action = "Create A New Book";
+        this.action = "Create New Book";
       }
     },
     updateBook(book) {
       axios
         .put("/api/admin/books/modify", book)
         .then(response => {
-          console.log(response.data);
+          this.$message({
+            type: "success",
+            message: "更新图书成功～",
+            duration: 2000
+          });
+          this.cancleBookDialog();
         })
         .catch(err => {
+          this.$message({
+            type: "error",
+            message: "更新图书失败，我恩的服务器可能挂了",
+            duration: 2000
+          });
           console.log(err);
         });
     },
     deleteBook(bookId) {
-      let bookToDelete;
-      this.bookList.forEach(book => {
-        if (bookId === book.id) {
-          bookToDelete = book;
-        }
-      });
-      console.log(bookToDelete);
+      axios
+        .delete("/api/admin/books/delete", {
+          params: {
+            id: bookId
+          }
+        })
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "成功删除图书～",
+            duration: 2000
+          });
+          console.log(response);
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: "删除图书失败，我们的服务器可能挂了:(",
+            duration: 2000
+          });
+          console.log(err);
+        });
     },
     searchBook() {
       this.display = "search";
       this.pager.page = 0;
       this.fetchAllLike(this.pager.page);
     },
-    createBook() {
-      axios.post("api/admin/books/create", book);
-      then(response => {
-        console.log(response.data);
-      }).catch(err => {
-        console.log(err);
-      });
+    createBook(book) {
+      axios
+        .post("api/admin/books/create", book)
+        .then(response => {
+          this.$message({
+            type: "success",
+            message: "创建图书成功～",
+            duration: 2000
+          });
+          console.log(response.data);
+          this.cancleBookDialog();
+        })
+        .catch(err => {
+          this.$message({
+            type: "error",
+            message: "创建图书失败，我恩的服务器可能挂了",
+            duration: 2000
+          });
+          console.log(err);
+        });
+      console.log("create");
     }
   }
 };

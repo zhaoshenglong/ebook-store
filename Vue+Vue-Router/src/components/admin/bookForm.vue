@@ -121,7 +121,9 @@ export default {
     executeAction(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.$emit("updateBook", this.book);
+          let event =
+            this.action === "Create New Book" ? "createBook" : "updateBook";
+          this.$emit(event, this.book);
         } else {
           this.$message({
             type: "warning",

@@ -80,7 +80,7 @@ public class securityConfiguration extends WebSecurityConfigurerAdapter {
                         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
                         httpServletResponse.setStatus(401);
                         PrintWriter out = httpServletResponse.getWriter();
-                        out.print("{\"msg\":\"error\"}");
+                        out.print("{\"msg\":\"" + e.getMessage() + "\"}");
                         out.flush();
                         out.close();
                     }

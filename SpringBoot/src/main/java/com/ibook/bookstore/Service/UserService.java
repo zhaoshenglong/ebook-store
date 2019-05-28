@@ -29,7 +29,7 @@ public interface UserService {
 
     void deleteAddress(String id);
 
-    void uploadAvatar(MultipartFile avatar, String name);
+    void uploadAvatar(MultipartFile avatar, String name, HttpSession session);
 
     Boolean nameCanBeRegistered(String name);
     Boolean emailCanBeRegistered(String email);

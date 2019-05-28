@@ -28,7 +28,8 @@ export default new Router({
                     name: 'Home',
                     component: HomeSwiper,
                     meta: {
-                        role: 'guest'
+                        role: 'guest',
+                        redirect: false
                     }
                 },
                 {
@@ -36,7 +37,8 @@ export default new Router({
                     name: 'SignIn',
                     component: SignIn,
                     meta: {
-                        role: 'guest'
+                        role: 'guest',
+                        redirect: false
                     }
                 },
                 {
@@ -44,7 +46,8 @@ export default new Router({
                     name: 'SignUp',
                     component: SignUp,
                     meta: {
-                        role: 'guest'
+                        role: 'guest',
+                        redirect: false
                     }
                 }
             ]
@@ -59,7 +62,8 @@ export default new Router({
                         main: StoreMain
                     },
                     meta: {
-                        role: 'guest'
+                        role: 'guest',
+                        redirect: false
                     }
                 },
                 {
@@ -69,7 +73,8 @@ export default new Router({
                         main: BookDetail
                     },
                     meta: {
-                        role: 'guest'
+                        role: 'guest',
+                        redirect: false
                     }
                 },
                 {
@@ -79,7 +84,8 @@ export default new Router({
                         main: SettingProfile
                     },
                     meta: {
-                        role: 'user'
+                        role: 'user',
+                        redirect: false
                     }
                 },
                 {
@@ -89,7 +95,8 @@ export default new Router({
                         main: SettingAddress
                     },
                     meta: {
-                        role: 'user'
+                        role: 'user',
+                        redirect: false
                     }
                 },
                 {
@@ -99,7 +106,8 @@ export default new Router({
                         main: SettingAccount
                     },
                     meta: {
-                        role: 'user'
+                        role: 'user',
+                        redirect: false
                     }
                 },
                 {
@@ -109,7 +117,8 @@ export default new Router({
                         main: Order
                     },
                     meta: {
-                        role: 'user'
+                        role: 'user',
+                        redirect: false
                     }
                 },
                 {
@@ -119,7 +128,8 @@ export default new Router({
                         main: Cart
                     },
                     meta: {
-                        role: 'user'
+                        role: 'user',
+                        redirect: false
                     }
                 }
             ]
@@ -132,7 +142,8 @@ export default new Router({
                     name: 'ManageBooks',
                     component: AdminBooks,
                     meta: {
-                        role: 'admin'
+                        role: 'admin',
+                        redirect: false
                     }
                 },
                 {
@@ -140,7 +151,8 @@ export default new Router({
                     name: 'ManageUsers',
                     component: AdminUsers,
                     meta: {
-                        role: 'admin'
+                        role: 'admin',
+                        redirect: false
                     }
                 },
                 {
@@ -148,7 +160,8 @@ export default new Router({
                     name: 'ManageOrders',
                     component: AdminOrders,
                     meta: {
-                        role: 'admin'
+                        role: 'admin',
+                        redirect: false
                     }
                 }
             ],

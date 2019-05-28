@@ -108,8 +108,8 @@ export default {
       axios
         .get("/api/admin/orders/between", {
           params: {
-            start: start + "00:00:00",
-            end: end + "23:59:59",
+            start: start + " 00:00:00",
+            end: end + " 23:59:59",
             page: 0
           }
         })

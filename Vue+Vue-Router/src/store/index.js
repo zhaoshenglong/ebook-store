@@ -50,15 +50,26 @@ export default new Vuex.Store({
         }, data) => {
             return new Promise((resolve, reject) => {
                 axios.post('/login', data, {
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    }
-                }).then(response => {
-                    commit('SET_SIGNED')
-                    resolve(response.data)
-                }).catch(err => {
-                    reject(err)
-                })
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        }
+                    }).then(res => {
+                        const message = res.data
+                        commit('SET_SIGNED')
+                        resolve(message)
+                    })
+                    .catch(err => {
+                        /* Response is Ok */
+                        if (err.response) {
+                            reject(err.response)
+                        } else if (err.request) {
+                            /* Request is being dealt with */
+                        } else {
+                            /* Respone throw error */
+                            console.log(err)
+                            throw err
+                        }
+                    })
             })
         },
         signOut: ({

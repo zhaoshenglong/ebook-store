@@ -1,5 +1,6 @@
 package com.ibook.bookstore.security;
 
+import com.google.common.base.Optional;
 import com.ibook.bookstore.Dao.UserDao;
 import com.ibook.bookstore.Entity.User;
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+
 
 @Component
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -24,8 +26,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
 
         System.out.println(name);
-        User user = userDao.findOne(name);
-        System.out.println(user);
+        Optional<User> userOptional = userDao.findByName(name);
+        User user = userOptional.orNull();
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
         /**
          * Check if session expires
          */
@@ -37,12 +42,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         } else {
             userDetails = new org.springframework.security.core.userdetails.User(
                     user.getName(), user.getPassword(),
-                    true, true, !user.isState(), true,
+                    true, true, true, !user.isState(),
                     AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER")
             );
         }
-
-
         logger.info("username:" + user.getName());
         logger.info("password:" + user.getPassword());
         return userDetails;

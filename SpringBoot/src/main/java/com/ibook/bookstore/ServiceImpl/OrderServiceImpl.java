@@ -37,7 +37,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAllOrderPage(String name, Integer page, Integer size) {
+    public Page<Order> findUserOrderPage(String name, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, 10);
         if (name.equals("admin")) {
             return orderDao.findAll(pageable);
@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<Order> findAllOrderBetween(String name, String beg, String end, Integer page, Integer size) {
+    public Page<Order> findUserOrderBetween(String name, String beg, String end, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, 10);
         return orderDao.findAllByUserPaidBetween(name, Timestamp.valueOf(beg), Timestamp.valueOf(end), pageable);
     }
@@ -101,6 +101,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
+        /* Check the stock */
+        for (OrderItem oi : orderItems) {
+            OrderItem orderItem = orderItemDao.findOne(oi.getId());
+            if (oi.getQuantity() > orderItem.getBook().getStock()) {
+                return null;
+            }
+        }
         Order order = new Order();
         order.setCreateDate(new Timestamp(System.currentTimeMillis()));
         order.setUser(userDao.findOne(name));
@@ -109,14 +116,10 @@ public class OrderServiceImpl implements OrderService {
         for (OrderItem oi : orderItems) {
             OrderItem orderItem = orderItemDao.findOne(oi.getId());
             orderItem.setOrderId(order.getId());
-            if (oi.getQuantity() > orderItem.getBook().getStock()) {
-                return null;
-            } else {
-                Book book = orderItem.getBook();
-                book.setStock(book.getStock() - oi.getQuantity());
-                orderItem.setBookPrice(book.getPrice());
-                bookDao.saveBook(book);
-            }
+            Book book = orderItem.getBook();
+            book.setStock(book.getStock() - oi.getQuantity());
+            orderItem.setBookPrice(book.getPrice());
+            bookDao.saveBook(book);
             orderItemDao.saveItem(orderItem);
         }
         return order;
@@ -140,6 +143,26 @@ public class OrderServiceImpl implements OrderService {
             orderItemDao.saveItem(orderItem);
         }
         return cart;
+    }
+
+    @Override
+    public Page<Order> getAdminOrders(String option, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        if (option.equals("all")) {
+            return orderDao.findAll(pageable);
+        } else if (option.equals("paid")) {
+            return orderDao.findAllByState(1, pageable);
+        } else if (option.equals("unpaid")) {
+            return orderDao.findAllByState(0, pageable);
+        } else if (option.equals("deleted")) {
+            return orderDao.findAllByState(2, pageable);
+        } else return null;
+    }
+
+    @Override
+    public Page<Order> getAdminOrderBetween(Timestamp start, Timestamp end, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return orderDao.findAllBetween(start,end,pageable);
     }
 
 }
