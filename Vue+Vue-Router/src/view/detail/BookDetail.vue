@@ -47,7 +47,7 @@ export default {
         });
     },
     addCart(id, quantity) {
-      var apiUrl = "/api/user/" + Cookies.get("name") + "/orders/item/add";
+      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
       axios
         .put(apiUrl, {
           bookId: id,
