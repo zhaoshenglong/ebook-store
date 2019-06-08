@@ -21,7 +21,4 @@ public interface BookService {
     void deleteBook(String id);
 
     Book updateBook(Map<String, String> data);
-
-    byte[] loadImage(String kind, String name);
-    Map uploadImage(MultipartFile image);
 }

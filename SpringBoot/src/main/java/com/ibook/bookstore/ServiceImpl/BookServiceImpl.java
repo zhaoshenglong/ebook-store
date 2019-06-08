@@ -114,24 +114,5 @@ public class BookServiceImpl implements BookService {
         return bookDao.saveBook(book);
     }
 
-    @Override
-    public byte[] loadImage(String kind, String name)  {
-        try {
-            File img = new File("/home/zhaoshenglong/bookstore/" + kind + "/" + name + ".jpg");
-            FileInputStream inputStream = new FileInputStream(img);
 
-            byte[] imgBytes = new byte[inputStream.available()];
-            inputStream.read(imgBytes, 0, inputStream.available());
-            return imgBytes;
-        } catch (IOException e){
-            //...
-            return null;
-        }
-    }
-
-    @Override
-    public Map uploadImage(MultipartFile image) {
-        Map<String, String > res = new HashMap<>();
-        return res;
-    }
 }

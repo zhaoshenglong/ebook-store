@@ -29,8 +29,6 @@ public interface UserService {
 
     void deleteAddress(String id);
 
-    void uploadAvatar(MultipartFile avatar, String name, HttpSession session);
-
     Boolean nameCanBeRegistered(String name);
     Boolean emailCanBeRegistered(String email);
     String verifyPassword(HttpSession session, String password, HttpServletResponse response);

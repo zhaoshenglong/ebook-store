@@ -1,15 +1,11 @@
 package com.ibook.bookstore.ServiceImpl;
 
 import com.google.common.base.Optional;
-import com.ibook.bookstore.Dao.AddressDao;
-import com.ibook.bookstore.Dao.BookDao;
-import com.ibook.bookstore.Dao.OrderDao;
-import com.ibook.bookstore.Dao.UserDao;
-import com.ibook.bookstore.Entity.Address;
-import com.ibook.bookstore.Entity.Book;
-import com.ibook.bookstore.Entity.Order;
-import com.ibook.bookstore.Entity.User;
+import com.ibook.bookstore.Dao.*;
+import com.ibook.bookstore.Entity.*;
 import com.ibook.bookstore.Service.UserService;
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -151,32 +147,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteAddress(String id) {
         addressDao.deleteAddress(id);
-    }
-
-    @Override
-    public void uploadAvatar(MultipartFile avatar, String name, HttpSession session) {
-        try {
-            System.out.println("name: " + avatar.getName());
-            System.out.println("content-type: " + avatar.getContentType());
-            System.out.println("size: " + avatar.getSize());
-            InputStream in = avatar.getInputStream();
-            Path filePath = Paths.get("/home/zhaoshenglong/bookstore/user/" + name + ".jpg");
-            OutputStream out = new BufferedOutputStream(Files.newOutputStream(filePath));
-            byte[] buf = new byte[1024];
-            int len;
-            while ( (len = in.read(buf)) > 0 ) {
-                out.write(buf, 0, len);
-            }
-            User user = userDao.findOne(name);
-            user.setAvatar("http://localhost:8080/img?kind=user&name=" + name);
-            userDao.saveUser(user);
-            session.setAttribute("avatar", user.getAvatar());
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     @Override

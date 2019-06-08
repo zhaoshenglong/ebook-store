@@ -65,14 +65,6 @@ public class UserController {
         userService.deleteAddress(id);
     }
 
-    @PostMapping("/api/user/{name}/avatars/upload")
-    public void uploadAvatar(@RequestParam("avatar")MultipartFile avatar,
-                             @PathVariable("name")String name,
-                             HttpServletRequest request) {
-        HttpSession session = request.getSession();
-        userService.uploadAvatar(avatar, name, session);
-    }
-
     /**
      * Admin manage controller, get / manage / delete users
      */

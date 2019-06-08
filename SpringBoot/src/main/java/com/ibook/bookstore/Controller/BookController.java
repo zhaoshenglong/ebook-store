@@ -50,23 +50,6 @@ public class BookController {
         }
     }
 
-    @GetMapping(value = "/img", produces = MediaType.IMAGE_JPEG_VALUE)
-    public byte[] displayImage(@RequestParam("kind")String kind, @RequestParam("name")String name) {
-        return bookService.loadImage(kind, name);
-    }
-
-    @PostMapping(value = "/img/upload")
-    public Map uploadImage(@RequestParam("bookPicture")MultipartFile bookPicture) {
-        if (!bookPicture.isEmpty()) {
-            return bookService.uploadImage(bookPicture);
-        } else {
-            Map<String, String> res = new HashMap<>();
-            res.put("status", "Upload failed");
-            res.put("msg", "Picture not found");
-            return res;
-        }
-    }
-
     @GetMapping("/api/admin/books/all")
     public Page<Book> getAllBookByPage(@RequestParam(name = "page", defaultValue = "0")Integer page) {
         return bookService.findBookByPage(page, 10, "admin");
