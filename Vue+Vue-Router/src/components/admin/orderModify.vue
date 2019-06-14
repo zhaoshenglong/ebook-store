@@ -119,11 +119,11 @@ export default {
 
 <style scoped>
 #order-container {
-  margin: 25px 20px;
+  margin: 15px 20px 5px 20px;
   font-size: 18px;
   border-bottom: 1px solid #dddddd;
   color: rgb(31, 31, 31);
-  padding-bottom: 25px;
+  padding-bottom: 2px;
 }
 #order-header {
   height: 32px;
@@ -184,7 +184,7 @@ export default {
 }
 #order-footer {
   width: 20%;
-  margin: 5px 15px 10px 0;
+  margin: 5px 15px 2px 0;
   position: relative;
   left: 80%;
 }

@@ -120,6 +120,7 @@ export default {
         .then(response => {
           const data = response.data;
           this.bookList = data.content;
+          console.log(data);
           this.pager.total = data.totalElements;
           this.pager.size = data.size;
         })

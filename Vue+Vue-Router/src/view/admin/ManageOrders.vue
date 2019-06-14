@@ -25,10 +25,20 @@
           @blur="fetchOrderByDate"
         ></el-date-picker>
       </el-menu-item>
+      <el-menu-item index="6" @click="showSearch">搜索</el-menu-item>
     </el-menu>
     <!-- Misss search -->
+    <div></div>
     <div id="order-list">
       <order-modify v-for="order in orderList" :key="order.id" :order="order"></order-modify>
+      <el-pagination
+        background
+        layout="prev, pager, next"
+        :total="pager.total"
+        :page-size="pager.size"
+        :current-page.sync="pager.page"
+        @current-change="changePage"
+      ></el-pagination>
     </div>
     <!-- Misss statistics -->
     <div id="statisticcs"></div>
@@ -79,25 +89,50 @@ export default {
         ]
       },
       date: [],
-      activeIndex: "1"
+      activeIndex: "1",
+      pager: {
+        page: 0,
+        total: 0,
+        size: 10
+      },
+      displayPage: "all"
     };
   },
   mounted() {
-    this.fetchOrderByOption("all");
+    this.fetchOrderByOption("all", 0);
   },
   methods: {
-    handleSelect(key, keyPath) {
-      if (key == "1") {
-        this.fetchOrderByOption("all");
-      } else if (key == "2") {
-        this.fetchOrderByOption("paid");
-      } else if (key == "3") {
-        this.fetchOrderByOption("unpaid");
-      } else {
-        this.fetchOrderByOption("deleted");
+    changePage(page) {
+      this.pager.page = page;
+      page--;
+      if (this.displayPage === "time") {
+        this.fetchOrderByDate(page);
+      } else if (this.displayPage === "all") {
+        this.fetchOrderByOption("all", page);
+      } else if (this.displayPage === "paid") {
+        this.fetchOrderByOption("paid", page);
+      } else if (this.displayPage === "unpaid") {
+        this.fetchOrderByOption("unpaid", page);
+      } else if (this.displayPage === "unpaid") {
+        this.fetchOrderByOption("deleted", page);
+      } else if (this.displayPage === "search") {
+        this.fetchOrderBySearch(page);
       }
     },
-    fetchOrderByDate() {
+    handleSelect(key, keyPath) {
+      this.pager.page = 0;
+      if (key == "1") {
+        this.fetchOrderByOption("all", this.pager.page);
+      } else if (key == "2") {
+        this.fetchOrderByOption("paid", this.pager.page);
+      } else if (key == "3") {
+        this.fetchOrderByOption("unpaid", this.pager.page);
+      } else {
+        this.fetchOrderByOption("deleted", this.pager.page);
+      }
+    },
+    fetchOrderByDate(page) {
+      this.displayPage = "search";
       let start, end;
       start = this.date[0];
       end = this.date[1];
@@ -110,11 +145,16 @@ export default {
           params: {
             start: start + " 00:00:00",
             end: end + " 23:59:59",
-            page: 0
+            page: page
           }
         })
         .then(response => {
-          console.log(response);
+          const data = response.data;
+          this.orderList = data.content;
+          console.log(response.data);
+          this.displayPage = "time";
+          this.pager.total = data.totalElements;
+          this.pager.size = data.size;
         })
         .catch(err => {
           console.log(err);
@@ -125,17 +165,41 @@ export default {
         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
       );
     },
-    fetchOrderByOption(option) {
+    fetchOrderByOption(option, page) {
       axios
         .get("/api/admin/orders/option", {
           params: {
             option: option,
-            page: 0
+            page: page
           }
         })
         .then(response => {
-          this.orderList = response.data.content;
+          const data = response.data;
+          this.orderList = data.content;
           console.log(response);
+          this.displayPage = option;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.size;
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    },
+    fetchOrderBySearch(page) {
+      axios
+        .get("/api/admin/orders/option", {
+          params: {
+            option: option,
+            page: page
+          }
+        })
+        .then(response => {
+          const data = response.data;
+          this.orderList = data.content;
+          console.log(response);
+          this.displayPage = option;
+          this.pager.total = data.totalElements;
+          this.pager.size = data.size;
         })
         .catch(err => {
           console.log(err);
@@ -143,8 +207,8 @@ export default {
     }
   },
   watch: {
-    date: function(date) {
-      console.log(date);
+    date: function(olddate) {
+      console.log(olddate);
     }
   }
 };
