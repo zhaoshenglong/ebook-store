@@ -22,21 +22,6 @@
       <el-form-item label="Book Information" prop="contentInfo" label-width="150px">
         <el-input type="textarea" v-model="book.contentInfo" class="block-area"></el-input>
       </el-form-item>
-      <el-form-item label="Pick a picture" prop="img" label-width="150px">
-        <el-upload
-          action="http://localhost:8080/api/amdin/img/upload"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :on-change="handleChange"
-          :file-list="fileList"
-          list-type="picture"
-          :auto-upload="false"
-          :limit="1"
-        >
-          <el-button size="small" type="primary">Select picture</el-button>
-          <div slot="tip" class="el-upload__tip">jpg files with a size less than 500kb</div>
-        </el-upload>
-      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="executeAction('bookForm')">{{action}}</el-button>
         <el-button @click="cancleAction">cancle</el-button>

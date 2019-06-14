@@ -1,7 +1,7 @@
 <template>
   <div id="book-container">
     <div class="col1" id="img-block">
-      <img :src="book.img" alt="Book picture">
+      <img :src="book.img" alt="Book picture" @click="openUploadDialog(book)">
     </div>
     <div class="col2">
       <p>{{book.name}}</p>
@@ -22,18 +22,26 @@
       <el-button type="primary" @click="editBook(book.id)">Edit</el-button>
       <el-button type="danger" @click="deleteBook(book.id)">Delete</el-button>
     </div>
+    <img-dialog :dialogVisible="dialogVisible" :book="dialogBook" @closeDialog="closeDialog"></img-dialog>
   </div>
 </template>
 
 <script>
+import ImgDialog from "./imgDialog";
 export default {
+  name: "BookModify",
+  components: {
+    ImgDialog
+  },
   data() {
     return {
       disabledName: "readonly",
       disabledAuthor: "readonly",
       disabledIsbn: "readonly",
       disabledPrice: "readonly",
-      disabledRemain: "readonly"
+      disabledRemain: "readonly",
+      dialogVisible: false,
+      dialogBook: {}
     };
   },
   props: {
@@ -48,6 +56,13 @@ export default {
     },
     deleteBook(bookId) {
       this.$emit("deleteBook", bookId);
+    },
+    openUploadDialog(book) {
+      this.dialogVisible = true;
+      this.dialogBook = book;
+    },
+    closeDialog() {
+      this.dialogVisible = false;
     }
   }
 };

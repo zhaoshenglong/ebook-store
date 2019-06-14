@@ -21,13 +21,13 @@ public class PictureController {
         return pictureService.loadImage(kind, name);
     }
 
-    @PostMapping(value = "/api/public/img/upload")
+    @PostMapping(value = "/api/admin/{id}/img/upload")
     public void uploadImage(@RequestParam("bookPicture") MultipartFile bookPicture,
-                            @RequestParam("id") String id) {
+                            @PathVariable("id") String id) {
         pictureService.uploadImage(bookPicture, id);
     }
 
-    @PostMapping("/api/public/{name}/avatars/upload")
+    @PostMapping("/api/user/{name}/avatars/upload")
     public void uploadAvatar(@RequestParam("avatar")MultipartFile avatar,
                              @PathVariable("name")String name,
                              HttpServletRequest request) {
