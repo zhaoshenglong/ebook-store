@@ -10,25 +10,47 @@
       <el-menu-item index="2">已完成订单</el-menu-item>
       <el-menu-item index="3">未支付订单</el-menu-item>
       <el-menu-item index="4">已删除订单</el-menu-item>
-      <el-menu-item index="5">
-        时间过滤
-        <el-date-picker
-          v-model="date"
-          type="daterange"
-          align="right"
-          unlink-panels
-          range-separator="To"
-          start-placeholder="Start date"
-          end-placeholder="End date"
-          :picker-options="pickerOptions"
-          format="yyyy-MM-dd"
-          @blur="fetchOrderByDate"
-        ></el-date-picker>
-      </el-menu-item>
-      <el-menu-item index="6" @click="showSearch">搜索</el-menu-item>
+      <el-menu-item index="5">搜索</el-menu-item>
     </el-menu>
-    <!-- Misss search -->
-    <div></div>
+
+    <div id="search-option" v-show="searchVisible">
+      <span class="input-label">用户名</span>
+      <el-input
+        class="input-area"
+        placeholder="输入用户名"
+        prefix-icon="el-icon-search"
+        v-model="search.user"
+      ></el-input>
+
+      <span class="input-label">书籍</span>
+      <el-input
+        class="input-area"
+        placeholder="书名／isbn／作者"
+        prefix-icon="el-icon-search"
+        v-model="search.book"
+      ></el-input>
+
+      <span class="input-label">时间</span>
+      <el-date-picker
+        v-model="date"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="To"
+        start-placeholder="Start date"
+        end-placeholder="End date"
+        :picker-options="pickerOptions"
+        format="yyyy-MM-dd"
+        @blur="setSearchDate"
+      ></el-date-picker>
+
+      <el-button
+        class="search-btn"
+        type="primary"
+        icon="el-icon-search"
+        @click="fetchOrderBySearch"
+      >Search</el-button>
+    </div>
     <div id="order-list">
       <order-modify v-for="order in orderList" :key="order.id" :order="order"></order-modify>
       <el-pagination
@@ -40,7 +62,7 @@
         @current-change="changePage"
       ></el-pagination>
     </div>
-    <!-- Misss statistics -->
+    <!-- Miss statistics -->
     <div id="statisticcs"></div>
   </div>
 </template>
@@ -95,7 +117,13 @@ export default {
         total: 0,
         size: 10
       },
-      displayPage: "all"
+      displayPage: "all",
+      search: {
+        user: "",
+        book: "",
+        date: []
+      },
+      searchVisible: false
     };
   },
   mounted() {
@@ -121,49 +149,42 @@ export default {
     },
     handleSelect(key, keyPath) {
       this.pager.page = 0;
+      if (key == "5") {
+        this.showSearch(true);
+      } else {
+        this.showSearch(false);
+      }
       if (key == "1") {
         this.fetchOrderByOption("all", this.pager.page);
       } else if (key == "2") {
         this.fetchOrderByOption("paid", this.pager.page);
       } else if (key == "3") {
         this.fetchOrderByOption("unpaid", this.pager.page);
-      } else {
+      } else if (key == "4") {
         this.fetchOrderByOption("deleted", this.pager.page);
+      } else {
+        //...
       }
     },
-    fetchOrderByDate(page) {
+    setSearchDate(page) {
       this.displayPage = "search";
       let start, end;
       start = this.date[0];
       end = this.date[1];
-      console.log(start);
-      console.log(end);
       start = this.convertDateFmt(start);
       end = this.convertDateFmt(end);
-      axios
-        .get("/api/admin/orders/between", {
-          params: {
-            start: start + " 00:00:00",
-            end: end + " 23:59:59",
-            page: page
-          }
-        })
-        .then(response => {
-          const data = response.data;
-          this.orderList = data.content;
-          console.log(response.data);
-          this.displayPage = "time";
-          this.pager.total = data.totalElements;
-          this.pager.size = data.size;
-        })
-        .catch(err => {
-          console.log(err);
-        });
+      console.log(start);
+      console.log(end);
+      this.search.date = new Array(2);
+      this.search.date[0] = start;
+      this.search.date[1] = end;
     },
     convertDateFmt(date) {
-      return (
-        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
-      );
+      let mon = date.getMonth() + 1;
+      if (mon < 10) {
+        mon = "0" + mon;
+      }
+      return date.getFullYear() + "-" + mon + "-" + date.getDate();
     },
     fetchOrderByOption(option, page) {
       axios
@@ -186,10 +207,14 @@ export default {
         });
     },
     fetchOrderBySearch(page) {
+      /*
       axios
-        .get("/api/admin/orders/option", {
+        .get("/api/admin/orders/search", {
           params: {
-            option: option,
+            user: this.search.user,
+            book: this.search.book,
+            start: this.search.date[0],
+            end: this.search.date[1],
             page: page
           }
         })
@@ -203,7 +228,11 @@ export default {
         })
         .catch(err => {
           console.log(err);
-        });
+        });*/
+      console.log(this.search);
+    },
+    showSearch(flag) {
+      this.searchVisible = flag;
     }
   },
   watch: {
@@ -218,6 +247,23 @@ export default {
 #order-header {
   background: #dddddd;
   color: rgba(31, 32, 31, 1);
-  margin: 25px 20px;
+  margin: 25px 20px 5px 20px;
+}
+.input-label {
+  display: inline-block;
+  width: 80px;
+  font-size: 18px;
+  padding-top: 10px;
+}
+.input-area {
+  width: 130px;
+  display: inline-block;
+}
+#search-option {
+  display: flex;
+  justify-content: center;
+}
+.search-btn {
+  margin-left: 15px;
 }
 </style>
