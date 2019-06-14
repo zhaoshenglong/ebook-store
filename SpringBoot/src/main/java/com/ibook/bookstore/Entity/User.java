@@ -49,6 +49,10 @@ public class User {
     @Column(name = "state")
     private boolean state;
 
+    @Basic
+    @Column(name = "consume")
+    private Double consume;
+
     @JsonIgnore
     @Basic
     @Column(name = "create_date")

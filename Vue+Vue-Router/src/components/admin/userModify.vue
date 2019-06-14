@@ -9,7 +9,7 @@
     <div class="col3">
       <p id="email-area">{{user.email}}</p>
     </div>
-    <div class="col4"></div>
+    <div class="col4">{{user.consume}}</div>
     <div class="col5" :style="styleColor">{{stateText}}</div>
     <div class="col6">
       <svg class="icon icon-on" aria-hidden="true" v-show="activated" @click="switchOnOff">

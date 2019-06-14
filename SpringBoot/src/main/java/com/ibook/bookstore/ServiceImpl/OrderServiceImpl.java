@@ -7,6 +7,7 @@ import com.ibook.bookstore.Dao.UserDao;
 import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
+import com.ibook.bookstore.Entity.User;
 import com.ibook.bookstore.Service.OrderService;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -104,6 +105,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
+        Double paidMoney = new Double(0);
         /* Check the stock */
         for (OrderItem oi : orderItems) {
             OrderItem orderItem = orderItemDao.findOne(oi.getId());
@@ -115,6 +117,7 @@ public class OrderServiceImpl implements OrderService {
         order.setCreateDate(new Timestamp(System.currentTimeMillis()));
         order.setUser(userDao.findOne(name));
         order.setState(1);
+        User user = userDao.findOne(name);
         orderDao.saveOrder(order);
         for (OrderItem oi : orderItems) {
             OrderItem orderItem = orderItemDao.findOne(oi.getId());
@@ -122,6 +125,9 @@ public class OrderServiceImpl implements OrderService {
             Book book = orderItem.getBook();
             book.setStock(book.getStock() - oi.getQuantity());
             orderItem.setBookPrice(book.getPrice());
+            paidMoney += orderItem.getBookPrice() * orderItem.getQuantity();
+            user.setConsume(user.getConsume() + paidMoney);
+            userDao.saveUser(user);
             bookDao.saveBook(book);
             orderItemDao.saveItem(orderItem);
         }
