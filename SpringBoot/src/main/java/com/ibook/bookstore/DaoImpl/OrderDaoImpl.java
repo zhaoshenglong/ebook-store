@@ -55,6 +55,13 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public List findAllStatisticsBetween(Timestamp beg, Timestamp end) {
+        System.out.println(beg);
+        System.out.println(end);
+        return orderRepository.findAllByCreateDateBetween(beg, end);
+    }
+
+    @Override
     public List findAll() {
         return orderRepository.findAll();
     }

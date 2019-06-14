@@ -59,6 +59,11 @@ public class Book {
     @Column(name = "stock")
     private int stock;
 
+    @Basic
+    @Column(name = "sale")
+
+    private int sale;
+
     @JsonIgnore
     @Basic
     @Column(name = "create_date")

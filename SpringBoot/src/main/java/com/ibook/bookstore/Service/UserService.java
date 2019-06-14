@@ -8,6 +8,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -33,4 +35,6 @@ public interface UserService {
     Boolean emailCanBeRegistered(String email);
     String verifyPassword(HttpSession session, String password, HttpServletResponse response);
     Map<String, String> getStatus(HttpSession session, HttpServletResponse response);
+
+    List<Map> statistics(Timestamp start, Timestamp end);
 }

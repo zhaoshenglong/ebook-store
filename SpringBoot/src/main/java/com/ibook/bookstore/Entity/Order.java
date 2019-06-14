@@ -33,6 +33,9 @@ public class Order {
     @Column(name = "create_date")
     private Timestamp createDate;
 
+    @Basic
+    @Column(name = "paid")
+    private Double paid;
 
     @Basic
     @Column(name = "state")

@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -32,6 +34,11 @@ public class UserDaoImpl implements UserDao {
     @Override
     public Page<User> findAll(Pageable pageable) {
         return userRepository.findAll(pageable);
+    }
+
+    @Override
+    public List findAll() {
+        return userRepository.findAll();
     }
 
     @Override

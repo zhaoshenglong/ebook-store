@@ -123,19 +123,21 @@ public class OrderServiceImpl implements OrderService {
         order.setUser(userDao.findOne(name));
         order.setState(1);
         User user = userDao.findOne(name);
-        orderDao.saveOrder(order);
         for (OrderItem oi : orderItems) {
             OrderItem orderItem = orderItemDao.findOne(oi.getId());
             orderItem.setOrderId(order.getId());
             Book book = orderItem.getBook();
             book.setStock(book.getStock() - oi.getQuantity());
+            book.setSale(book.getSale() + oi.getQuantity());
             orderItem.setBookPrice(book.getPrice());
             paidMoney += orderItem.getBookPrice() * orderItem.getQuantity();
-            user.setConsume(user.getConsume() + paidMoney);
             userDao.saveUser(user);
             bookDao.saveBook(book);
             orderItemDao.saveItem(orderItem);
         }
+        user.setConsume(user.getConsume() + paidMoney);
+        order.setPaid(paidMoney);
+        orderDao.saveOrder(order);
         return order;
     }
 

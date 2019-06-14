@@ -24,10 +24,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-
+import java.util.*;
 
 
 @Service
@@ -209,6 +206,36 @@ public class UserServiceImpl implements UserService {
             response.setStatus(401);
         }
         return status;
+    }
+
+    @Override
+    public List<Map> statistics(Timestamp start, Timestamp end) {
+        List<User> users = userDao.findAll();
+        List<Order> orders = orderDao.findAllStatisticsBetween(start, end);
+        List<Map> res = new ArrayList<>();
+
+        if (orders == null) {
+            System.out.println("null");
+        } else {
+            Iterator<User> iterator = users.iterator();
+            while (iterator.hasNext()) {
+                User user = iterator.next();
+                HashMap<String, Object> item = new HashMap<>();
+                item.put("name", user.getName());
+                item.put("totalConsume", user.getConsume());
+                item.put("partConsume", new Double(0));
+                for (Order order : orders) {
+                    if (order.getUser().getName().equals(user.getName())) {
+                        if (order.getPaid() != null) {
+                            item.replace("partConsume", (Double)item.get("partConsume") + order.getPaid());
+                        }
+                        System.out.println(order.getUser());
+                    }
+                }
+                res.add(item);
+            }
+        }
+        return res;
     }
 
 

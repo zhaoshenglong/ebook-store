@@ -18,6 +18,7 @@ public interface OrderDao {
     Order findByUserUnpaid(String user);
     Page<Order> findAllByState(int state, Pageable pageable);
     Page<Order> findAllBetween(Timestamp beg, Timestamp end, Pageable pageable);
+    List findAllStatisticsBetween(Timestamp beg, Timestamp end);
     List findAll();
     /* Create methods */
     Order saveOrder(Order order);

@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -69,10 +71,17 @@ public class UserController {
      * Admin manage controller, get / manage / delete users
      */
 
-     @GetMapping("/api/admin/users/all")
-    public Page<User> findUserByPage(@RequestParam(name = "page", defaultValue = "0") Integer page) {
+    @GetMapping("/api/admin/users/statistics/all")
+    public List<Map> findUserByPage(@RequestParam(name = "start")Timestamp start,
+                                     @RequestParam(name = "end")Timestamp end) {
+        return userService.statistics(start, end);
+    }
+
+    @GetMapping("/api/admin/users/all")
+    public Page<User> findAllUser(@RequestParam(name = "page", defaultValue = "0") Integer page) {
         return userService.findUserByPage(page, 10);
     }
+
 
     @DeleteMapping("/api/admin/users/delete")
     public void deleteUser(@RequestParam(name = "name")String name) {
