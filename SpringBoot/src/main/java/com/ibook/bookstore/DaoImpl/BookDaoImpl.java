@@ -10,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class BookDaoImpl implements BookDao {
     @Autowired
@@ -54,6 +56,11 @@ public class BookDaoImpl implements BookDao {
     @Override
     public Page<Book> findAllIncludeDeleted(Pageable pageable) {
         return bookRepository.findAll(pageable);
+    }
+
+    @Override
+    public List findAll() {
+        return bookRepository.findAll();
     }
 
     @Override

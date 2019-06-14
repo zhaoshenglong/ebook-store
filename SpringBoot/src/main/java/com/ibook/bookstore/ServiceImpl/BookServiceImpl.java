@@ -16,6 +16,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -53,6 +54,11 @@ public class BookServiceImpl implements BookService {
         } else {
             return bookDao.findByIsbnNameAuthorLikeNotDeleted(pattern, pattern, pattern, pageable);
         }
+    }
+
+    @Override
+    public List findAllBook() {
+        return bookDao.findAll();
     }
 
     /*

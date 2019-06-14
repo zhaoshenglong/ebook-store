@@ -12,6 +12,7 @@ import java.util.Map;
 public interface OrderService {
     Order findOrderById(String id);
 
+    List<Order> findAll();
     Page<Order> findUserOrderPage(String name, Integer page, Integer size);
 
     Page<Order> findUserOrderBetween(String name, String beg, String end, Integer page, Integer size);

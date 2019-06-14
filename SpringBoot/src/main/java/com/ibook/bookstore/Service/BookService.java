@@ -4,6 +4,7 @@ import com.ibook.bookstore.Entity.Book;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 public interface BookService {
@@ -15,7 +16,7 @@ public interface BookService {
     Page<Book> findBookByPage(int page, int size, String user);
     Page<Book> findBookByTagPage(String tag, int page, int size);
     Page<Book> findAllLike(String pattern, int page, int size, String user);
-
+    List findAllBook();
     Book createBook(Book book);
 
     void deleteBook(String id);

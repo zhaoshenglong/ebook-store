@@ -16,6 +16,7 @@ import Order from '@/view/order/Order'
 import AdminBooks from '@/view/admin/ManageBooks'
 import AdminUsers from '@/view/admin/ManageUsers'
 import AdminOrders from '@/view/admin/ManageOrders'
+import AdminStatistics from '@/view/admin/ManageStatistics'
 import Admin from '@/view/admin/Admin'
 Vue.use(Router)
 
@@ -159,6 +160,15 @@ export default new Router({
                     path: 'manage/orders',
                     name: 'ManageOrders',
                     component: AdminOrders,
+                    meta: {
+                        role: 'admin',
+                        redirect: false
+                    }
+                },
+                {
+                    path: 'manage/statistics',
+                    name: 'ManageStatistics',
+                    component: AdminStatistics,
                     meta: {
                         role: 'admin',
                         redirect: false

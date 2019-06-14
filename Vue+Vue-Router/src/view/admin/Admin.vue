@@ -28,6 +28,7 @@
         <span @click="toBooks" :class="show=='books'?focus:''">Books</span>
         <span @click="toUsers">Users</span>
         <span @click="toOrders">Orders</span>
+        <span @click="toStatistics">Statistics</span>
       </div>
       <div id="view-container">
         <router-view></router-view>
@@ -63,6 +64,9 @@ export default {
     },
     toOrders() {
       this.$router.push({ name: "ManageOrders" });
+    },
+    toStatistics() {
+      this.$router.push({ name: "ManageStatistics" });
     },
     closeSession() {
       this.$store

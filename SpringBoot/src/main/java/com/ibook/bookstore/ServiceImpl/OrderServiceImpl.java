@@ -41,6 +41,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public List<Order> findAll() {
+        return orderDao.findAll();
+    }
+
+    @Override
     public Page<Order> findUserOrderPage(String name, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, 10);
         if (name.equals("admin")) {

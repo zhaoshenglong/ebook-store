@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,6 +54,11 @@ public class BookController {
     @GetMapping("/api/admin/books/all")
     public Page<Book> getAllBookByPage(@RequestParam(name = "page", defaultValue = "0")Integer page) {
         return bookService.findBookByPage(page, 10, "admin");
+    }
+
+    @GetMapping("/api/admin/books/statistics/all")
+    public List<Book> getAllBooks() {
+        return bookService.findAllBook();
     }
 
     @GetMapping("/api/admin/books/search")

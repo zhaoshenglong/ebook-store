@@ -72,6 +72,11 @@ public class OrderController {
         return orderService.getAdminOrders(option, page, 10);
     }
 
+    @GetMapping("/api/admin/orders/statistics/all")
+    public List<Order> getAll () {
+        return orderService.findAll();
+    }
+
     @GetMapping("/api/admin/orders/between")
     public Page<Order> getOrderBetween(@RequestParam("start")String start,
                                        @RequestParam("end")String end,
