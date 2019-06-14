@@ -8,6 +8,7 @@ import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
 import com.ibook.bookstore.Service.OrderService;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -163,6 +166,55 @@ public class OrderServiceImpl implements OrderService {
     public Page<Order> getAdminOrderBetween(Timestamp start, Timestamp end, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return orderDao.findAllBetween(start,end,pageable);
+    }
+
+    @Override
+    public List<Order> getAdminOrderSearch(String user, String book, Timestamp start, Timestamp end) {
+        List<Order> orders = orderDao.findAll();
+        System.out.println(user);
+        System.out.println(book);
+        System.out.println(start);
+        System.out.println(end);
+        if (user != null) {
+            Iterator<Order> iterator = orders.iterator();
+            while (iterator.hasNext()) {
+                if (!iterator.next().getUser().getName().contains(user)) {
+                    iterator.remove();
+                }
+            }
+        }
+        if (book != null) {
+            Iterator<Order> iterator = orders.iterator();
+            while (iterator.hasNext()) {
+                Iterator<OrderItem> itemIterator = iterator.next().getOrderItemList().iterator();
+                boolean retain = false;
+                while(itemIterator.hasNext()) {
+                    Book b = itemIterator.next().getBook();
+                    if (b.getName().contains(book) ||
+                        b.getIsbn().contains(book) ||
+                        b.getAuthor().contains(book)) {
+                        retain = true;
+                        break;
+                    }
+                }
+                if (!retain) {
+                    iterator.remove();
+                }
+            }
+        }
+        if (start != null) {
+            if (end == null) {
+                end = new Timestamp(System.currentTimeMillis());
+            }
+            Iterator<Order> iterator = orders.iterator();
+            while (iterator.hasNext()) {
+                Order o = iterator.next();
+                if ( !(o.getCreateDate().after(start) && o.getCreateDate().before(end) )) {
+                    iterator.remove();
+                }
+            }
+        }
+        return orders;
     }
 
 }

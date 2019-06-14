@@ -144,7 +144,7 @@ export default {
       } else if (this.displayPage === "unpaid") {
         this.fetchOrderByOption("deleted", page);
       } else if (this.displayPage === "search") {
-        this.fetchOrderBySearch(page);
+        this.fetchOrderBySearch();
       }
     },
     handleSelect(key, keyPath) {
@@ -176,8 +176,8 @@ export default {
       console.log(start);
       console.log(end);
       this.search.date = new Array(2);
-      this.search.date[0] = start;
-      this.search.date[1] = end;
+      this.search.date[0] = start + " 00:00:00";
+      this.search.date[1] = end + " 23:59:59";
     },
     convertDateFmt(date) {
       let mon = date.getMonth() + 1;
@@ -207,28 +207,26 @@ export default {
         });
     },
     fetchOrderBySearch(page) {
-      /*
       axios
         .get("/api/admin/orders/search", {
           params: {
             user: this.search.user,
             book: this.search.book,
             start: this.search.date[0],
-            end: this.search.date[1],
-            page: page
+            end: this.search.date[1]
           }
         })
         .then(response => {
           const data = response.data;
-          this.orderList = data.content;
+          this.orderList = data;
           console.log(response);
-          this.displayPage = option;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.size;
+          this.displayPage = "search";
+          this.pager.total = this.orderList.length;
+          this.pager.size = this.pager.total;
         })
         .catch(err => {
           console.log(err);
-        });*/
+        });
       console.log(this.search);
     },
     showSearch(flag) {

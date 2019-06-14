@@ -29,4 +29,6 @@ public interface OrderService {
     Page<Order> getAdminOrders(String option, int page, int size);
 
     Page<Order> getAdminOrderBetween(Timestamp start, Timestamp end, int page, int size);
+
+    List<Order> getAdminOrderSearch(String user, String book, Timestamp start, Timestamp end);
 }

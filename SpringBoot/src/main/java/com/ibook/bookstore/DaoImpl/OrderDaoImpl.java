@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Repository
 public class OrderDaoImpl implements OrderDao {
@@ -25,6 +26,7 @@ public class OrderDaoImpl implements OrderDao {
     public Page<Order> findAll(Pageable pageable) {
         return orderRepository.findAll(pageable);
     }
+
 
     @Override
     public Page<Order> findAllByUser(String name, Pageable pageable) {
@@ -50,6 +52,11 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Page<Order> findAllBetween(Timestamp start, Timestamp end, Pageable pageable) {
         return orderRepository.findAllByCreateDateBetween(start, end, pageable);
+    }
+
+    @Override
+    public List findAll() {
+        return orderRepository.findAll();
     }
 
     @Override

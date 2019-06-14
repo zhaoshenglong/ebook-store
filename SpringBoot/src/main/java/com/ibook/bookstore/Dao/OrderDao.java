@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public interface OrderDao {
     /* Query methods */
@@ -17,7 +18,7 @@ public interface OrderDao {
     Order findByUserUnpaid(String user);
     Page<Order> findAllByState(int state, Pageable pageable);
     Page<Order> findAllBetween(Timestamp beg, Timestamp end, Pageable pageable);
-
+    List findAll();
     /* Create methods */
     Order saveOrder(Order order);
 

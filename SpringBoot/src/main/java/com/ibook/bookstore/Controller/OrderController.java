@@ -80,9 +80,10 @@ public class OrderController {
     }
 
     @GetMapping("/api/admin/orders/search")
-    public Page<Order> getOrderBetweenAdmin(@RequestParam("start")Timestamp start,
-                                            @RequestParam("end")Timestamp end,
-                                            @RequestParam("page")Integer page) {
-        return orderService.getAdminOrderBetween(start, end, page, 10);
+    public List<Order> getOrderBetweenAdmin(@RequestParam(value = "user", required = false)String user,
+                                            @RequestParam(value = "book", required = false)String book,
+                                            @RequestParam(value = "start", required = false)Timestamp start,
+                                            @RequestParam(value = "end", required = false)Timestamp end) {
+        return orderService.getAdminOrderSearch(user, book, start, end);
     }
 }
