@@ -18,8 +18,6 @@ public interface UserService {
 
     User createUser(User user);
 
-    User likeBook(String name, String id);
-
     @Transactional
     void deleteUser(String name);
 

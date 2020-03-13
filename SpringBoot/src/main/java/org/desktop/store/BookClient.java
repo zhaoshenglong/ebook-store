@@ -7,7 +7,11 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import java.rmi.RemoteException;
 
-public class client {
+public class BookClient {
+    public BookClient() {
+    }
+
+
     public static void main(String[] args) throws NamingException, RemoteException {
         Context namingContext = new InitialContext();
         String url = "rmi://localhost/book_srv";

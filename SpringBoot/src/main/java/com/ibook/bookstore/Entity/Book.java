@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Entity
@@ -16,7 +17,7 @@ import java.sql.Timestamp;
 @ToString
 @EqualsAndHashCode
 @JsonIgnoreProperties(value = {"handler","hibernateLazyInitializer","fieldHandler"})
-public class Book {
+public class Book implements Serializable {
     @Id
     @Column(name = "id")
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
