@@ -83,6 +83,7 @@ export default {
         });
         return;
       }
+      console.log(file.size)
       if (file.size > 4 << 20) {
         this.$message({
           type: "error",

@@ -8,22 +8,20 @@ import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
 import com.ibook.bookstore.Entity.User;
-import com.ibook.bookstore.Service.OrderService;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import com.ibook.bookstore.Service.UserOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
-public class OrderServiceImpl implements OrderService {
+@Scope("session")
+public class UserOrderServiceImpl implements UserOrderService {
     @Autowired
     OrderDao orderDao;
 
@@ -35,22 +33,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     UserDao userDao;
+
+    private Order cart;
+
+    private User user;
+
     @Override
     public Order findOrderById(String id) {
         return orderDao.findOne(id);
     }
 
     @Override
-    public List<Order> findAll() {
-        return orderDao.findAll();
-    }
-
-    @Override
     public Page<Order> findUserOrderPage(String name, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, 10);
-        if (name.equals("admin")) {
-            return orderDao.findAll(pageable);
-        } else return orderDao.findAllByUserPaid(name, pageable);
+        return orderDao.findAllByUserPaid(name, pageable);
     }
 
     @Override
@@ -59,19 +55,17 @@ public class OrderServiceImpl implements OrderService {
         return orderDao.findAllByUserPaidBetween(name, Timestamp.valueOf(beg), Timestamp.valueOf(end), pageable);
     }
 
-
-
     @Override
     public Order addItemToCart(String name, Map<String, String> itemData) {
         String id = itemData.get("id");
 
         String quantity = itemData.get("quantity"),
-               bookId = itemData.get("bookId");
+                bookId = itemData.get("bookId");
         OrderItem orderItem = null;
-        Order cart = orderDao.findByUserUnpaid(name);
-
+        if (cart == null) {
+            cart = orderDao.findByUserUnpaid(name);
+        }
         // Assumes that bookId is not null
-
         if (id == null) {
             for (OrderItem oi :cart.getOrderItemList() ) {
                 if (oi.getBook().getId().equals(bookId)) {
@@ -87,11 +81,14 @@ public class OrderServiceImpl implements OrderService {
                     orderItem.setQuantity(Integer.parseInt(quantity));
                 Book book = bookDao.findOne(bookId);
                 orderItem.setBook(book);
+                orderItem.setBookPrice(book.getPrice());
+                cart.getOrderItemList().add(orderItem);
             }
         } else {
             /* Order item may exist */
             orderItem = orderItemDao.findOne(id);
             orderItem.setQuantity(orderItem.getQuantity() + Integer.parseInt(quantity));
+            cart.getOrderItemList().add(orderItem);
         }
         if (orderItem.getOrderId() == null)
             orderItem.setOrderId(cart.getId());
@@ -103,53 +100,78 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order delItemFromCart(String name, String id) {
+        if (cart == null) {
+            cart = orderDao.findByUserUnpaid(name);
+        }
+        for(OrderItem oi: cart.getOrderItemList()) {
+            if (oi.getId().equals(id)) {
+                cart.getOrderItemList().remove(oi);
+            }
+        }
         orderItemDao.deleteItem(id);
-        Order cart = orderDao.findByUserUnpaid(name);
         return cart;
     }
 
     @Override
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
-        Double paidMoney = new Double(0);
+        double paidMoney = 0;
+        ArrayList<OrderItem> ois = new ArrayList<>();
         /* Check the stock */
         for (OrderItem oi : orderItems) {
             OrderItem orderItem = orderItemDao.findOne(oi.getId());
             if (oi.getQuantity() > orderItem.getBook().getStock()) {
                 return null;
+            } else {
+                ois.add(orderItem);
             }
         }
-        Order order = new Order();
+        if (cart == null) {
+            // This should not happen
+            cart = orderDao.findByUserUnpaid(name);
+        }
+        if (user == null) {
+            user = userDao.findOne(name);
+        }
+        Order order = cart;
         order.setCreateDate(new Timestamp(System.currentTimeMillis()));
-        order.setUser(userDao.findOne(name));
-        order.setState(1);
-        User user = userDao.findOne(name);
-        for (OrderItem oi : orderItems) {
-            OrderItem orderItem = orderItemDao.findOne(oi.getId());
-            orderItem.setOrderId(order.getId());
-            Book book = orderItem.getBook();
+        for (OrderItem oi : ois) {
+            Book book = oi.getBook();
             book.setStock(book.getStock() - oi.getQuantity());
             book.setSale(book.getSale() + oi.getQuantity());
-            orderItem.setBookPrice(book.getPrice());
-            paidMoney += orderItem.getBookPrice() * orderItem.getQuantity();
-            userDao.saveUser(user);
+            oi.setBookPrice(book.getPrice());
+            paidMoney += oi.getBookPrice() * oi.getQuantity();
             bookDao.saveBook(book);
-            orderItemDao.saveItem(orderItem);
+            orderItemDao.saveItem(oi);
         }
         user.setConsume(user.getConsume() + paidMoney);
+        userDao.saveUser(user);
+        order.setState(1);
         order.setPaid(paidMoney);
         orderDao.saveOrder(order);
+
+        // create new cart
+        cart = new Order();
+        cart.setOrderItemList(new HashSet<>());
+        cart.setState(0);
+        cart.setUser(user);
+        cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
+        orderDao.saveOrder(cart);
         return order;
     }
 
     @Override
     public Order findCart(String name) {
-        Order cart = orderDao.findByUserUnpaid(name);
+        if (cart == null){
+            cart = orderDao.findByUserUnpaid(name);
+        }
         return cart;
     }
 
     @Override
     public Order setItemQuantity(String name, Map<String, String> data) {
-        Order cart = orderDao.findByUserUnpaid(name);
+        if (cart == null){
+            cart = orderDao.findByUserUnpaid(name);
+        }
         String itemId = data.get("id"), quantity = data.get("quantity");
         if (itemId == null || quantity == null) {
             return null;
@@ -157,77 +179,12 @@ public class OrderServiceImpl implements OrderService {
             OrderItem orderItem = orderItemDao.findOne(itemId);
             orderItem.setQuantity(Integer.parseInt(quantity));
             orderItemDao.saveItem(orderItem);
+            for (OrderItem oi: cart.getOrderItemList()) {
+                if (oi.getId().equals(itemId)) {
+                    oi.setQuantity(Integer.parseInt(quantity));
+                }
+            }
         }
         return cart;
     }
-
-    @Override
-    public Page<Order> getAdminOrders(String option, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        if (option.equals("all")) {
-            return orderDao.findAll(pageable);
-        } else if (option.equals("paid")) {
-            return orderDao.findAllByState(1, pageable);
-        } else if (option.equals("unpaid")) {
-            return orderDao.findAllByState(0, pageable);
-        } else if (option.equals("deleted")) {
-            return orderDao.findAllByState(2, pageable);
-        } else return null;
-    }
-
-    @Override
-    public Page<Order> getAdminOrderBetween(Timestamp start, Timestamp end, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        return orderDao.findAllBetween(start,end,pageable);
-    }
-
-    @Override
-    public List<Order> getAdminOrderSearch(String user, String book, Timestamp start, Timestamp end) {
-        List<Order> orders = orderDao.findAll();
-        System.out.println(user);
-        System.out.println(book);
-        System.out.println(start);
-        System.out.println(end);
-        if (user != null) {
-            Iterator<Order> iterator = orders.iterator();
-            while (iterator.hasNext()) {
-                if (!iterator.next().getUser().getName().contains(user)) {
-                    iterator.remove();
-                }
-            }
-        }
-        if (book != null) {
-            Iterator<Order> iterator = orders.iterator();
-            while (iterator.hasNext()) {
-                Iterator<OrderItem> itemIterator = iterator.next().getOrderItemList().iterator();
-                boolean retain = false;
-                while(itemIterator.hasNext()) {
-                    Book b = itemIterator.next().getBook();
-                    if (b.getName().contains(book) ||
-                        b.getIsbn().contains(book) ||
-                        b.getAuthor().contains(book)) {
-                        retain = true;
-                        break;
-                    }
-                }
-                if (!retain) {
-                    iterator.remove();
-                }
-            }
-        }
-        if (start != null) {
-            if (end == null) {
-                end = new Timestamp(System.currentTimeMillis());
-            }
-            Iterator<Order> iterator = orders.iterator();
-            while (iterator.hasNext()) {
-                Order o = iterator.next();
-                if ( !(o.getCreateDate().after(start) && o.getCreateDate().before(end) )) {
-                    iterator.remove();
-                }
-            }
-        }
-        return orders;
-    }
-
 }
