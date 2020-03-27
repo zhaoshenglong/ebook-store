@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -44,6 +45,9 @@ public class UserOrderServiceImpl implements UserOrderService {
 
     @Autowired
     private KafkaTemplate<String, String>kafkaTemplate;
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     private Order cart;
 
@@ -148,6 +152,7 @@ public class UserOrderServiceImpl implements UserOrderService {
             }
             cart = orderDao.findByUserUnpaid(user.getName());
             System.out.println("Receive Message after buy order" + message);
+            template.convertAndSendToUser(user.getName(), "/topic/orders", "Your order is complemented!");
         }
     }
 

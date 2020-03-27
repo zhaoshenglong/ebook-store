@@ -1,5 +1,7 @@
 package com.ibook.bookstore.Controller;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
 import com.ibook.bookstore.Service.AdminOrderService;
@@ -8,11 +10,13 @@ import com.ibook.bookstore.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +25,8 @@ import java.util.Map;
 public class OrderController {
     @Autowired
     WebApplicationContext applicationContext;
+
+    private Gson gson = new GsonBuilder().create();
 
     @GetMapping("/api/test/order/{id}")
     public Order getOrderById(@PathVariable("id") String id) {
@@ -110,11 +116,15 @@ public class OrderController {
         AdminOrderService adminOrderService = applicationContext.getBean(AdminOrderService.class);
         return adminOrderService.getAdminOrderSearch(user, book, start, end);
     }
-//
-//    /*
-//     * Websocket controller
-//     */
-//    @MessageMapping()
-//    @SendTo()
-//    public Page<>
+
+    /*
+     * Websocket controller
+     */
+    @MessageMapping("/orders")
+    @SendToUser("/topic/orders")
+    public String orderMessage(@Payload String message, Principal principal ) throws InterruptedException {
+        String name = gson.fromJson(message, Map.class).get("name").toString();
+        System.out.println("Websocket receiver request from" + name);
+        return "Hello " + System.currentTimeMillis();
+    }
 }
