@@ -20,6 +20,8 @@
         "js-cookie": "^2.2.0",
         "qs": "^6.7.0",
         "save": "^2.3.3",
+        "sockjs-client": "^1.4.0",
+        "stompjs": "^2.3.3",
         "vue": "^2.6.10",
         "vue-awesome-swiper": "^3.1.3",
         "vue-router": "^3.0.1",

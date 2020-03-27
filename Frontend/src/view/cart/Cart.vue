@@ -318,17 +318,23 @@ export default {
         axios
           .post(apiUrl, order)
           .then(response => {
+            this.$message({
+              type: 'success',
+              message: 'Order Accepted. We will notice you the result in 3 minutes',
+              duration: 3000
+            })
             this.cart.orderItemList = this.cart.orderItemList.filter(i => {
               return !i.select;
-            });
+            })
           })
           .catch(err => {
             this.$message({
-              type: "error",
+              type: 'error',
               message: "购买失败，我们的服务器又挂了:(",
               duration: 3000
-            });
-          });
+            })
+            console.log(err)
+          })
       }
     },
     ...mapGetters(["getUser"])

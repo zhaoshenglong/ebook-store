@@ -63,6 +63,9 @@ import BookHeader from "../components/page/Header";
 import BookFooter from "../components/page/Footer";
 import { mapState, mapActions } from "vuex";
 import axios from "axios";
+import SockJS from 'sockjs-client'
+import Stomp from 'stompjs'
+
 export default {
   name: "BookStore",
   data() {
@@ -95,17 +98,17 @@ export default {
         });
       }
     },
-    toCart() {
+    toCart () {
       if (this.signed) {
         this.$router.push({ name: "Cart", params: { userid: this.user.name } });
       } else {
         this.$message({
           type: "warning",
           message: "您还没有登录,请先登录～"
-        });
+        })
       }
     },
-    toSetting() {
+    toSetting () {
       if (this.signed) {
         this.$router.push({
           name: "SettingProfile",
@@ -115,23 +118,23 @@ export default {
         this.$message({
           type: "warning",
           message: "您还没有登录,请先登录～"
-        });
+        })
       }
     },
-    toStore() {
+    toStore () {
       this.$router.push({ name: "StorePage" });
     },
-    establishSession() {
+    establishSession () {
       this.$store
         .dispatch("getStatus")
         .then(data => {
-          console.log(data);
+          console.log(data)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    closeSession() {
+    closeSession () {
       this.$store
         .dispatch("signOut")
         .then(user => {
@@ -162,22 +165,47 @@ export default {
             type: "error",
             message: "退出登录失败，我们的服务器可能挂了:(",
             duration: 2000
-          }),
-            console.log(err);
-        });
+          })
+          console.log(err)
+        })
+    },
+    connectWebsocket () {
+      this.socket = new SockJS('http://localhost:8080/bookstore-socket')
+      this.stompClient = Stomp.over(this.socket)
+      console.log('Start connect')
+      this.stompClient.connect({}, (frame) => {
+        console.log('Connect ok')
+        this.stompClient.subscribe('/user/topic/orders', (msg) => {
+          this.$message({
+            type: 'success',
+            message: 'Your order is completed',
+            duration: 3000
+          })
+        })
+      })
+    },
+    disconnect () {
+      if (this.stompClient != null) {
+        this.stompClient.disconnect()
+        console.log('Disconnected')
+      }
     }
   },
   computed: {
     ...mapState(["user", "signed"]),
-    showBack() {
-      if (this.$route.name == "StorePage") return false;
-      return true;
+    showBack () {
+      if (this.$route.name === 'StorePage') return false
+      return true
     }
   },
-  mounted() {
-    this.establishSession();
+  mounted () {
+    this.establishSession()
+    this.connectWebsocket()
+  },
+  beforeDestroy () {
+    this.disconnect()
   }
-};
+}
 </script>
 <style scoped>
 #store-container {
