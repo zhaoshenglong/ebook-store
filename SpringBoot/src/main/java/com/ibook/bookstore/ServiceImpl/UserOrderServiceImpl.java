@@ -1,5 +1,7 @@
 package com.ibook.bookstore.ServiceImpl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.ibook.bookstore.Dao.BookDao;
 import com.ibook.bookstore.Dao.OrderDao;
 import com.ibook.bookstore.Dao.OrderItemDao;
@@ -9,13 +11,17 @@ import com.ibook.bookstore.Entity.Order;
 import com.ibook.bookstore.Entity.OrderItem;
 import com.ibook.bookstore.Entity.User;
 import com.ibook.bookstore.Service.UserOrderService;
+import com.ibook.bookstore.beans.OrderMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -34,9 +40,14 @@ public class UserOrderServiceImpl implements UserOrderService {
     @Autowired
     UserDao userDao;
 
+    @Autowired
+    KafkaTemplate<String, String>kafkaTemplate;
+
     private Order cart;
 
     private User user;
+
+    private Gson gson = new GsonBuilder().create();
 
     @Override
     public Order findOrderById(String id) {
@@ -112,51 +123,16 @@ public class UserOrderServiceImpl implements UserOrderService {
         return cart;
     }
 
+    /*
+     * Produce message, put into kafka MQ
+     */
     @Override
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
-        double paidMoney = 0;
-        ArrayList<OrderItem> ois = new ArrayList<>();
-        /* Check the stock */
-        for (OrderItem oi : orderItems) {
-            OrderItem orderItem = orderItemDao.findOne(oi.getId());
-            if (oi.getQuantity() > orderItem.getBook().getStock()) {
-                return null;
-            } else {
-                ois.add(orderItem);
-            }
-        }
-        if (cart == null) {
-            // This should not happen
-            cart = orderDao.findByUserUnpaid(name);
-        }
-        if (user == null) {
-            user = userDao.findOne(name);
-        }
-        Order order = cart;
-        order.setCreateDate(new Timestamp(System.currentTimeMillis()));
-        for (OrderItem oi : ois) {
-            Book book = oi.getBook();
-            book.setStock(book.getStock() - oi.getQuantity());
-            book.setSale(book.getSale() + oi.getQuantity());
-            oi.setBookPrice(book.getPrice());
-            paidMoney += oi.getBookPrice() * oi.getQuantity();
-            bookDao.saveBook(book);
-            orderItemDao.saveItem(oi);
-        }
-        user.setConsume(user.getConsume() + paidMoney);
-        userDao.saveUser(user);
-        order.setState(1);
-        order.setPaid(paidMoney);
-        orderDao.saveOrder(order);
-
-        // create new cart
-        cart = new Order();
-        cart.setOrderItemList(new HashSet<>());
-        cart.setState(0);
-        cart.setUser(user);
-        cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
-        orderDao.saveOrder(cart);
-        return order;
+        OrderMessage orderMessage = new OrderMessage();
+        orderMessage.setOrderTime(new Timestamp(System.currentTimeMillis()));
+        orderMessage.setUsername(name);
+        kafkaTemplate.send("order", gson.toJson(orderMessage));
+        return cart;
     }
 
     @Override

@@ -7,6 +7,9 @@ import com.ibook.bookstore.Service.UserOrderService;
 import com.ibook.bookstore.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -50,10 +53,10 @@ public class OrderController {
     }
 
     @PostMapping("/api/user/{name}/orders/buy")
-    public Order buyOrder(@PathVariable("name") String name,
+    public String buyOrder(@PathVariable("name") String name,
                           @RequestBody List<OrderItem> orderItems) {
         UserOrderService userOrderService = applicationContext.getBean(UserOrderService.class);
-        return userOrderService.buyFromCart(name, orderItems);
+        return "Success";
     }
 
     @PutMapping("/api/user/{name}/orders/item/add")
@@ -106,4 +109,11 @@ public class OrderController {
         AdminOrderService adminOrderService = applicationContext.getBean(AdminOrderService.class);
         return adminOrderService.getAdminOrderSearch(user, book, start, end);
     }
+//
+//    /*
+//     * Websocket controller
+//     */
+//    @MessageMapping()
+//    @SendTo()
+//    public Page<>
 }
