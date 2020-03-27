@@ -12,12 +12,14 @@ import com.ibook.bookstore.Entity.OrderItem;
 import com.ibook.bookstore.Entity.User;
 import com.ibook.bookstore.Service.UserOrderService;
 import com.ibook.bookstore.beans.OrderMessage;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.converter.json.GsonBuilderUtils;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +43,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     UserDao userDao;
 
     @Autowired
-    KafkaTemplate<String, String>kafkaTemplate;
+    private KafkaTemplate<String, String>kafkaTemplate;
 
     private Order cart;
 
@@ -133,6 +135,20 @@ public class UserOrderServiceImpl implements UserOrderService {
         orderMessage.setUsername(name);
         kafkaTemplate.send("order", gson.toJson(orderMessage));
         return cart;
+    }
+
+    @KafkaListener(topics = {"orderCallback"})
+    public void listen(ConsumerRecord<?, ?> record) {
+        Optional<?> kafkaMessage = Optional.ofNullable(record.value());
+        if(kafkaMessage.isPresent()) {
+            Object message = kafkaMessage.get();
+            Order order = gson.fromJson((String)message, Order.class);
+            if(user == null) {
+                user = order.getUser();
+            }
+            cart = orderDao.findByUserUnpaid(user.getName());
+            System.out.println("Receive Message after buy order" + message);
+        }
     }
 
     @Override

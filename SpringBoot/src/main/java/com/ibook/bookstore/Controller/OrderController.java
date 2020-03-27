@@ -56,6 +56,7 @@ public class OrderController {
     public String buyOrder(@PathVariable("name") String name,
                           @RequestBody List<OrderItem> orderItems) {
         UserOrderService userOrderService = applicationContext.getBean(UserOrderService.class);
+        userOrderService.buyFromCart(name, orderItems);
         return "Success";
     }
 
