@@ -10,6 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.sql.Timestamp;
@@ -39,6 +42,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public User createUser(User user) {
         user.setState(false);
         user.setCreateDate(new Timestamp(System.currentTimeMillis()));
@@ -62,13 +66,13 @@ public class UserServiceImpl implements UserService {
          * delete address and order ?
          */
         userDao.deleteUser(name);
-
     }
 
     /*
      * Basic information updated here, address / liked books updated else where
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public User updateUser(Map<String, String> data) {
         String name = data.get("name");
         User user = userDao.findOne(name);
@@ -122,6 +126,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Boolean nameCanBeRegistered(String name) {
         Optional<User> optionalUser = userDao.findByName(name);
         User user = optionalUser.orNull();
@@ -134,6 +139,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Boolean emailCanBeRegistered(String email) {
         Optional<User> optionalUser = userDao.findByEmail(email);
         User user = optionalUser.orNull();
@@ -146,6 +152,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String verifyPassword(HttpSession session, String password, HttpServletResponse response) {
         String template = "{\"msg\":%s}";
         String msg;
@@ -165,10 +172,10 @@ public class UserServiceImpl implements UserService {
                 return msg;
             }
         }
-
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Map<String, String> getStatus(HttpSession session, HttpServletResponse response) {
         Map<String, String> status = new HashMap<>();
         if (session != null) {

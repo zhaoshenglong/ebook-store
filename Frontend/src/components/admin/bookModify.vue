@@ -1,5 +1,5 @@
 <template>
-  <div id="book-container">
+  <div id="book-container" :class="[book.deleted ? 'book-deleted' : '']">
     <div class="col1" id="img-block">
       <img :src="book.img" alt="Book picture" @click="openUploadDialog(book)">
     </div>
@@ -75,6 +75,9 @@ export default {
   flex-direction: row;
   margin: 20px 25px;
   border: 1px solid #dddddd;
+}
+.book-deleted{
+  background: #ff5722;
 }
 #img-block {
   width: 125px;

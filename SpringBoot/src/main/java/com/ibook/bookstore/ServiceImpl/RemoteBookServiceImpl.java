@@ -20,20 +20,6 @@ public class RemoteBookServiceImpl extends UnicastRemoteObject implements Remote
 
     @Override
     public Book findBookById(String id) throws RemoteException {
-        if (id == null) {
-            System.out.println("Id is NULLLLLLLLLLLLLLLLLLLLLLDWALJDLJAWLDK");
-        }
-        System.out.println(id);
-        if (bookDao == null) {
-            System.out.println("Book dao is NULLLLLLLLLLLLLLL");
-        }
-        Book book = bookDao.findOne(id);
-        if (book == null) {
-            System.out.println("Found null book!!!!!!!!!!!!!!!!!!");
-        } else {
-            System.out.println("book is not NULLLLLLLLLLLLL");
-            System.out.println(book);
-        }
-        return book;
+        return  bookDao.findOne(id);
     }
 }

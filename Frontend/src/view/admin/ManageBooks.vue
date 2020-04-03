@@ -245,7 +245,6 @@ export default {
           })
           console.log(err)
         })
-      console.log('create')
     }
   }
 }

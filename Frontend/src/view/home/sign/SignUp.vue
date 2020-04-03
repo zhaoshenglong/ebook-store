@@ -120,7 +120,7 @@
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="passwdStatus.ok&& usrPasswd != '' && usrPasswdAgain != ''"
+          v-show="passwdStatus.ok && usrPasswd != '' && usrPasswdAgain != ''"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
@@ -153,7 +153,7 @@ export default {
         msg: ''
       },
       passwdStatus: {
-        ok: false,
+        ok: true,
         msg: ''
       },
       nameStatus: {

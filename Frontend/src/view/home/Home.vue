@@ -5,6 +5,10 @@
         <img id="logo" src="../../../static/logo/logo3.png" @click="goBack" alt="Turn back">
         <a id="sign-in" class="sign-link" @click="signIn">sign in</a>
         <a id="sign-up" class="sign-link" @click="signUp">sign up</a>
+        <div id="view-container">
+          <span id="view-title">Views</span>
+          <span id='view-content'>{{views}}</span>
+        </div>
       </div>
       <transition name="component-fade" mode="out-in">
         <router-view/>
@@ -14,8 +18,15 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   name: 'Home',
+  data () {
+    return {
+      views: 0
+    }
+  },
   methods: {
     goBack () {
       this.$router.push({ name: 'StorePage' })
@@ -25,7 +36,17 @@ export default {
     },
     signUp () {
       this.$router.push({ name: 'SignUp' })
+    },
+    incrementViews () {
+      axios.post('/api/public/views', {}, {})
+        .then(res => {
+          this.views = res.data
+        })
+        .catch(err => console.log(err))
     }
+  },
+  mounted () {
+    this.incrementViews()
   }
 }
 </script>
@@ -110,5 +131,22 @@ export default {
 #sign-up {
   background: #67ff80;
   border: 1px solid #67ff80;
+}
+#view-container {
+  position: relative;
+  top: 20px;
+  left: 240px;;
+  height: 60px;
+  font-size: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+#view-title {
+  font-weight: 800;
+  color: #3dd8ec;
+}
+#view-content {
+  margin-left: 12px;
 }
 </style>

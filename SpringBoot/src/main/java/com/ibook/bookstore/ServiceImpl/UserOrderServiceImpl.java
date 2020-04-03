@@ -23,6 +23,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -73,6 +75,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Order addItemToCart(String name, Map<String, String> itemData) {
         String id = itemData.get("id");
 
@@ -116,6 +119,7 @@ public class UserOrderServiceImpl implements UserOrderService {
 
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Order delItemFromCart(String name, String id) {
         if (cart == null) {
             cart = orderDao.findByUserUnpaid(name);
@@ -133,6 +137,7 @@ public class UserOrderServiceImpl implements UserOrderService {
      * Produce message, put into kafka MQ
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Order buyFromCart(String name, List<OrderItem> orderItems) {
         OrderMessage orderMessage = new OrderMessage();
         orderMessage.setOrderTime(new Timestamp(System.currentTimeMillis()));
@@ -157,6 +162,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.NEVER)
     public Order findCart(String name) {
         if (cart == null){
             cart = orderDao.findByUserUnpaid(name);
@@ -165,6 +171,7 @@ public class UserOrderServiceImpl implements UserOrderService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Order setItemQuantity(String name, Map<String, String> data) {
         if (cart == null){
             cart = orderDao.findByUserUnpaid(name);

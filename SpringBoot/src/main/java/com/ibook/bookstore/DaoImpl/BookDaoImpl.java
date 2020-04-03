@@ -9,6 +9,8 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,16 +20,21 @@ public class BookDaoImpl implements BookDao {
     private BookRepository bookRepository;
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Book findOne(String id) {
         return bookRepository.getOne(id);
     }
 
     @Override
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Page<Book> findAllNotDeleted(Pageable pageable) {
         return bookRepository.findAllByDeletedIsFalse(pageable);
     }
 
     @Override
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Page<Book> findAllByTagNotDeleted(String tag, Pageable pageable){
         Book book = new Book();
         book.setTag(tag);
@@ -48,34 +55,40 @@ public class BookDaoImpl implements BookDao {
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Page<Book> findByIsbnNameAuthorLikeNotDeleted(String isbn, String name, String author, Pageable pageable){
 
         return bookRepository.findAllByAuthorContainsOrNameContainsOrIsbnContains(author, name, isbn, pageable);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Page<Book> findAllIncludeDeleted(Pageable pageable) {
         return bookRepository.findAll(pageable);
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public List findAll() {
         return bookRepository.findAll();
     }
 
     @Override
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Page<Book> findAllByIsbnNameAuthorLikeIncludeDeleted(String isbn, String name, String author, Pageable pageable) {
         return bookRepository.findAllByAuthorContainsOrNameContainsOrIsbnContains(author,name,isbn,pageable);
     }
 
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void deleteBook(Book book) {
         book.setDeleted(true);
         bookRepository.save(book);
     }
 
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public Book saveBook(Book book) {
         return bookRepository.save(book);
     }

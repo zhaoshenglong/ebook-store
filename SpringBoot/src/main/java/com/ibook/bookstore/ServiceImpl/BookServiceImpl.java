@@ -3,11 +3,14 @@ package com.ibook.bookstore.ServiceImpl;
 import com.ibook.bookstore.Dao.BookDao;
 import com.ibook.bookstore.Entity.Book;
 import com.ibook.bookstore.Service.BookService;
+import org.apache.tomcat.jni.Error;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.BufferedInputStream;
@@ -68,6 +71,7 @@ public class BookServiceImpl implements BookService {
      *      2. ???
      */
     @Override
+    @Transactional(propagation = Propagation.SUPPORTS)
     public Book createBook(Book book) {
         book.setId(UUID.randomUUID().toString());
         book.setImg(book.getImg() == null ? "http://localhost:8080/img?kind=book&name=default":book.getImg());
@@ -82,6 +86,7 @@ public class BookServiceImpl implements BookService {
      *  What if the request is not authorized?
      * */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public void deleteBook(String id) {
         Book book = bookDao.findOne(id);
         bookDao.deleteBook(book);
@@ -93,6 +98,7 @@ public class BookServiceImpl implements BookService {
      *
      * */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public Book updateBook(Map<String, String> data) {
         String id = data.get("id");
         Book book = bookDao.findOne(id);
