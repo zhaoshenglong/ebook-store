@@ -1,3 +1,5 @@
 *.zip
 assignment/
 lib/
+handin/
+*~
