@@ -43,127 +43,126 @@
   </div>
 </template>
 <script>
-import SettingSide from "../../components/setting/SettingSide";
-import axios from "axios";
-import qs from "qs";
-import { mapGetters } from "vuex";
+import SettingSide from '../../components/setting/SettingSide'
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  name: "SettingProfile",
+  name: 'SettingProfile',
   components: {
     SettingSide
   },
-  data() {
+  data () {
     return {
-      imgUrl: "",
-      name: "",
-      email: ""
-    };
+      imgUrl: '',
+      name: '',
+      email: ''
+    }
   },
   props: {
     user: {
       type: Object
     }
   },
-  mounted() {
-    this.fetchProfile();
+  mounted () {
+    this.fetchProfile()
   },
   methods: {
-    fetchProfile() {
-      this.imgUrl = this.getUser().avatar;
-      this.email = this.getUser().email;
-      this.name = this.getUser().name;
+    fetchProfile () {
+      this.imgUrl = this.getUser().avatar
+      this.email = this.getUser().email
+      this.name = this.getUser().name
     },
-    updateAvatar() {
-      let file = this.$refs.fileInput.files[0];
-      if (file == undefined) {
+    updateAvatar () {
+      let file = this.$refs.fileInput.files[0]
+      if (file === undefined) {
         this.$message({
-          type: "error",
-          message: "上传失败，未选中文件",
+          type: 'error',
+          message: '上传失败，未选中文件',
           duration: 1000
-        });
-        return;
+        })
+        return
       }
       console.log(file.size)
       if (file.size > 4 << 20) {
         this.$message({
-          type: "error",
-          message: "上传失败，文件大小不能超过4ＫＢ",
+          type: 'error',
+          message: '上传失败，文件大小不能超过4MＢ',
           duration: 1000
-        });
-        return;
+        })
+        return
       }
       /* Prepare for the avatar to be uploaded */
-      let img = new FormData();
-      img.append("avatar", file, file.name);
-      img.append("chunk", "0");
+      let img = new FormData()
+      img.append('avatar', file, file.name)
+      img.append('chunk', '0')
       let config = {
         headers: {
-          "Content-Type": "multipart/form-data"
+          'Content-Type': 'multipart/form-data'
         }
-      };
-      let apiUrl = "/api/user/" + this.getUser().name + "/avatars/upload";
+      }
+      let apiUrl = '/api/user/' + this.getUser().name + '/avatars/upload'
       axios
         .post(apiUrl, img, config)
         .then(response => {
-          console.log(response.data);
+          console.log(response.data)
           this.$message({
-            type: "success",
-            message: "上传成功",
+            type: 'success',
+            message: '上传成功',
             duration: 1000
-          });
+          })
           setTimeout(() => {
-            window.location.reload(true);
-          }, 1000);
+            window.location.reload(true)
+          }, 1000)
         })
         .catch(err => {
-          console.log(err);
-          if (err.status == 500) {
+          console.log(err)
+          if (err.status === 500) {
             this.$message({
-              type: "error",
-              message: "上传失败，我们的服务器挂了:(",
+              type: 'error',
+              message: '上传失败，我们的服务器挂了:(',
               duration: 1000
-            });
+            })
           } else {
             this.$message({
-              type: "error",
-              message: "上传失败， 是不是未登录？",
+              type: 'error',
+              message: '上传失败， 是不是未登录？',
               duration: 1000
-            });
+            })
           }
-        });
+        })
     },
-    emailFormat() {
-      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+    emailFormat () {
+      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!reg.test(this.email)) {
-        console.log("test failed");
-        console.log(this.email);
-      } else return true;
+        console.log('test failed')
+        console.log(this.email)
+      } else return true
     },
-    updateEmail() {
+    updateEmail () {
       if (this.emailFormat()) {
-        let apiUrl = "/api/user/" + this.getUser().name + "/modify";
+        let apiUrl = '/api/user/' + this.getUser().name + '/modify'
         axios
           .put(apiUrl, { email: this.email, name: this.name })
           .then(response => {
             this.$message({
-              type: "success",
-              message: "更新邮箱成功",
+              type: 'success',
+              message: '更新邮箱成功',
               duration: 1000
-            });
+            })
           })
           .catch(err => {
             this.$message({
-              type: "error",
-              message: "更新邮箱失败，我们的服务器挂了:(",
+              type: 'error',
+              message: '更新邮箱失败，我们的服务器挂了:(',
               duration: 1000
-            });
-            console.log(err);
-          });
+            })
+            console.log(err)
+          })
       }
     },
-    ...mapGetters(["getUser"])
+    ...mapGetters(['getUser'])
   }
-};
+}
 </script>
 <style scoped>
 #profile-left {

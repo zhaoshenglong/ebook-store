@@ -14,20 +14,18 @@
   </div>
 </template>
 <script>
-import qs from "qs";
-import axios from "axios";
-import Cookies from "js-cookie";
-import { mapGetters } from "vuex";
-import BookRemark from "../../components/remark/Remark";
-import BookInfo from "../../components/book/BookInfo";
-import BookContent from "../../components/book/BookContent";
+import axios from 'axios'
+import { mapGetters } from 'vuex'
+import BookRemark from '../../components/remark/Remark'
+import BookInfo from '../../components/book/BookInfo'
+import BookContent from '../../components/book/BookContent'
 export default {
-  name: "BookDetail",
-  data() {
+  name: 'BookDetail',
+  data () {
     return {
       book: {},
       bookRemark: []
-    };
+    }
   },
   components: {
     BookRemark,
@@ -35,50 +33,50 @@ export default {
     BookContent
   },
   methods: {
-    fetchBookData() {
-      this.book.id = this.$route.params.bookId;
+    fetchBookData () {
+      this.book.id = this.$route.params.bookId
       axios
-        .get("/api/public/books/id/" + this.book.id)
+        .get('/api/public/books/id/' + this.book.id)
         .then(response => {
-          this.book = response.data;
+          this.book = response.data
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    addCart(id, quantity) {
-      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
+    addCart (id, quantity) {
+      var apiUrl = '/api/user/' + this.getUser().name + '/orders/item/add'
       axios
         .put(apiUrl, {
           bookId: id,
           quantity: quantity
         })
         .then(response => {
-          console.log(response.data);
+          console.log(response.data)
           this.$message({
-            message: "成功加入购物车！",
+            message: '成功加入购物车！',
             duration: 800,
-            type: "success"
-          });
+            type: 'success'
+          })
         })
         .catch(err => {
-          console.log(err);
+          console.log(err)
           this.$message({
-            message: "加入购物车失败，我们的服务器挂了",
+            message: '加入购物车失败，我们的服务器挂了',
             duration: 800,
-            type: "error"
-          });
-        });
+            type: 'error'
+          })
+        })
     },
-    fetchBookRemark() {},
-    postRemark() {},
-    ...mapGetters(["getUser"])
+    fetchBookRemark () {},
+    postRemark () {},
+    ...mapGetters(['getUser'])
   },
-  mounted() {
-    this.fetchBookData();
-    this.fetchBookRemark();
+  mounted () {
+    this.fetchBookData()
+    this.fetchBookRemark()
   }
-};
+}
 </script>
 <style scoped>
 .quantity {

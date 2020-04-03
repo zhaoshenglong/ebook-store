@@ -7,13 +7,13 @@
 </template>
 <script>
 export default {
-  name: "Header",
-  data() {
+  name: 'Header',
+  data () {
     return {
-      imgUrl: "../../../static/logo/headPic.png"
-    };
+      imgUrl: '../../../static/logo/headPic.png'
+    }
   }
-};
+}
 </script>
 <style scoped>
 #header {

@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 export default {
-  name: "ImgDialog",
+  name: 'ImgDialog',
   props: {
     book: {
       type: Object,
@@ -46,53 +46,53 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       fileList: [],
       file: {},
       dialogVisibleComputed: false
-    };
+    }
   },
   methods: {
-    handlePreview() {},
-    handleRemove() {},
-    handleChange(file, fileList) {
-      this.file = new FormData();
-      this.file.append("bookPicture", file.raw, file.name);
-      this.file.append("chunk", "0");
-      console.log(file);
+    handlePreview () {},
+    handleRemove () {},
+    handleChange (file, fileList) {
+      this.file = new FormData()
+      this.file.append('bookPicture', file.raw, file.name)
+      this.file.append('chunk', '0')
+      console.log(file)
     },
-    upload() {
+    upload () {
       axios
-        .post("/api/admin/" + this.book.id + "/img/upload", this.file, {
+        .post('/api/admin/' + this.book.id + '/img/upload', this.file, {
           headers: {
-            "Content-Type": "multipart/form-data"
+            'Content-Type': 'multipart/form-data'
           }
         })
         .then(response => {
-          console.log(response);
+          console.log(response)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    emitCloseEvent() {
-      this.$emit("closeDialog");
+    emitCloseEvent () {
+      this.$emit('closeDialog')
     }
   },
   watch: {
-    book: function(newBook) {
-      console.log(newBook);
+    book: function (newBook) {
+      console.log(newBook)
       this.fileList.push({
         name: newBook.name,
         url: newBook.img
-      });
+      })
     },
-    dialogVisible: function(data) {
-      this.dialogVisibleComputed = data;
+    dialogVisible: function (data) {
+      this.dialogVisibleComputed = data
     }
   }
-};
+}
 </script>
 
 <style>

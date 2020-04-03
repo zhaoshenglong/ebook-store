@@ -8,31 +8,31 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState } from 'vuex'
 export default {
-  name: "SettingSide",
+  name: 'SettingSide',
   methods: {
-    toProfile() {
+    toProfile () {
       this.$router.push({
-        name: "SettingProfile",
+        name: 'SettingProfile',
         params: { userid: this.user.name }
-      });
+      })
     },
-    toAccount() {
+    toAccount () {
       this.$router.push({
-        name: "SettingAccount",
+        name: 'SettingAccount',
         params: { userid: this.user.name }
-      });
+      })
     },
-    toAddress() {
+    toAddress () {
       this.$router.push({
-        name: "SettingAddress",
+        name: 'SettingAddress',
         params: { userid: this.user.name }
-      });
+      })
     }
   },
   computed: {
-    ...mapState(["user"])
+    ...mapState(['user'])
   }
-};
+}
 </script>

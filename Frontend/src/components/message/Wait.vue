@@ -6,8 +6,8 @@
 
 <script>
 export default {
-  name: "Wait"
-};
+  name: 'Wait'
+}
 </script>
 
 <style scoped>

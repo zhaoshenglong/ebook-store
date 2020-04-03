@@ -84,157 +84,156 @@
   </div>
 </template>
 <script>
-import SideBar from "../../components/page/Sidebar";
-import axios from "axios";
-import qs from "qs";
-import { mapGetters } from "vuex";
+import SideBar from '../../components/page/Sidebar'
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  name: "StoreMain",
+  name: 'StoreMain',
   components: {
     SideBar
   },
-  data() {
+  data () {
     return {
       bookList: [],
-      dispalyTag: "All",
-      searchMsg: "",
-      showCart: "",
-      bookState: "",
+      dispalyTag: 'All',
+      searchMsg: '',
+      showCart: '',
+      bookState: '',
       pager: {
         page: 0,
         size: 10,
         total: 10
       }
-    };
+    }
   },
   methods: {
-    toDetail(bookId) {
+    toDetail (bookId) {
       this.$router.push({
-        name: "BookDetail",
+        name: 'BookDetail',
         params: { bookId: bookId }
-      });
+      })
     },
-    changeBookListByTag(tag) {
-      this.searchMsg = "";
-      this.dispalyTag = tag;
-      this.pager.page = 0;
-      if (tag == "All") {
-        this.fetchBooks();
+    changeBookListByTag (tag) {
+      this.searchMsg = ''
+      this.dispalyTag = tag
+      this.pager.page = 0
+      if (tag === 'All') {
+        this.fetchBooks()
       } else {
-        this.bookState = "tag";
-        this.fetchBooksByTag();
+        this.bookState = 'tag'
+        this.fetchBooksByTag()
       }
     },
-    changeBookListByLike() {
-      this.pager.page = 0;
-      this.bookState = "like";
-      this.fetchBooksLike();
+    changeBookListByLike () {
+      this.pager.page = 0
+      this.bookState = 'like'
+      this.fetchBooksLike()
     },
 
     // There is a bug with changing current page
-    changePage(page) {
-      this.pager.page = page - 1;
-      if (this.bookState === "tag") {
-        this.fetchBooksByTag();
-      } else if (this.bookState === "like") {
-        this.fetchBooksLike();
+    changePage (page) {
+      this.pager.page = page - 1
+      if (this.bookState === 'tag') {
+        this.fetchBooksByTag()
+      } else if (this.bookState === 'like') {
+        this.fetchBooksLike()
       } else {
-        this.fetchBooks();
+        this.fetchBooks()
       }
     },
-    cartTrue() {
-      this.showCart = true;
+    cartTrue () {
+      this.showCart = true
     },
-    cartFalse() {
-      this.showCart = false;
+    cartFalse () {
+      this.showCart = false
     },
-    addCart(bookId) {
-      var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/add";
+    addCart (bookId) {
+      var apiUrl = '/api/user/' + this.getUser().name + '/orders/item/add'
       axios
         .put(apiUrl, {
           bookId: bookId,
           quantity: 1
         })
         .then(response => {
-          console.log(response);
+          console.log(response)
           this.$message({
-            message: "成功加入购物车",
-            type: "success",
+            message: '成功加入购物车',
+            type: 'success',
             duration: 800
-          });
+          })
         })
         .catch(err => {
-          console.log(err);
+          console.log(err)
           this.$message({
-            message: "加入购物车失败,我们的服务器挂了",
-            type: "error",
+            message: '加入购物车失败,我们的服务器挂了',
+            type: 'error',
             duration: 800
-          });
-        });
+          })
+        })
     },
-    fetchBooks() {
+    fetchBooks () {
       axios
-        .get("/api/public/books/tag/all", {
+        .get('/api/public/books/tag/all', {
           params: {
             page: this.pager.page
           }
         })
         .then(response => {
-          const data = response.data;
-          console.log(data);
-          this.bookList = data.content;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.pageSize;
+          const data = response.data
+          console.log(data)
+          this.bookList = data.content
+          this.pager.total = data.totalElements
+          this.pager.size = data.pageSize
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchBooksByTag() {
+    fetchBooksByTag () {
       axios
-        .get("/api/public/books/tag/" + this.dispalyTag, {
+        .get('/api/public/books/tag/' + this.dispalyTag, {
           params: {
             page: this.pager.page
           }
         })
         .then(response => {
-          const data = response.data;
-          console.log(data);
-          this.bookList = data.content;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.pageSize;
+          const data = response.data
+          console.log(data)
+          this.bookList = data.content
+          this.pager.total = data.totalElements
+          this.pager.size = data.pageSize
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchBooksLike() {
+    fetchBooksLike () {
       axios
-        .get("/api/public/books/search", {
+        .get('/api/public/books/search', {
           params: {
             page: this.pager.page,
             search_text: this.searchMsg
           }
         })
         .then(response => {
-          const data = response.data;
-          console.log(data);
-          this.bookList = data.content;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.pageSize;
+          const data = response.data
+          console.log(data)
+          this.bookList = data.content
+          this.pager.total = data.totalElements
+          this.pager.size = data.pageSize
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    ...mapGetters(["getUser"])
+    ...mapGetters(['getUser'])
   },
   computed: {},
-  mounted() {
-    this.pager.page = 0;
-    this.fetchBooks();
+  mounted () {
+    this.pager.page = 0
+    this.fetchBooks()
   }
-};
+}
 </script>
 <style scoped>
 #store-main {

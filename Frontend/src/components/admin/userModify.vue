@@ -34,54 +34,55 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       activated: true
-    };
-  },
-  computed: {
-    stateText() {
-      if (this.activated) return "Activated";
-      else return "Forbidden";
-    },
-    styleColor() {
-      if (this.activated)
-        return {
-          color: "green"
-        };
-      else
-        return {
-          color: "red"
-        };
     }
   },
-  mounted: function() {
-    this.activated = !this.$props.user.state;
+  computed: {
+    stateText () {
+      if (this.activated) return 'Activated'
+      else return 'Forbidden'
+    },
+    styleColor () {
+      if (this.activated) {
+        return {
+          color: 'green'
+        }
+      } else {
+        return {
+          color: 'red'
+        }
+      }
+    }
+  },
+  mounted: function () {
+    this.activated = !this.$props.user.state
   },
   methods: {
-    switchOnOff() {
+    switchOnOff () {
       if (this.activated) {
-        this.$emit("updateUser", {
+        this.$emit('updateUser', {
           name: this.user.name,
           state: true
-        });
+        })
       } else {
-        this.$emit("updateUser", {
+        this.$emit('updateUser', {
           name: this.user.name,
           state: false
-        });
+        })
       }
     }
   },
   watch: {
-    user: function(newUser) {
-      this.activated = !newUser.state;
+    user: function (newUser) {
+      this.activated = !newUser.state
     },
-    state: function(newState) {
-      this.activated = !newState;
+    state: function (newState) {
+      this.activated = !newState
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -84,42 +84,42 @@
   </div>
 </template>
 <script>
-import OrderSide from "../../components/order/OrderSide";
-import axios from "axios";
-import { mapGetters } from "vuex";
+import OrderSide from '../../components/order/OrderSide'
+import axios from 'axios'
+import { mapGetters } from 'vuex'
 export default {
-  name: "Order",
+  name: 'Order',
   components: {
     OrderSide
   },
-  data() {
+  data () {
     return {
       orderList: [],
-      timeBegin: "",
-      timeEnd: "",
-      orderState: "",
+      timeBegin: '',
+      timeEnd: '',
+      orderState: '',
       pager: {
         page: 0,
         size: 10,
         total: 0
       }
-    };
+    }
   },
   methods: {
-    toStore() {
-      this.$router.push({ name: "StorePage" });
+    toStore () {
+      this.$router.push({ name: 'StorePage' })
     },
-    changePage(page) {
-      this.pager.page = page--;
-      if (this.orderState == "time") {
-        this.fetchOrderBetween();
+    changePage (page) {
+      this.pager.page = page--
+      if (this.orderState === 'time') {
+        this.fetchOrderBetween()
       } else {
-        this.fetchAllOrder();
+        this.fetchAllOrder()
       }
     },
-    fetchAllOrder() {
-      this.orderState = "";
-      var apiUrl = "/api/user/" + this.getUser().name + "/orders";
+    fetchAllOrder () {
+      this.orderState = ''
+      var apiUrl = '/api/user/' + this.getUser().name + '/orders'
       axios
         .get(apiUrl, {
           params: {
@@ -127,19 +127,19 @@ export default {
           }
         })
         .then(response => {
-          console.log("response:");
-          console.log(response);
-          const data = response.data;
-          this.orderList = data.content;
-          this.pager.size = data.pageSize;
-          this.pager.total = data.totalElements;
+          console.log('response:')
+          console.log(response)
+          const data = response.data
+          this.orderList = data.content
+          this.pager.size = data.pageSize
+          this.pager.total = data.totalElements
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchOrderBetween() {
-      var apiUrl = "/api/user/" + this.getUser().name + "/orders/between";
+    fetchOrderBetween () {
+      var apiUrl = '/api/user/' + this.getUser().name + '/orders/between'
       axios
         .get(apiUrl, {
           params: {
@@ -149,51 +149,51 @@ export default {
           }
         })
         .then(response => {
-          console.log(response);
-          const data = response.data;
-          this.orderList = data.content;
-          this.pager.size = data.pageSize;
-          this.pager.total = data.totalElements;
+          console.log(response)
+          const data = response.data
+          this.orderList = data.content
+          this.pager.size = data.pageSize
+          this.pager.total = data.totalElements
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    postLike() {},
-    toRemark(id) {
-      this.$router.push({ name: "BookDetail", params: { bookId: id } });
+    postLike () {},
+    toRemark (id) {
+      this.$router.push({ name: 'BookDetail', params: { bookId: id } })
     },
-    updateTime(begin, end) {
-      this.timeBegin = begin + " 00:00:00";
-      this.timeEnd = end + " 23:59:59";
-      this.orderState = "time";
-      this.fetchOrderBetween();
+    updateTime (begin, end) {
+      this.timeBegin = begin + ' 00:00:00'
+      this.timeEnd = end + ' 23:59:59'
+      this.orderState = 'time'
+      this.fetchOrderBetween()
     },
-    total(order) {
-      let res = 0;
+    total (order) {
+      let res = 0
       order.orderItemList.forEach(item => {
-        res += item.bookPrice * item.quantity;
-      });
-      return Number(res).toFixed(2);
+        res += item.bookPrice * item.quantity
+      })
+      return Number(res).toFixed(2)
     },
-    ...mapGetters(["getUser"])
+    ...mapGetters(['getUser'])
   },
-  mounted() {
+  mounted () {
     this.$store
-      .dispatch("getStatus")
+      .dispatch('getStatus')
       .then(user => {
-        this.fetchAllOrder();
+        this.fetchAllOrder()
       })
       .catch(err => {
+        console.log(err)
         this.$message({
-          type: "warning",
-          message: "获取订单失败,你可能已经登出了？",
+          type: 'warning',
+          message: '获取订单失败,你可能已经登出了？',
           duration: 2500
-        }),
-          console.log(err);
-      });
+        })
+      })
   }
-};
+}
 </script>
 <style scoped>
 #order-table {

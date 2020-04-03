@@ -39,71 +39,72 @@
 </template>
 
 <script>
-import BookHeader from "../../components/page/Header";
-import BookFooter from "../../components/page/Footer";
+import BookHeader from '../../components/page/Header'
+import BookFooter from '../../components/page/Footer'
 export default {
   components: {
     BookHeader,
     BookFooter
   },
-  data() {
+  data () {
     return {
-      show: "user",
+      show: 'user',
       signed: false
-    };
+    }
   },
-  mounted() {
-    this.establishSession();
+  mounted () {
+    this.establishSession()
   },
   methods: {
-    toBooks() {
-      this.$router.push({ name: "ManageBooks" });
+    toBooks () {
+      this.$router.push({ name: 'ManageBooks' })
     },
-    toUsers() {
-      this.$router.push({ name: "ManageUsers" });
+    toUsers () {
+      this.$router.push({ name: 'ManageUsers' })
     },
-    toOrders() {
-      this.$router.push({ name: "ManageOrders" });
+    toOrders () {
+      this.$router.push({ name: 'ManageOrders' })
     },
-    toStatistics() {
-      this.$router.push({ name: "ManageStatistics" });
+    toStatistics () {
+      this.$router.push({ name: 'ManageStatistics' })
     },
-    closeSession() {
+    closeSession () {
       this.$store
-        .dispatch("signOut")
+        .dispatch('signOut')
         .then(response => {
           this.$message({
-            type: "success",
-            message: "您已成功退出登录,将为您定向到登录页面..."
-          });
+            type: 'success',
+            message: '您已成功退出登录,将为您定向到登录页面...'
+          })
           setTimeout(() => {
-            this.$router.push("signIn");
-          }, 2000);
+            this.$router.push('signIn')
+          }, 2000)
         })
         .catch(err => {
+          console.log(err)
           this.$message({
-            type: "error",
-            message: "退出登录失败，我们的服务器可能挂了:("
-          });
-        });
+            type: 'error',
+            message: '退出登录失败，我们的服务器可能挂了:('
+          })
+        })
     },
-    establishSession() {
+    establishSession () {
       this.$store
-        .dispatch("getStatus")
+        .dispatch('getStatus')
         .then(response => {
-          this.signed = true;
+          this.signed = true
         })
         .catch(err => {
-          console.log(err);
-          this.signed = false;
+          console.log(err)
+          this.signed = false
           this.$message({
-            type: "error",
-            message: "您已退出登录，请重新登录"
-          });
-        });
+            type: 'error',
+            message: '您已退出登录，请重新登录'
+          })
+        })
     }
   }
-};
+}
 </script>
 
 <style scoped>

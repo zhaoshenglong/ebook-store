@@ -59,74 +59,73 @@
   </div>
 </template>
 <script>
-import BookHeader from "../components/page/Header";
-import BookFooter from "../components/page/Footer";
-import { mapState, mapActions } from "vuex";
-import axios from "axios";
+import BookHeader from '../components/page/Header'
+import BookFooter from '../components/page/Footer'
+import { mapState } from 'vuex'
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
 
 export default {
-  name: "BookStore",
-  data() {
+  name: 'BookStore',
+  data () {
     return {
       showSignOut: false,
       User: {}
-    };
+    }
   },
   components: {
     BookHeader,
     BookFooter
   },
   methods: {
-    toSignIn() {
-      this.$router.push({ name: "SignIn" });
+    toSignIn () {
+      this.$router.push({ name: 'SignIn' })
     },
-    toSignUp() {
-      this.$router.push({ name: "SignUp" });
+    toSignUp () {
+      this.$router.push({ name: 'SignUp' })
     },
-    toOrder() {
+    toOrder () {
       if (this.signed) {
         this.$router.push({
-          name: "Order",
+          name: 'Order',
           params: { userid: this.user.name }
-        });
+        })
       } else {
         this.$message({
-          type: "warning",
-          message: "您还没有登录,请先登录～"
-        });
+          type: 'warning',
+          message: '您还没有登录,请先登录～'
+        })
       }
     },
     toCart () {
       if (this.signed) {
-        this.$router.push({ name: "Cart", params: { userid: this.user.name } });
+        this.$router.push({ name: 'Cart', params: { userid: this.user.name } })
       } else {
         this.$message({
-          type: "warning",
-          message: "您还没有登录,请先登录～"
+          type: 'warning',
+          message: '您还没有登录,请先登录～'
         })
       }
     },
     toSetting () {
       if (this.signed) {
         this.$router.push({
-          name: "SettingProfile",
+          name: 'SettingProfile',
           params: { userid: this.user.name }
-        });
+        })
       } else {
         this.$message({
-          type: "warning",
-          message: "您还没有登录,请先登录～"
+          type: 'warning',
+          message: '您还没有登录,请先登录～'
         })
       }
     },
     toStore () {
-      this.$router.push({ name: "StorePage" });
+      this.$router.push({ name: 'StorePage' })
     },
     establishSession () {
       this.$store
-        .dispatch("getStatus")
+        .dispatch('getStatus')
         .then(data => {
           console.log(data)
         })
@@ -136,34 +135,34 @@ export default {
     },
     closeSession () {
       this.$store
-        .dispatch("signOut")
+        .dispatch('signOut')
         .then(user => {
           this.$message({
-            type: "success",
-            message: "您已成功退出登录!",
+            type: 'success',
+            message: '您已成功退出登录!',
             duration: 1000
-          });
+          })
           setTimeout(() => {
-            let currentRoute = this.$route;
+            let currentRoute = this.$route
             if (
-              currentRoute.meta.role === "user" ||
-              currentRoute.meta.role === "admin"
+              currentRoute.meta.role === 'user' ||
+              currentRoute.meta.role === 'admin'
             ) {
               this.$message({
-                type: "warning",
-                message: "当前页面需要您登录才能访问!",
+                type: 'warning',
+                message: '当前页面需要您登录才能访问!',
                 duration: 2000
-              });
+              })
               setTimeout(() => {
-                this.$router.push("signIn");
-              }, 2000);
+                this.$router.push('signIn')
+              }, 2000)
             }
-          }, 1000);
+          }, 1000)
         })
         .catch(err => {
           this.$message({
-            type: "error",
-            message: "退出登录失败，我们的服务器可能挂了:(",
+            type: 'error',
+            message: '退出登录失败，我们的服务器可能挂了:(',
             duration: 2000
           })
           console.log(err)
@@ -192,7 +191,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["user", "signed"]),
+    ...mapState(['user', 'signed']),
     showBack () {
       if (this.$route.name === 'StorePage') return false
       return true

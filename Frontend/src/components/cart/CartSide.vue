@@ -7,12 +7,12 @@
 </template>
 <script>
 export default {
-  name: "CartSide",
-  mounted: function() {
-    this.fetchCart();
+  name: 'CartSide',
+  mounted: function () {
+    this.fetchCart()
   },
   methods: {
-    fetchCart() {}
+    fetchCart () {}
   }
-};
+}
 </script>

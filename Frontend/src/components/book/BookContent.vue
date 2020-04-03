@@ -15,25 +15,25 @@
 
 <script>
 export default {
-  name: "BookContent",
+  name: 'BookContent',
   props: {
     book: {
       type: Object,
       required: true
     }
   },
-  data() {
+  data () {
     return {
       ok: true
-    };
+    }
   },
   watch: {
     book: book => {
-      document.getElementById("content").innerHTML = book.contentInfo;
-      document.getElementById("author").innerHTML = book.authorInfo;
+      document.getElementById('content').innerHTML = book.contentInfo
+      document.getElementById('author').innerHTML = book.authorInfo
     }
   }
-};
+}
 </script>
 
 <style>

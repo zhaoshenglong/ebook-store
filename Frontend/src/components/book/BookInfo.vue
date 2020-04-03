@@ -46,11 +46,11 @@
 </template>
 <script>
 export default {
-  name: "BookInfo",
-  data() {
+  name: 'BookInfo',
+  data () {
     return {
       quantity: 1
-    };
+    }
   },
   props: {
     book: {
@@ -59,23 +59,23 @@ export default {
     }
   },
   methods: {
-    decrement() {
-      var num = parseInt(this.quantity, 10);
+    decrement () {
+      var num = parseInt(this.quantity, 10)
       if (num > 1) {
-        num--;
-        this.quantity = num;
-      } else this.quantity = 1;
+        num--
+        this.quantity = num
+      } else this.quantity = 1
     },
-    increment() {
-      var num = parseInt(this.quantity, 10);
-      num++;
-      this.quantity = num;
+    increment () {
+      var num = parseInt(this.quantity, 10)
+      num++
+      this.quantity = num
     },
-    invokeAddCart(id, quantity) {
-      this.$emit("addCart", id, quantity);
+    invokeAddCart (id, quantity) {
+      this.$emit('addCart', id, quantity)
     }
   }
-};
+}
 </script>
 <style scoped>
 .bookinfo-container {

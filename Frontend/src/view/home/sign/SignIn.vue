@@ -31,90 +31,89 @@
   </div>
 </template>
 <script>
-import cryptoJs from "crypto-js";
-import axios from "axios";
-import qs from "qs";
+import cryptoJs from 'crypto-js'
+import qs from 'qs'
 export default {
-  name: "signIn",
-  data() {
+  name: 'signIn',
+  data () {
     return {
-      usrName: "",
-      usrPasswd: ""
-    };
+      usrName: '',
+      usrPasswd: ''
+    }
   },
   methods: {
-    clearInput() {
-      this.usrName = "";
+    clearInput () {
+      this.usrName = ''
     },
-    logIn() {
-      let encrypt = cryptoJs.MD5(this.usrPasswd).toString();
+    logIn () {
+      let encrypt = cryptoJs.MD5(this.usrPasswd).toString()
       let data = qs.stringify({
         username: this.usrName,
         password: encrypt
-      });
+      })
       this.$store
-        .dispatch("signIn", data)
+        .dispatch('signIn', data)
         .then(user => {
-          console.log(user);
-          console.group("password");
-          console.log(encrypt);
+          console.log(user)
+          console.group('password')
+          console.log(encrypt)
           this.$message({
             showClose: true,
-            message: "登录成功，3秒后自动为您跳转到商品页面",
-            type: "success"
-          });
+            message: '登录成功，3秒后自动为您跳转到商品页面',
+            type: 'success'
+          })
           setTimeout(() => {
-            if (this.usrName === "admin") {
-              this.$router.push({ name: "ManageBooks" });
-            } else this.$router.push({ name: "StorePage" });
-          }, 3000);
+            if (this.usrName === 'admin') {
+              this.$router.push({ name: 'ManageBooks' })
+            } else this.$router.push({ name: 'StorePage' })
+          }, 3000)
         })
         .catch(err => {
-          const status = err.status;
-          const message = err.data;
-          if (status == 500) {
+          const status = err.status
+          const message = err.data
+          if (status === 500) {
             this.$message({
               showClose: true,
-              message: "登录失败，我们的服务器可能挂了:(",
-              type: "error"
-            });
+              message: '登录失败，我们的服务器可能挂了:(',
+              type: 'error'
+            })
           } else {
             if (status === 401) {
-              if (message.msg === "User credentials have expired") {
-                console.log(message);
+              if (message.msg === 'User credentials have expired') {
+                console.log(message)
                 this.$message({
                   showClose: true,
-                  message: "登录失败，您帐号已过期:(",
-                  type: "error"
-                });
-              } else if (message.msg === "Bad credentials") {
-                console.log(message);
+                  message: '登录失败，您帐号已过期:(',
+                  type: 'error'
+                })
+              } else if (message.msg === 'Bad credentials') {
+                console.log(message)
                 this.$message({
                   showClose: true,
-                  message: "登录失败，您的密码不正确:(",
-                  type: "error"
-                });
-              } else if (message.msg === "User account is locked") {
-                console.log(message);
+                  message: '登录失败，您的密码不正确:(',
+                  type: 'error'
+                })
+              } else if (message.msg === 'User account is locked') {
+                console.log(message)
                 this.$message({
                   showClose: true,
-                  message: "登录失败，您的账户已被管理员锁定:(",
-                  type: "error"
-                });
+                  message: '登录失败，您的账户已被管理员锁定:(',
+                  type: 'error'
+                })
               } else {
-                console.log(message);
+                console.log(message)
                 this.$message({
                   showClose: true,
-                  message: "登录失败，我们遇到了未知错误:(",
-                  type: "error"
-                });
+                  message: '登录失败，我们遇到了未知错误:(',
+                  type: 'error'
+                })
               }
             }
           }
-        });
+        })
     }
   }
-};
+}
 </script>
 <style scoped>
 #sign-in-form {

@@ -44,15 +44,15 @@
 </template>
 <script>
 export default {
-  name: "Footer",
-  data() {
+  name: 'Footer',
+  data () {
     return {
       year: 2019,
       weixin: false,
       qq: false
-    };
+    }
   }
-};
+}
 </script>
 <style scoped>
 #footer {

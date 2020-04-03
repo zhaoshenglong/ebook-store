@@ -32,80 +32,80 @@
 
 <script>
 export default {
-  name: "BookForm",
-  data() {
+  name: 'BookForm',
+  data () {
     return {
       book: {
-        id: "",
-        name: "",
-        author: "",
-        isbn: "",
+        id: '',
+        name: '',
+        author: '',
+        isbn: '',
         price: 0,
         stock: 0,
-        authorInfo: "",
-        contentInfo: "",
-        img: ""
+        authorInfo: '',
+        contentInfo: '',
+        img: ''
       },
       showClose: false,
       rules: {
         name: {
           required: true,
-          message: "Please input book name",
-          trigger: "blur"
+          message: 'Please input book name',
+          trigger: 'blur'
         },
         author: {
           required: true,
-          message: "Please input book author",
-          trigger: "blur"
+          message: 'Please input book author',
+          trigger: 'blur'
         },
         isbn: [
           {
             required: true,
-            message: "Please input book isbn",
-            trigger: "blur"
+            message: 'Please input book isbn',
+            trigger: 'blur'
           },
           {
             min: 10,
             max: 13,
-            message: "Length should be 10 or 13",
-            trigger: "blur"
+            message: 'Length should be 10 or 13',
+            trigger: 'blur'
           }
         ],
         price: [
           {
             required: true,
-            message: "Please input the price",
-            trigger: "blur"
+            message: 'Please input the price',
+            trigger: 'blur'
           },
           {
-            type: "number",
-            message: "Price must be a number"
+            type: 'number',
+            message: 'Price must be a number'
           }
         ],
         stock: [
           {
             required: true,
-            message: "Please input the stock",
-            trigger: "blur"
+            message: 'Please input the stock',
+            trigger: 'blur'
           },
           {
-            type: "number",
-            message: "Price must be a number"
+            type: 'number',
+            message: 'Price must be a number'
           }
         ]
       },
       fileList: []
-    };
+    }
   },
   props: {
     oldBook: {
       type: Object,
-      default: {},
+      default: () => {},
       required: false
     },
     action: {
       type: String,
-      default: "Create New Book",
+      default: 'Create New Book',
       required: false
     },
     dialogVisible: {
@@ -115,55 +115,55 @@ export default {
     }
   },
   computed: {
-    dialogVisibleComputed() {
-      return this.dialogVisible;
+    dialogVisibleComputed () {
+      return this.dialogVisible
     }
   },
   methods: {
-    executeAction(formName) {
+    executeAction (formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
           let event =
-            this.action === "Create New Book" ? "createBook" : "updateBook";
-          this.$emit(event, this.book);
+            this.action === 'Create New Book' ? 'createBook' : 'updateBook'
+          this.$emit(event, this.book)
         } else {
           this.$message({
-            type: "warning",
-            message: "请正确填写书记信息～",
+            type: 'warning',
+            message: '请正确填写书记信息～',
             duration: 1000
-          });
-          return false;
+          })
+          return false
         }
-      });
+      })
     },
-    cancleAction() {
-      this.$emit("cancleBookDialog");
+    cancleAction () {
+      this.$emit('cancleBookDialog')
     },
-    handlePreview() {},
-    handleChange(file, fileList) {
-      console.log(file);
-      this.book.img = new FormData();
-      this.book.img.append("bookImage", file, file.name);
-      this.book.img.append("chunk", 0);
+    handlePreview () {},
+    handleChange (file, fileList) {
+      console.log(file)
+      this.book.img = new FormData()
+      this.book.img.append('bookImage', file, file.name)
+      this.book.img.append('chunk', 0)
     },
-    handleRemove() {}
+    handleRemove () {}
   },
   watch: {
-    oldBook: function(data) {
-      console.log(data);
+    oldBook: function (data) {
+      console.log(data)
       if (data.id !== undefined) {
-        this.book = data;
+        this.book = data
         this.fileList.push({
           name: data.name,
           url: data.img
-        });
+        })
       } else {
-        this.book = new Object();
-        this.fileList = [];
+        this.book = {}
+        this.fileList = []
       }
     }
   }
-};
+}
 </script>
 
 <style>

@@ -15,19 +15,19 @@
 
 <script>
 export default {
-  name: "Home",
+  name: 'Home',
   methods: {
-    goBack() {
-      this.$router.push({ name: "StorePage" });
+    goBack () {
+      this.$router.push({ name: 'StorePage' })
     },
-    signIn() {
-      this.$router.push({ name: "SignIn" });
+    signIn () {
+      this.$router.push({ name: 'SignIn' })
     },
-    signUp() {
-      this.$router.push({ name: "SignUp" });
+    signUp () {
+      this.$router.push({ name: 'SignUp' })
     }
   }
-};
+}
 </script>
 
 <style scoped>

@@ -52,21 +52,21 @@
 </template>
 
 <script>
-import Profile from "./profile";
+import Profile from './profile'
 export default {
-  name: "OrderModify",
+  name: 'OrderModify',
   components: {
     Profile
   },
-  data() {
+  data () {
     return {
       propOrder: {
         user: {
-          avatar: ""
+          avatar: ''
         },
         orderItemList: []
       }
-    };
+    }
   },
   props: {
     order: {
@@ -74,47 +74,47 @@ export default {
       required: true
     }
   },
-  mounted() {
-    this.propOrder = this.$props.order;
+  mounted () {
+    this.propOrder = this.$props.order
   },
   methods: {},
   computed: {
-    totalPrice() {
-      let res = 0;
+    totalPrice () {
+      let res = 0
       this.propOrder.orderItemList.forEach(item => {
-        res += item.quantity * item.bookPrice;
-      });
-      return Number(res).toFixed(2);
+        res += item.quantity * item.bookPrice
+      })
+      return Number(res).toFixed(2)
     },
-    orderState() {
+    orderState () {
       if (this.propOrder.state === 0) {
-        return "Unpaid";
+        return 'Unpaid'
       } else if (this.propOrder.state === 1) {
-        return "Paid";
+        return 'Paid'
       } else if (this.propOrder.state === 2) {
-        return "Deleted";
+        return 'Deleted'
       } else {
-        return "Unknown";
+        return 'Unknown'
       }
     },
-    headerState() {
+    headerState () {
       if (this.propOrder.state === 0) {
-        return "header-unpaid";
+        return 'header-unpaid'
       } else if (this.propOrder.state === 1) {
-        return "header-paid";
+        return 'header-paid'
       } else if (this.propOrder.state === 2) {
-        return "header-deleted";
+        return 'header-deleted'
       } else {
-        return "header-unknown";
+        return 'header-unknown'
       }
     }
   },
   watch: {
-    order: function(order) {
-      this.propOrder = order;
+    order: function (order) {
+      this.propOrder = order
     }
   }
-};
+}
 </script>
 
 <style scoped>

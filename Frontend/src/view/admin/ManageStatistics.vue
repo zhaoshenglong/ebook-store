@@ -52,17 +52,17 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios'
 export default {
-  name: "ManageStatistics",
-  mounted() {
-    this.init();
-    this.fetchAllBooks();
-    this.fetchAllUsers();
+  name: 'ManageStatistics',
+  mounted () {
+    this.init()
+    this.fetchAllBooks()
+    this.fetchAllUsers()
   },
-  data() {
+  data () {
     return {
-      activeIndex: "1",
+      activeIndex: '1',
       viewKey: 1,
       books: [],
       users: [],
@@ -72,119 +72,119 @@ export default {
       pickerOptions: {
         shortcuts: [
           {
-            text: "Last week",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
+            text: 'Last week',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last month",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
+            text: 'Last month',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 3 months",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 3 months',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
             }
           }
         ]
       }
-    };
+    }
   },
 
   methods: {
-    init() {
-      this.searchDate.push("2000-01-01" + " 00:00:00");
-      this.searchDate.push("2020-12-11" + " 23:59:59");
+    init () {
+      this.searchDate.push('2000-01-01' + ' 00:00:00')
+      this.searchDate.push('2020-12-11' + ' 23:59:59')
     },
-    handleSelect(key, keyPath) {
-      if (key == "1") {
-        this.viewKey = 1;
-      } else if (key == "2") {
-        this.viewKey = 2;
+    handleSelect (key, keyPath) {
+      if (key === '1') {
+        this.viewKey = 1
+      } else if (key === '2') {
+        this.viewKey = 2
       } else {
-        //...
+        console.log('Error')
       }
     },
-    fetchAllBooks() {
+    fetchAllBooks () {
       axios
-        .get("/api/admin/books/statistics/all", {
+        .get('/api/admin/books/statistics/all', {
           params: {
             start: this.date[0],
             end: this.date[1]
           }
         })
         .then(response => {
-          const data = response.data;
-          this.books = data;
-          console.log(data);
+          const data = response.data
+          this.books = data
+          console.log(data)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchAllUsers() {
-      console.log(this.searchDate[0]);
+    fetchAllUsers () {
+      console.log(this.searchDate[0])
       axios
-        .get("/api/admin/users/statistics/all", {
+        .get('/api/admin/users/statistics/all', {
           params: {
             start: this.searchDate[0],
             end: this.searchDate[1]
           }
         })
         .then(response => {
-          const data = response.data;
-          this.users = data;
-          console.log(this.date[0]);
-          console.log(data);
+          const data = response.data
+          this.users = data
+          console.log(this.date[0])
+          console.log(data)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    analyseUsers() {
-      this.fetchAllUsers();
+    analyseUsers () {
+      this.fetchAllUsers()
     },
-    analyseBooks() {
+    analyseBooks () {
       // do nothing
     },
-    analyse() {
-      if (this.viewKey == 1) {
-        this.analyseBooks();
+    analyse () {
+      if (this.viewKey === 1) {
+        this.analyseBooks()
       } else {
-        this.analyseUsers();
+        this.analyseUsers()
       }
     },
-    setSearchDate() {
-      let start, end;
-      start = this.date[0];
-      end = this.date[1];
-      start = this.convertDateFmt(start);
-      end = this.convertDateFmt(end);
-      this.searchDate = new Array(2);
-      this.searchDate[0] = start + " 00:00:00";
-      this.searchDate[1] = end + " 23:59:59";
+    setSearchDate () {
+      let start, end
+      start = this.date[0]
+      end = this.date[1]
+      start = this.convertDateFmt(start)
+      end = this.convertDateFmt(end)
+      this.searchDate = new Array(2)
+      this.searchDate[0] = start + ' 00:00:00'
+      this.searchDate[1] = end + ' 23:59:59'
     },
-    convertDateFmt(date) {
-      let mon = date.getMonth() + 1;
+    convertDateFmt (date) {
+      let mon = date.getMonth() + 1
       if (mon < 10) {
-        mon = "0" + mon;
+        mon = '0' + mon
       }
-      return date.getFullYear() + "-" + mon + "-" + date.getDate();
+      return date.getFullYear() + '-' + mon + '-' + date.getDate()
     }
   }
-};
+}
 </script>
 
 <style>

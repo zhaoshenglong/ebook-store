@@ -38,13 +38,13 @@
 </template>
 
 <script>
-import UserModify from "../../components/admin/userModify";
-import axios from "axios";
+import UserModify from '../../components/admin/userModify'
+import axios from 'axios'
 export default {
   components: {
     UserModify
   },
-  data() {
+  data () {
     return {
       userList: [],
       pager: {
@@ -52,82 +52,82 @@ export default {
         page: 0,
         total: 0
       },
-      display: "",
-      search: ""
-    };
+      display: '',
+      search: ''
+    }
   },
-  mounted() {
-    this.fetchAllUsers(0);
+  mounted () {
+    this.fetchAllUsers(0)
   },
   computed: {},
   methods: {
-    changePage(page) {
-      if (this.display === "search") {
-        this.fetchSearchUsers(page);
+    changePage (page) {
+      if (this.display === 'search') {
+        this.fetchSearchUsers(page)
       } else {
-        this.fetchAllUsers(page);
+        this.fetchAllUsers(page)
       }
     },
-    fetchAllUsers(page) {
-      this.display = "";
+    fetchAllUsers (page) {
+      this.display = ''
       axios
-        .get("/api/admin/users/all", {
+        .get('/api/admin/users/all', {
           params: {
             page: this.pager.page
           }
         })
         .then(response => {
-          const data = response.data;
-          this.userList = data.content;
-          this.pager.size = data.pageSize;
-          this.pager.total = data.totalElements;
-          this.pager.page = page;
-          console.log(response.data);
+          const data = response.data
+          this.userList = data.content
+          this.pager.size = data.pageSize
+          this.pager.total = data.totalElements
+          this.pager.page = page
+          console.log(response.data)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchSearchUsers(page) {
-      this.display = "search";
+    fetchSearchUsers (page) {
+      this.display = 'search'
       axios
-        .get("/api/admin/users/all", {
+        .get('/api/admin/users/all', {
           params: {
             page: this.pager.page
           }
         })
         .then(response => {
-          console.log(response.data);
-          const data = response.data;
-          this.userList = data.content;
-          this.pager.size = data.pageSize;
-          this.pager.total = data.totalElements;
-          this.pager.page = page;
+          console.log(response.data)
+          const data = response.data
+          this.userList = data.content
+          this.pager.size = data.pageSize
+          this.pager.total = data.totalElements
+          this.pager.page = page
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    updateUser(data) {
+    updateUser (data) {
       axios
-        .put("/api/admin/users/modify", data)
+        .put('/api/admin/users/modify', data)
         .then(response => {
           this.userList.forEach(user => {
             if (user.name === data.name) {
-              user.state = !user.state;
+              user.state = !user.state
             }
-          });
+          })
         })
         .catch(err => {
-          console.log(err);
+          console.log(err)
           this.$message({
-            type: "error",
-            message: "修改失败，服务器可能挂了:("
-          });
-        });
+            type: 'error',
+            message: '修改失败，服务器可能挂了:('
+          })
+        })
     }
   }
-};
+}
 </script>
 
 <style scoped>

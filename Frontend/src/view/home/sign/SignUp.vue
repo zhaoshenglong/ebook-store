@@ -32,7 +32,7 @@
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="nameVerified||nameStatus.ok"
+          v-show="nameStatus.ok"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
@@ -75,7 +75,7 @@
         <svg
           class="icon icon-verify icon-success"
           aria-hidden="true"
-          v-show="emailVerified || emailStatus.ok"
+          v-show="emailStatus.ok"
         >
           <use xlink:href="#iconcomplete"></use>
         </svg>
@@ -114,7 +114,7 @@
           placeholder="input password again"
           v-model="usrPasswdAgain"
         >
-        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="!passwdVerified">
+        <svg class="icon icon-verify icon-error" aria-hidden="true" v-show="!passwdStatus.ok">
           <use xlink:href="#iconerror"></use>
         </svg>
         <svg
@@ -138,136 +138,144 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import cryptoJs from "crypto-js";
+import axios from 'axios'
+import cryptoJs from 'crypto-js'
 export default {
-  name: "signIn",
-  data() {
+  name: 'signIn',
+  data () {
     return {
-      usrName: "",
-      usrEmail: "",
-      usrPasswd: "",
-      usrPasswdAgain: "",
+      usrName: '',
+      usrEmail: '',
+      usrPasswd: '',
+      usrPasswdAgain: '',
       emailStatus: {
         ok: false,
-        msg: ""
+        msg: ''
       },
       passwdStatus: {
         ok: false,
-        msg: ""
+        msg: ''
       },
       nameStatus: {
         ok: false,
-        msg: ""
+        msg: ''
       }
-    };
+    }
   },
   methods: {
-    clearInput(sign) {
-      if (sign == 1) {
-        this.usrName = "";
-      } else if (sign == 2) {
-        this.usrEmail = "";
+    clearInput (sign) {
+      if (sign === 1) {
+        this.usrName = ''
+      } else if (sign === 2) {
+        this.usrEmail = ''
       }
     },
-    emailFormat() {
-      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/;
+    emailFormat () {
+      var reg = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+((\.[a-zA-Z0-9_-]{2,3}){1,2})$/
       if (!reg.test(this.usrEmail)) {
-        console.log("test failed");
-      } else return true;
+        console.log('test failed')
+      } else return true
     },
 
-    register() {
+    register () {
       if (this.nameStatus.ok && this.passwdStatus.ok && this.emailStatus.ok) {
-        var encrypt = cryptoJs.MD5(this.usrPasswd).toString();
+        var encrypt = cryptoJs.MD5(this.usrPasswd).toString()
         axios
-          .post("/api/public/register", {
+          .post('/api/public/register', {
             name: this.usrName,
             password: encrypt,
             email: this.usrEmail
           })
           .then(response => {
-            console.log(response.data);
+            console.log(response.data)
             this.$message({
               showClose: true,
-              message: "注册成功，3秒后自动跳转到登录页面",
-              type: "success",
+              message: '注册成功，3秒后自动跳转到登录页面',
+              type: 'success',
               center: true
-            });
+            })
             setTimeout(() => {
-              this.$router.push("SignIn");
-            }, 3000);
+              this.$router.push('SignIn')
+            }, 3000)
           })
           .catch(err => {
-            console.log(err);
+            console.log(err)
             this.$message({
               showClose: true,
-              message: "注册失败了,抱歉，我们服务器可能挂了",
-              type: "error",
+              message: '注册失败了,抱歉，我们服务器可能挂了',
+              type: 'error',
               center: true
-            });
-          });
+            })
+          })
       }
     }
   },
-  computed: {
-    nameVerified() {
-      if (this.usrName != "") {
+  watch: {
+    usrName: function (usrName) {
+      if (usrName !== '') {
         axios
-          .get("/api/public/name/verify", {
+          .get('/api/public/name/verify', {
             params: {
               name: this.usrName
             }
           })
           .then(response => {
-            this.nameStatus.ok = response.data;
+            this.nameStatus.ok = response.data
             if (!this.nameStatus.ok) {
-              this.nameStatus.msg = "用户名已存在！";
+              this.nameStatus.msg = '用户名已存在！'
             }
           })
           .catch(err => {
-            console.log(err);
-            this.nameStatus.ok = false;
-            this.nameStatus.msg = "我们的服务器挂了:(";
-          });
-      } else this.nameStatus.ok = false;
+            console.log(err)
+            this.nameStatus.ok = false
+            this.nameStatus.msg = '我们的服务器挂了:('
+          })
+      } else {
+        this.nameStatus.ok = false
+      }
     },
-    emailVerified() {
+    usrEmail: function (email) {
       if (this.emailFormat()) {
         axios
-          .get("/api/public/email/verify", {
+          .get('/api/public/email/verify', {
             params: {
               email: this.usrEmail
             }
           })
           .then(response => {
-            this.emailStatus.ok = response.data;
+            this.emailStatus.ok = response.data
             if (!this.emailStatus.ok) {
-              this.emailStatus.msg = "邮箱地址已存在！";
+              this.emailStatus.msg = '邮箱地址已存在！'
             }
           })
           .catch(err => {
-            console.log(err);
-            this.emailStatus.ok = false;
-            this.emailStatus.msg = "我们的服务器挂了:(";
-          });
+            console.log(err)
+            this.emailStatus.ok = false
+            this.emailStatus.msg = '我们的服务器挂了:('
+          })
       } else {
-        this.emailStatus.ok = false;
-        this.emailStatus.msg = "邮箱格式不正确";
+        this.emailStatus.ok = false
+        this.emailStatus.msg = '邮箱格式不正确'
       }
     },
-    passwdVerified() {
-      if (this.usrPasswd != this.usrPasswdAgain && this.usrPasswdAgain != "") {
-        this.passwdStatus.ok = false;
-        this.passwdStatus.msg = "两次密码不一致哦～";
-        return false;
+    usrPasswd: function () {
+      if (this.usrPasswd !== this.usrPasswdAgain && this.usrPasswdAgain !== '') {
+        this.passwdStatus.ok = false
+        this.passwdStatus.msg = '两次密码不一致哦～'
       } else {
-        this.passwdStatus.ok = true;
-        return true;
+        this.passwdStatus.ok = true
+      }
+    },
+    usrPasswdAgain: function () {
+      if (this.usrPasswd !== this.usrPasswdAgain && this.usrPasswdAgain !== '') {
+        this.passwdStatus.ok = false
+        this.passwdStatus.msg = '两次密码不一致哦～'
+      } else {
+        this.passwdStatus.ok = true
       }
     }
   }
-};
+}
 </script>
 <style scoped>
 #sign-up-form {

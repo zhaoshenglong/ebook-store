@@ -48,208 +48,208 @@
   </div>
 </template>
 <script>
-import SettingSide from "../../components/setting/SettingSide";
+import SettingSide from '../../components/setting/SettingSide'
 export default {
-  name: "SettingAddress",
+  name: 'SettingAddress',
   components: {
     SettingSide
   },
-  data() {
+  data () {
     return {
       showRegion: false,
-      addr: "",
-      prov: "",
-      city: "",
-      district: "",
+      addr: '',
+      prov: '',
+      city: '',
+      district: '',
       region: {
-        prov: "",
-        city: "",
-        dist: ""
+        prov: '',
+        city: '',
+        dist: ''
       },
       regionList: [
         {
-          province: "Shanghai",
+          province: 'Shanghai',
           children: [
             {
-              city: "黄浦区",
+              city: '黄浦区',
               children: []
             },
             {
-              city: "徐汇区",
+              city: '徐汇区',
               children: []
             },
             {
-              city: "长宁区",
+              city: '长宁区',
               children: []
             },
             {
-              city: "静安区",
+              city: '静安区',
               children: []
             },
             {
-              city: "普陀区",
+              city: '普陀区',
               children: []
             },
             {
-              city: "虹口区",
+              city: '虹口区',
               children: []
             }
           ]
         },
         {
-          province: "Jiangsu",
+          province: 'Jiangsu',
           children: [
             {
-              city: "Nanjing",
+              city: 'Nanjing',
               children: [
                 {
-                  district: "玄武区"
+                  district: '玄武区'
                 },
                 {
-                  district: "秦淮区"
+                  district: '秦淮区'
                 },
                 {
-                  district: "鼓楼区"
+                  district: '鼓楼区'
                 },
                 {
-                  district: "建邺区"
+                  district: '建邺区'
                 },
                 {
-                  district: "雨花台区"
+                  district: '雨花台区'
                 },
                 {
-                  district: "江宁区"
+                  district: '江宁区'
                 }
               ]
             },
             {
-              city: "Zhenjiang",
+              city: 'Zhenjiang',
               children: [
                 {
-                  district: "京口区"
+                  district: '京口区'
                 },
                 {
-                  district: "润州区"
+                  district: '润州区'
                 },
                 {
-                  district: "丹徒区"
+                  district: '丹徒区'
                 },
                 {
-                  district: "丹阳市"
+                  district: '丹阳市'
                 },
                 {
-                  district: "扬中市"
+                  district: '扬中市'
                 },
                 {
-                  district: "丹徒新区"
+                  district: '丹徒新区'
                 }
               ]
             }
           ]
         }
       ]
-    };
+    }
   },
   computed: {
-    provinFilter() {
-      var provin = [];
-      var list = this.regionList;
+    provinFilter () {
+      var provin = []
+      var list = this.regionList
       list.forEach(ele => {
-        provin.push(ele.province);
-      });
-      return provin;
+        provin.push(ele.province)
+      })
+      return provin
     },
-    regionName() {
-      var name = "";
-      if (this.region.prov != "") name += this.region.prov;
-      if (this.region.city != "") {
-        name += "-";
-        name += this.region.city;
-        if (this.region.dist != "") {
-          name += "-";
-          name += this.region.dist;
+    regionName () {
+      var name = ''
+      if (this.region.prov !== '') name += this.region.prov
+      if (this.region.city !== '') {
+        name += '-'
+        name += this.region.city
+        if (this.region.dist !== '') {
+          name += '-'
+          name += this.region.dist
         }
       }
-      return name;
+      return name
     },
-    cityFilter() {
-      var city = [];
+    cityFilter () {
+      var city = []
       this.regionList.forEach(ele => {
         if (ele.province === this.prov) {
           ele.children.forEach(e => {
-            city.push(e.city);
-          });
+            city.push(e.city)
+          })
         }
-      });
-      return city;
+      })
+      return city
     },
-    distFilter() {
-      var dist = [];
+    distFilter () {
+      var dist = []
       this.regionList.forEach(ele => {
         if (ele.province === this.prov) {
           ele.children.forEach(e => {
             if (e.city === this.city) {
               e.children.forEach(distele => {
-                dist.push(distele.district);
-              });
+                dist.push(distele.district)
+              })
             }
-          });
+          })
         }
-      });
-      return dist;
+      })
+      return dist
     }
   },
-  mounted: function() {
-    this.fetchAddr();
-    this.fetchRegion();
+  mounted: function () {
+    this.fetchAddr()
+    this.fetchRegion()
   },
   methods: {
-    watchMouse() {
-      var e = window.event;
-      var id = e.target.id;
-      var claName = e.srcElement.className;
+    watchMouse () {
+      var e = window.event
+      var id = e.target.id
+      var claName = e.srcElement.className
       if (
-        id != "province" &&
-        id != "city" &&
-        id != "district" &&
-        id != "input-region" &&
-        claName != "region-list"
-      )
-        this.showRegion = false;
-      else this.showRegion = true;
+        id !== 'province' &&
+        id !== 'city' &&
+        id !== 'district' &&
+        id !== 'input-region' &&
+        claName !== 'region-list'
+      ) {
+        this.showRegion = false
+      } else this.showRegion = true
     },
-    changeShowRegion() {
-      this.showRegion = true;
+    changeShowRegion () {
+      this.showRegion = true
     },
-    modifyProv(province) {
-      this.prov = province;
+    modifyProv (province) {
+      this.prov = province
     },
-    modifyCity(city) {
-      this.city = city;
+    modifyCity (city) {
+      this.city = city
     },
-    modifyDist(dist) {
-      this.district = dist;
+    modifyDist (dist) {
+      this.district = dist
     },
-    fetchAddr() {
-      this.addr = "Dongchuan Road 800 SJTU";
+    fetchAddr () {
+      this.addr = 'Dongchuan Road 800 SJTU'
     },
-    fetchRegion() {
-      this.region.prov = "Shanghai";
-      this.region.city = "Minhang";
+    fetchRegion () {
+      this.region.prov = 'Shanghai'
+      this.region.city = 'Minhang'
     }
   },
   watch: {
-    prov: function() {
-      this.region.prov = this.prov;
+    prov: function () {
+      this.region.prov = this.prov
     },
-    city: function() {
-      this.region.city = this.city;
+    city: function () {
+      this.region.city = this.city
     },
-    district: function() {
-      this.region.dist = this.district;
+    district: function () {
+      this.region.dist = this.district
     }
   }
-};
+}
 </script>
 <style scoped>
 button {

@@ -21,30 +21,30 @@
 </template>
 <script>
 export default {
-  name: "SettingSide",
-  data() {
+  name: 'SettingSide',
+  data () {
     return {
-      fromTime: "",
-      toTime: "",
+      fromTime: '',
+      toTime: '',
       showFilter: false
-    };
+    }
   },
   methods: {
-    alterShow() {
-      this.showFilter = true;
+    alterShow () {
+      this.showFilter = true
     },
-    updateTime() {
-      var begin = this.fromTime;
-      var end = this.toTime;
-      this.$emit("updateTime", begin, end);
+    updateTime () {
+      var begin = this.fromTime
+      var end = this.toTime
+      this.$emit('updateTime', begin, end)
     },
-    fetchAll() {
-      if (!this.showFilter) return;
-      this.showFilter = false;
-      this.$emit("fetchAll");
+    fetchAll () {
+      if (!this.showFilter) return
+      this.showFilter = false
+      this.$emit('fetchAll')
     }
   }
-};
+}
 </script>
 <style scoped>
 .time {
@@ -73,4 +73,3 @@ export default {
   margin: 15px 10px 5px 70px;
 }
 </style>
-

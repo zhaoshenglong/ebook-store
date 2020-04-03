@@ -80,15 +80,15 @@
 </template>
 
 <script>
-import BookModify from "../../components/admin/bookModify";
-import BookForm from "../../components/admin/bookForm";
-import axios from "axios";
+import BookModify from '../../components/admin/bookModify'
+import BookForm from '../../components/admin/bookForm'
+import axios from 'axios'
 export default {
   components: {
     BookModify,
     BookForm
   },
-  data() {
+  data () {
     return {
       bookList: [],
       pager: {
@@ -97,158 +97,158 @@ export default {
         size: 10
       },
       dialogVisible: false,
-      action: "Update Book",
+      action: 'Update Book',
       oldBook: {},
-      display: "",
-      search: ""
-    };
+      display: '',
+      search: ''
+    }
   },
-  mounted() {
-    this.pager.page = 0;
-    this.fetchAllBooks(this.pager.page);
+  mounted () {
+    this.pager.page = 0
+    this.fetchAllBooks(this.pager.page)
   },
   computed: {},
   methods: {
-    fetchAllBooks(page) {
-      this.display = "";
+    fetchAllBooks (page) {
+      this.display = ''
       axios
-        .get("/api/admin/books/all", {
+        .get('/api/admin/books/all', {
           params: {
             page: page
           }
         })
         .then(response => {
-          const data = response.data;
-          this.bookList = data.content;
-          console.log(data);
-          this.pager.total = data.totalElements;
-          this.pager.size = data.size;
+          const data = response.data
+          this.bookList = data.content
+          console.log(data)
+          this.pager.total = data.totalElements
+          this.pager.size = data.size
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    changePage(page) {
-      console.log("boolean", this.display === "search");
-      if (this.display === "search") {
-        console.log("display", this.display);
-        this.fetchAllLike(page - 1);
+    changePage (page) {
+      console.log('boolean', this.display === 'search')
+      if (this.display === 'search') {
+        console.log('display', this.display)
+        this.fetchAllLike(page - 1)
       } else {
-        console.log("display", this.display);
-        this.fetchAllBooks(page - 1);
+        console.log('display', this.display)
+        this.fetchAllBooks(page - 1)
       }
     },
-    fetchAllLike(page) {
-      this.display = "search";
+    fetchAllLike (page) {
+      this.display = 'search'
       axios
-        .get("/api/admin/books/search", {
+        .get('/api/admin/books/search', {
           params: {
             pattern: this.search,
             page: page
           }
         })
         .then(response => {
-          console.log(response.data);
-          const data = response.data;
-          this.bookList = data.content;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.size;
+          console.log(response.data)
+          const data = response.data
+          this.bookList = data.content
+          this.pager.total = data.totalElements
+          this.pager.size = data.size
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    cancleBookDialog() {
-      this.dialogVisible = false;
+    cancleBookDialog () {
+      this.dialogVisible = false
     },
-    openBookDialog(bookId) {
-      if (bookId !== "") {
-        this.dialogVisible = true;
+    openBookDialog (bookId) {
+      if (bookId !== '') {
+        this.dialogVisible = true
         this.bookList.forEach(book => {
           if (bookId === book.id) {
-            this.oldBook = book;
+            this.oldBook = book
           }
-        });
-        this.action = "Update Book";
+        })
+        this.action = 'Update Book'
       } else {
-        this.dialogVisible = true;
-        this.oldBook = new Object();
-        this.action = "Create New Book";
+        this.dialogVisible = true
+        this.oldBook = {}
+        this.action = 'Create New Book'
       }
     },
-    updateBook(book) {
+    updateBook (book) {
       axios
-        .put("/api/admin/books/modify", book)
+        .put('/api/admin/books/modify', book)
         .then(response => {
           this.$message({
-            type: "success",
-            message: "更新图书成功～",
+            type: 'success',
+            message: '更新图书成功～',
             duration: 2000
-          });
-          this.cancleBookDialog();
+          })
+          this.cancleBookDialog()
         })
         .catch(err => {
           this.$message({
-            type: "error",
-            message: "更新图书失败，我恩的服务器可能挂了",
+            type: 'error',
+            message: '更新图书失败，我恩的服务器可能挂了',
             duration: 2000
-          });
-          console.log(err);
-        });
+          })
+          console.log(err)
+        })
     },
-    deleteBook(bookId) {
+    deleteBook (bookId) {
       axios
-        .delete("/api/admin/books/delete", {
+        .delete('/api/admin/books/delete', {
           params: {
             id: bookId
           }
         })
         .then(response => {
           this.$message({
-            type: "success",
-            message: "成功删除图书～",
+            type: 'success',
+            message: '成功删除图书～',
             duration: 2000
-          });
-          console.log(response);
+          })
+          console.log(response)
         })
         .catch(err => {
           this.$message({
-            type: "error",
-            message: "删除图书失败，我们的服务器可能挂了:(",
+            type: 'error',
+            message: '删除图书失败，我们的服务器可能挂了:(',
             duration: 2000
-          });
-          console.log(err);
-        });
+          })
+          console.log(err)
+        })
     },
-    searchBook() {
-      this.display = "search";
-      this.pager.page = 0;
-      this.fetchAllLike(this.pager.page);
+    searchBook () {
+      this.display = 'search'
+      this.pager.page = 0
+      this.fetchAllLike(this.pager.page)
     },
-    createBook(book) {
+    createBook (book) {
       axios
-        .post("api/admin/books/create", book)
+        .post('api/admin/books/create', book)
         .then(response => {
           this.$message({
-            type: "success",
-            message: "创建图书成功～",
+            type: 'success',
+            message: '创建图书成功～',
             duration: 2000
-          });
-          console.log(response.data);
-          this.cancleBookDialog();
+          })
+          console.log(response.data)
+          this.cancleBookDialog()
         })
         .catch(err => {
           this.$message({
-            type: "error",
-            message: "创建图书失败，我恩的服务器可能挂了",
+            type: 'error',
+            message: '创建图书失败，我恩的服务器可能挂了',
             duration: 2000
-          });
-          console.log(err);
-        });
-      console.log("create");
+          })
+          console.log(err)
+        })
+      console.log('create')
     }
   }
-};
+}
 </script>
 
 <style scoped>

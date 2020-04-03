@@ -27,22 +27,22 @@
 </template>
 
 <script>
-import ImgDialog from "./imgDialog";
+import ImgDialog from './imgDialog'
 export default {
-  name: "BookModify",
+  name: 'BookModify',
   components: {
     ImgDialog
   },
-  data() {
+  data () {
     return {
-      disabledName: "readonly",
-      disabledAuthor: "readonly",
-      disabledIsbn: "readonly",
-      disabledPrice: "readonly",
-      disabledRemain: "readonly",
+      disabledName: 'readonly',
+      disabledAuthor: 'readonly',
+      disabledIsbn: 'readonly',
+      disabledPrice: 'readonly',
+      disabledRemain: 'readonly',
       dialogVisible: false,
       dialogBook: {}
-    };
+    }
   },
   props: {
     book: {
@@ -51,21 +51,21 @@ export default {
     }
   },
   methods: {
-    editBook(bookId) {
-      this.$emit("openBookDialog", bookId);
+    editBook (bookId) {
+      this.$emit('openBookDialog', bookId)
     },
-    deleteBook(bookId) {
-      this.$emit("deleteBook", bookId);
+    deleteBook (bookId) {
+      this.$emit('deleteBook', bookId)
     },
-    openUploadDialog(book) {
-      this.dialogVisible = true;
-      this.dialogBook = book;
+    openUploadDialog (book) {
+      this.dialogVisible = true
+      this.dialogBook = book
     },
-    closeDialog() {
-      this.dialogVisible = false;
+    closeDialog () {
+      this.dialogVisible = false
     }
   }
-};
+}
 </script>
 
 <style scoped>

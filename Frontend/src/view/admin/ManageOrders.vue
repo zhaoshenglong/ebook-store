@@ -68,147 +68,147 @@
 </template>
 
 <script>
-import axios from "axios";
-import OrderModify from "../../components/admin/orderModify";
+import axios from 'axios'
+import OrderModify from '../../components/admin/orderModify'
 
 export default {
-  name: "MangeOrders",
+  name: 'MangeOrders',
   components: {
     OrderModify
   },
-  data() {
+  data () {
     return {
       orderList: [],
       pickerOptions: {
         shortcuts: [
           {
-            text: "Last week",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
+            text: 'Last week',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last month",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
+            text: 'Last month',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+              picker.$emit('pick', [start, end])
             }
           },
           {
-            text: "Last 3 months",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
+            text: 'Last 3 months',
+            onClick (picker) {
+              const end = new Date()
+              const start = new Date()
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+              picker.$emit('pick', [start, end])
             }
           }
         ]
       },
       date: [],
-      activeIndex: "1",
+      activeIndex: '1',
       pager: {
         page: 0,
         total: 0,
         size: 10
       },
-      displayPage: "all",
+      displayPage: 'all',
       search: {
-        user: "",
-        book: "",
+        user: '',
+        book: '',
         date: []
       },
       searchVisible: false
-    };
+    }
   },
-  mounted() {
-    this.fetchOrderByOption("all", 0);
+  mounted () {
+    this.fetchOrderByOption('all', 0)
   },
   methods: {
-    changePage(page) {
-      this.pager.page = page;
-      page--;
-      if (this.displayPage === "time") {
-        this.fetchOrderByDate(page);
-      } else if (this.displayPage === "all") {
-        this.fetchOrderByOption("all", page);
-      } else if (this.displayPage === "paid") {
-        this.fetchOrderByOption("paid", page);
-      } else if (this.displayPage === "unpaid") {
-        this.fetchOrderByOption("unpaid", page);
-      } else if (this.displayPage === "unpaid") {
-        this.fetchOrderByOption("deleted", page);
-      } else if (this.displayPage === "search") {
-        this.fetchOrderBySearch();
+    changePage (page) {
+      this.pager.page = page
+      page--
+      if (this.displayPage === 'time') {
+        this.fetchOrderByDate(page)
+      } else if (this.displayPage === 'all') {
+        this.fetchOrderByOption('all', page)
+      } else if (this.displayPage === 'paid') {
+        this.fetchOrderByOption('paid', page)
+      } else if (this.displayPage === 'unpaid') {
+        this.fetchOrderByOption('unpaid', page)
+      } else if (this.displayPage === 'unpaid') {
+        this.fetchOrderByOption('deleted', page)
+      } else if (this.displayPage === 'search') {
+        this.fetchOrderBySearch()
       }
     },
-    handleSelect(key, keyPath) {
-      this.pager.page = 0;
-      if (key == "5") {
-        this.showSearch(true);
+    handleSelect (key, keyPath) {
+      this.pager.page = 0
+      if (key === '5') {
+        this.showSearch(true)
       } else {
-        this.showSearch(false);
+        this.showSearch(false)
       }
-      if (key == "1") {
-        this.fetchOrderByOption("all", this.pager.page);
-      } else if (key == "2") {
-        this.fetchOrderByOption("paid", this.pager.page);
-      } else if (key == "3") {
-        this.fetchOrderByOption("unpaid", this.pager.page);
-      } else if (key == "4") {
-        this.fetchOrderByOption("deleted", this.pager.page);
+      if (key === '1') {
+        this.fetchOrderByOption('all', this.pager.page)
+      } else if (key === '2') {
+        this.fetchOrderByOption('paid', this.pager.page)
+      } else if (key === '3') {
+        this.fetchOrderByOption('unpaid', this.pager.page)
+      } else if (key === '4') {
+        this.fetchOrderByOption('deleted', this.pager.page)
       } else {
-        //...
+        console.log('Error!')
       }
     },
-    setSearchDate(page) {
-      this.displayPage = "search";
-      let start, end;
-      start = this.date[0];
-      end = this.date[1];
-      start = this.convertDateFmt(start);
-      end = this.convertDateFmt(end);
-      console.log(start);
-      console.log(end);
-      this.search.date = new Array(2);
-      this.search.date[0] = start + " 00:00:00";
-      this.search.date[1] = end + " 23:59:59";
+    setSearchDate (page) {
+      this.displayPage = 'search'
+      let start, end
+      start = this.date[0]
+      end = this.date[1]
+      start = this.convertDateFmt(start)
+      end = this.convertDateFmt(end)
+      console.log(start)
+      console.log(end)
+      this.search.date = new Array(2)
+      this.search.date[0] = start + ' 00:00:00'
+      this.search.date[1] = end + ' 23:59:59'
     },
-    convertDateFmt(date) {
-      let mon = date.getMonth() + 1;
+    convertDateFmt (date) {
+      let mon = date.getMonth() + 1
       if (mon < 10) {
-        mon = "0" + mon;
+        mon = '0' + mon
       }
-      return date.getFullYear() + "-" + mon + "-" + date.getDate();
+      return date.getFullYear() + '-' + mon + '-' + date.getDate()
     },
-    fetchOrderByOption(option, page) {
+    fetchOrderByOption (option, page) {
       axios
-        .get("/api/admin/orders/option", {
+        .get('/api/admin/orders/option', {
           params: {
             option: option,
             page: page
           }
         })
         .then(response => {
-          const data = response.data;
-          this.orderList = data.content;
-          console.log(response);
-          this.displayPage = option;
-          this.pager.total = data.totalElements;
-          this.pager.size = data.size;
+          const data = response.data
+          this.orderList = data.content
+          console.log(response)
+          this.displayPage = option
+          this.pager.total = data.totalElements
+          this.pager.size = data.size
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    fetchOrderBySearch(page) {
+    fetchOrderBySearch (page) {
       axios
-        .get("/api/admin/orders/search", {
+        .get('/api/admin/orders/search', {
           params: {
             user: this.search.user,
             book: this.search.book,
@@ -217,28 +217,28 @@ export default {
           }
         })
         .then(response => {
-          const data = response.data;
-          this.orderList = data;
-          console.log(response);
-          this.displayPage = "search";
-          this.pager.total = this.orderList.length;
-          this.pager.size = this.pager.total;
+          const data = response.data
+          this.orderList = data
+          console.log(response)
+          this.displayPage = 'search'
+          this.pager.total = this.orderList.length
+          this.pager.size = this.pager.total
         })
         .catch(err => {
-          console.log(err);
-        });
-      console.log(this.search);
+          console.log(err)
+        })
+      console.log(this.search)
     },
-    showSearch(flag) {
-      this.searchVisible = flag;
+    showSearch (flag) {
+      this.searchVisible = flag
     }
   },
   watch: {
-    date: function(olddate) {
-      console.log(olddate);
+    date: function (olddate) {
+      console.log(olddate)
     }
   }
-};
+}
 </script>
 
 <style scoped>

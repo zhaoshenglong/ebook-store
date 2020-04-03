@@ -22,14 +22,14 @@
 
 <script>
 export default {
-  name: "Profile",
+  name: 'Profile',
   props: {
     user: {
       type: Object,
       required: true
     }
   }
-};
+}
 </script>
 
 <style>

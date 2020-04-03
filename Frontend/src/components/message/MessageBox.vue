@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "ErrorMessage",
+  name: 'ErrorMessage',
   props: {
     message: {
       type: String,
@@ -23,12 +23,12 @@ export default {
     }
   },
   methods: {
-    setHeight() {}
+    setHeight () {}
   },
-  mounted() {
-    this.setHeight();
+  mounted () {
+    this.setHeight()
   }
-};
+}
 </script>
 <style scoped>
 .msg-box p {

@@ -111,210 +111,206 @@
   </div>
 </template>
 <script>
-import axios from "axios";
-import CartSide from "../../components/cart/CartSide";
-import qs from "qs";
-import { mapGetters } from "vuex";
-import Cookies from "js-cookie";
+import axios from 'axios'
+import CartSide from '../../components/cart/CartSide'
+import { mapGetters } from 'vuex'
 export default {
-  name: "Cart",
-  data() {
+  name: 'Cart',
+  data () {
     return {
       cart: {
         orderItemList: []
       }
-    };
+    }
   },
   components: {
     CartSide
   },
-  mounted: function() {
+  mounted: function () {
     this.$store
-      .dispatch("getStatus")
+      .dispatch('getStatus')
       .then(user => {
-        console.log(user);
-        this.fetchCart();
+        console.log(user)
+        this.fetchCart()
       })
       .catch(err => {
+        console.log(err)
         this.$message({
-          type: "error",
-          message: "获取购物车失败了,可能我们的服务ｉｑｉ挂了:(",
+          type: 'error',
+          message: '获取购物车失败了,可能我们的服务ｉｑｉ挂了:(',
           duration: 2500
-        }),
-          console.log(err);
-      });
+        })
+      })
   },
   computed: {
-    total() {
-      var res = 0;
+    total () {
+      var res = 0
       this.cart.orderItemList.forEach(item => {
         if (item.select) {
-          res += item.book.price * item.quantity;
+          res += item.book.price * item.quantity
         }
-      });
-      return res;
+      })
+      return res
     }
   },
   methods: {
-    fetchCart() {
-      var apiUrl = "/api/user/" + this.getUser().name + "/cart";
+    fetchCart () {
+      var apiUrl = '/api/user/' + this.getUser().name + '/cart'
       axios
         .get(apiUrl)
         .then(response => {
-          console.log(response);
-          const data = response.data;
+          console.log(response)
+          const data = response.data
           if (data.orderItemList !== undefined) {
             data.orderItemList.forEach(item => {
-              let i = new Object();
-              i.id = item.id;
-              i.orderId = item.orderId;
-              i.quantity = item.quantity;
-              i.select = true;
-              i.book = new Object();
-              i.book.name = item.book.name;
-              i.book.author = item.book.author;
-              i.book.price = item.book.price;
-              i.book.bookId = item.book.id;
-              i.book.img = item.book.img;
-              i.book.stock = item.book.stock;
-              this.cart.orderItemList.push(i);
-            });
+              let i = {}
+              i.id = item.id
+              i.orderId = item.orderId
+              i.quantity = item.quantity
+              i.select = true
+              i.book = {}
+              i.book.name = item.book.name
+              i.book.author = item.book.author
+              i.book.price = item.book.price
+              i.book.bookId = item.book.id
+              i.book.img = item.book.img
+              i.book.stock = item.book.stock
+              this.cart.orderItemList.push(i)
+            })
           }
-          console.log(this.cart.orderItemList);
+          console.log(this.cart.orderItemList)
         })
         .catch(err => {
-          console.log(err);
-        });
+          console.log(err)
+        })
     },
-    toStore() {
-      this.$router.push({ name: "StorePage" });
+    toStore () {
+      this.$router.push({ name: 'StorePage' })
     },
-    increment(item) {
+    increment (item) {
       if (item.quantity >= item.book.stock) {
         this.$message({
-          message: "库存不够啦，不可以在增加咯～",
-          type: "warning",
+          message: '库存不够啦，不可以在增加咯～',
+          type: 'warning',
           duration: 1000
-        });
-        return;
+        })
       } else {
-        var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/set";
+        var apiUrl = '/api/user/' + this.getUser().name + '/orders/item/set'
         axios
           .put(apiUrl, {
             id: item.id,
             quantity: item.quantity + 1
           })
           .then(response => {
-            item.quantity++;
-            console.log(response.data);
+            item.quantity++
+            console.log(response.data)
           })
           .catch(err => {
-            console.log(err);
+            console.log(err)
             this.$message({
-              message: "修改失败，我们的服务器可能挂了",
-              type: "error",
+              message: '修改失败，我们的服务器可能挂了',
+              type: 'error',
               duration: 800
-            });
-          });
+            })
+          })
       }
     },
-    decrement(item) {
+    decrement (item) {
       if (item.quantity > 0) {
-        var apiUrl = "/api/user/" + this.getUser().name + "/orders/item/set";
+        var apiUrl = '/api/user/' + this.getUser().name + '/orders/item/set'
         axios
           .put(apiUrl, {
             id: item.id,
             quantity: item.quantity - 1
           })
           .then(response => {
-            item.quantity--;
-            console.log(response.data);
+            item.quantity--
+            console.log(response.data)
           })
           .catch(err => {
-            console.log(err);
+            console.log(err)
             this.$message({
-              message: "修改失败，我们的服务器可能挂了",
-              type: "error",
+              message: '修改失败，我们的服务器可能挂了',
+              type: 'error',
               duration: 800
-            });
-          });
+            })
+          })
       } else {
         this.$message({
-          message: "数量都0了，你是想脱光我吗？",
-          type: "warning",
+          message: '数量都0了，你是想脱光我吗？',
+          type: 'warning',
           duration: 800
-        });
-        return;
+        })
       }
     },
-    deleteItem(item) {
-      if (confirm("确定要删除吗？")) {
+    deleteItem (item) {
+      if (confirm('确定要删除吗？')) {
         var apiUrl =
-          "/api/user/" +
+          '/api/user/' +
           this.getUser().name +
-          "/orders/item/delete?id=" +
-          item.id;
+          '/orders/item/delete?id=' +
+          item.id
         axios
           .delete(apiUrl)
           .then(response => {
-            console.log(response);
+            console.log(response)
             this.$message({
-              type: "success",
-              message: "删除成功",
+              type: 'success',
+              message: '删除成功',
               duration: 800
-            });
-            var count = 0;
+            })
+            var count = 0
             this.cart.orderItemList.forEach(i => {
               if (i.id === item.id) {
-                this.cart.orderItemList.splice(count, 1);
+                this.cart.orderItemList.splice(count, 1)
               }
-              count++;
-            });
+              count++
+            })
           })
           .catch(err => {
-            console.log(err);
+            console.log(err)
             this.$message({
-              type: "error",
-              message: "删除失败，我们的服务器挂了",
+              type: 'error',
+              message: '删除失败，我们的服务器挂了',
               duration: 800
-            });
-          });
+            })
+          })
       }
     },
-    changeSelect(id) {
+    changeSelect (id) {
       this.cart.orderItemList.forEach(item => {
         if (item.id === id) {
-          if (item.select) item.select = false;
-          else item.select = true;
+          if (item.select) item.select = false
+          else item.select = true
         }
-      });
+      })
     },
-    selectAll() {
-      var selected = true;
+    selectAll () {
+      var selected = true
       this.cart.orderItemList.forEach(item => {
         if (!item.select) {
-          selected = false;
-          item.select = true;
+          selected = false
+          item.select = true
         }
-      });
+      })
       if (selected) {
         this.cart.orderItemList.forEach(item => {
-          item.select = false;
-        });
+          item.select = false
+        })
       }
     },
-    buy() {
-      var order = new Array();
+    buy () {
+      var order = []
       this.cart.orderItemList.forEach(item => {
         if (item.select) {
-          var orderItem = new Object();
-          orderItem.id = item.id;
-          orderItem.quantity = item.quantity;
-          order.push(orderItem);
+          var orderItem = {}
+          orderItem.id = item.id
+          orderItem.quantity = item.quantity
+          order.push(orderItem)
         }
-      });
+      })
       if (order.length > 0) {
-        var apiUrl = "/api/user/" + this.getUser().name + "/orders/buy";
+        var apiUrl = '/api/user/' + this.getUser().name + '/orders/buy'
         axios
           .post(apiUrl, order)
           .then(response => {
@@ -324,22 +320,22 @@ export default {
               duration: 3000
             })
             this.cart.orderItemList = this.cart.orderItemList.filter(i => {
-              return !i.select;
+              return !i.select
             })
           })
           .catch(err => {
             this.$message({
               type: 'error',
-              message: "购买失败，我们的服务器又挂了:(",
+              message: '购买失败，我们的服务器又挂了:(',
               duration: 3000
             })
             console.log(err)
           })
       }
     },
-    ...mapGetters(["getUser"])
+    ...mapGetters(['getUser'])
   }
-};
+}
 </script>
 <style scoped>
 #cart-container {
