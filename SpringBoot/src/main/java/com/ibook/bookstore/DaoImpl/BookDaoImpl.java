@@ -191,7 +191,6 @@ public class BookDaoImpl implements BookDao {
     @Transactional(propagation = Propagation.SUPPORTS)
     public Book saveBook(Book book) {
         book = bookRepository.save(book);
-        System.out.println("************************************************************************" + book.getId());
         ValueOperations ops = redisTemplate.opsForValue();
         ListOperations listOps = redisTemplate.opsForList();
         ops.set(book.getId(), book);
