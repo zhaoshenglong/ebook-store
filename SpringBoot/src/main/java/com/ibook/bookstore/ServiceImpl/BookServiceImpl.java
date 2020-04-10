@@ -53,9 +53,9 @@ public class BookServiceImpl implements BookService {
     public Page<Book> findAllLike(String pattern, int page, int size, String user) {
         Pageable pageable = PageRequest.of(page, size);
         if (user.equals("admin")) {
-            return bookDao.findAllByIsbnNameAuthorLikeIncludeDeleted(pattern, pattern, pattern, pageable);
+            return bookDao.findLike(pattern, pageable, true);
         } else {
-            return bookDao.findByIsbnNameAuthorLikeNotDeleted(pattern, pattern, pattern, pageable);
+            return bookDao.findLike(pattern, pageable, false);
         }
     }
 

@@ -3,6 +3,7 @@ package com.ibook.bookstore.Entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.apache.solr.client.solrj.beans.Field;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -22,18 +23,22 @@ public class Book implements Serializable {
     @Column(name = "id")
     @GenericGenerator(name = "jpa-uuid", strategy = "uuid")
     @GeneratedValue( generator = "jpa-uuid")
+    @Field
     private String id;
 
     @Basic
     @Column(name = "book_name")
+    @Field
     private String name;
 
     @Basic
     @Column(name = "author")
+    @Field
     private String author;
 
     @Basic
     @Column(name = "book_isbn")
+    @Field
     private String isbn;
 
     @Basic
@@ -46,10 +51,12 @@ public class Book implements Serializable {
 
     @Basic
     @Column(name = "author_info")
+    @Field("author_info")
     private String authorInfo;
 
     @Basic
     @Column(name = "content")
+    @Field("content")
     private String contentInfo;
 
     @Basic
@@ -62,7 +69,6 @@ public class Book implements Serializable {
 
     @Basic
     @Column(name = "sale")
-
     private int sale;
 
     @JsonIgnore

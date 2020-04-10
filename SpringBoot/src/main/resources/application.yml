@@ -30,3 +30,15 @@ spring:
   data:
     mongodb:
       uri: mongodb://dragon:HXC19970129@localhost:27017/bookstore
+  redis:
+    database: 0
+    password: HXC19970129
+    port: 6379
+    host: 127.0.0.1
+    lettuce:
+      pool:
+        min-idle: 5
+        max-idle: 10
+        max-active: 8
+        max-wait: 1ms
+      shutdown-timeout: 100ms

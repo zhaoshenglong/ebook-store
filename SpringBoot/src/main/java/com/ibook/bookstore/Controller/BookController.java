@@ -66,23 +66,13 @@ public class BookController {
                                            @RequestParam(name = "pattern", defaultValue = "")String pattern) {
         return bookService.findAllLike(pattern, page, 10, "admin");
     }
-    /**
-     *
-     * @param book
-     * @return book
-     * RequestBody : application/json
-     */
+
     @PostMapping("/api/admin/books/create")
     public Book createBook(@RequestBody Book book) {
         return bookService.createBook(book);
     }
 
-    /**
-     *
-     * @param data
-     * @return
-     * RequestBody : application/json
-     */
+
     @PutMapping("/api/admin/books/modify")
     public Book modifyBook(@RequestBody Map<String, String> data){
         return bookService.updateBook(data);

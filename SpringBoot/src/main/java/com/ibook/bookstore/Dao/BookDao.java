@@ -11,10 +11,10 @@ public interface BookDao {
     Book findOne(String bookId);
     Page<Book> findAllNotDeleted(Pageable pageable);
     Page<Book> findAllByTagNotDeleted(String tag, Pageable pageable);
-    Page<Book> findByIsbnNameAuthorLikeNotDeleted(String isbn, String name, String author, Pageable pageable);
+    Page<Book> findLike(String pattern, Pageable pageable, boolean includeDeletedBooks);
+
     Page<Book> findAllIncludeDeleted(Pageable pageable);
     List findAll();
-    Page<Book> findAllByIsbnNameAuthorLikeIncludeDeleted(String isbn, String name, String author, Pageable pageable);
 
     /* Delete methods */
     void deleteBook(Book book);
