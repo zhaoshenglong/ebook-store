@@ -29,4 +29,5 @@ HELP.md
 .vscode/
 
 ### Bookstore ###
+app.log
 app.log.out/

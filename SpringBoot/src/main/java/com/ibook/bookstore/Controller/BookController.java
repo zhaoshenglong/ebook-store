@@ -1,6 +1,7 @@
 package com.ibook.bookstore.Controller;
 
 import com.ibook.bookstore.Entity.Book;
+import com.ibook.bookstore.Log.LogService;
 import com.ibook.bookstore.Service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

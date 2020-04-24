@@ -18,7 +18,6 @@ public class AuthController {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public String authenticate(HttpServletRequest request, HttpServletResponse response) {
         HttpSessionRequestCache requestCache = new HttpSessionRequestCache();
-
         return "Unauthorized";
     }
 

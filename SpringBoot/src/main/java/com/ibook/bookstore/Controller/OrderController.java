@@ -37,8 +37,6 @@ public class OrderController {
     @GetMapping("/api/user/{name}/cart")
     public Order getCart(@PathVariable("name")String name) {
         UserOrderService userOrderService = applicationContext.getBean(UserOrderService.class);
-        System.out.println(userOrderService);
-        System.out.println(this);
         return userOrderService.findCart(name);
     }
 
