@@ -29,6 +29,8 @@ public class UserServiceImpl implements UserService {
     private OrderDao orderDao;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    PersonDao personDao;
 
     @Override
     public User findUserByName(String name) {
@@ -57,6 +59,14 @@ public class UserServiceImpl implements UserService {
         cart.setUser(user);
         cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
         orderDao.saveOrder(cart);
+
+        // Create neo4j graph relationship
+        Person person = new Person();
+        person.setFollowers(new HashSet<>());
+        person.setFollowings(new HashSet<>());
+        person.setName(user.getName());
+        personDao.savePerson(person);
+
         return userDao.findOne(user.getName());
     }
 
