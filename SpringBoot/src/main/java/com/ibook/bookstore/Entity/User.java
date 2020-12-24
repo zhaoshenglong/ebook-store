@@ -51,7 +51,7 @@ public class User {
 
     @Basic
     @Column(name = "consume")
-    private Double consume;
+    private double consume;
 
     @JsonIgnore
     @Basic

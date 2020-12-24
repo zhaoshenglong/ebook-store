@@ -4,25 +4,14 @@ import com.google.common.base.Optional;
 import com.ibook.bookstore.Dao.*;
 import com.ibook.bookstore.Entity.*;
 import com.ibook.bookstore.Service.UserService;
-import org.bson.BsonBinarySubType;
-import org.bson.types.Binary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.BufferedOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.util.*;
 
@@ -35,8 +24,6 @@ public class UserServiceImpl implements UserService {
     private AddressDao addressDao;
     @Autowired
     private OrderDao orderDao;
-    @Autowired
-    private BookDao bookDao;
     @Autowired
     PasswordEncoder passwordEncoder;
 
@@ -57,8 +44,8 @@ public class UserServiceImpl implements UserService {
         user.setCreateDate(new Timestamp(System.currentTimeMillis()));
         user.setModifyDate(new Timestamp(System.currentTimeMillis()));
         user.setAvatar(user.getAvatar() == null ? "http://localhost:8080/img?kind=user&name=default" : user.getAvatar());
-        user.setAddresses(new HashSet<Address>());
-        user.setLikedBooks(new HashSet<Book>());
+        user.setAddresses(new HashSet<>());
+        user.setLikedBooks(new HashSet<>());
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userDao.saveUser(user);
         Order cart = new Order();
@@ -67,15 +54,6 @@ public class UserServiceImpl implements UserService {
         cart.setCreateDate(new Timestamp(System.currentTimeMillis()));
         orderDao.saveOrder(cart);
         return userDao.findOne(user.getName());
-    }
-
-    @Override
-    public User likeBook(String name, String id) {
-        User user = userDao.findOne(name);
-        Book book = bookDao.findOne(id);
-        book.setLiked(book.getLiked() + 1);
-        user.getLikedBooks().add(book);
-        return user;
     }
 
     @Override
@@ -112,9 +90,6 @@ public class UserServiceImpl implements UserService {
         address.setUserName(name);
         address.setCreateDate(new Timestamp(System.currentTimeMillis()));
         address.setModifyDate(new Timestamp(System.currentTimeMillis()));
-        /**
-         * Does it save the address in Address ?
-         */
         addressDao.saveAddress(address);
         return  userDao.findOne(name);
     }
@@ -217,17 +192,15 @@ public class UserServiceImpl implements UserService {
         if (orders == null) {
             System.out.println("null");
         } else {
-            Iterator<User> iterator = users.iterator();
-            while (iterator.hasNext()) {
-                User user = iterator.next();
+            for (User user : users) {
                 HashMap<String, Object> item = new HashMap<>();
                 item.put("name", user.getName());
                 item.put("totalConsume", user.getConsume());
-                item.put("partConsume", new Double(0));
+                item.put("partConsume", (double) 0);
                 for (Order order : orders) {
                     if (order.getUser().getName().equals(user.getName())) {
                         if (order.getPaid() != null) {
-                            item.replace("partConsume", (Double)item.get("partConsume") + order.getPaid());
+                            item.replace("partConsume", (Double) item.get("partConsume") + order.getPaid());
                         }
                         System.out.println(order.getUser());
                     }
